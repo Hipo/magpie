@@ -1,0 +1,16 @@
+PODS:
+  - Magpie (0.1.0)
+
+DEPENDENCIES:
+  - Magpie (from `../`)
+
+EXTERNAL SOURCES:
+  Magpie:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Magpie: 520a23aa5d448dbd92229b31c8addec31eab2c42
+
+PODFILE CHECKSUM: 9f05662adb01bfb4b0ad57f00433eda6f403b6d5
+
+COCOAPODS: 1.5.3
