@@ -21,11 +21,11 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/eraydiler/Magpie'
+  s.homepage         = 'https://github.com/hipo/Magpie'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'eraydiler' => 'eray.diler@gmail.com' }
-  s.source           = { :git => 'https://github.com/eraydiler/Magpie.git', :tag => s.version.to_s }
+  s.author           = { 'eraydiler' => 'eray@hipolabs.com' }
+  s.source           = { :git => 'https://github.com/Hipo/magpie.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'

@@ -28,7 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0066BC2D7948741D41044353 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		0066BC2D7948741D41044353 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		0E1DCC0910E52CAB15DA4C21 /* Pods_Magpie_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Magpie_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD01AFB9204008FA782 /* Magpie_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Magpie_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -42,9 +42,9 @@
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		6E47A207BF1643B458BF2664 /* Pods-Magpie_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Example/Pods-Magpie_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		A98ABE0882CD93919D756F78 /* Pods-Magpie_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Tests/Pods-Magpie_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		AC41E6A156CE6054EFA879FA /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		AC41E6A156CE6054EFA879FA /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		B87AEE5B6C065787CCAEB2FB /* Pods-Magpie_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Tests/Pods-Magpie_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		C1D2CF8E73EC2C1580A761C2 /* Magpie.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = Magpie.podspec; path = ../Magpie.podspec; sourceTree = "<group>"; };
+		C1D2CF8E73EC2C1580A761C2 /* Magpie.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Magpie.podspec; path = ../Magpie.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		C7BB5375CE679764B775A3B3 /* Pods_Magpie_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Magpie_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D927D811A8DD93430482D3EC /* Pods-Magpie_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Example/Pods-Magpie_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */

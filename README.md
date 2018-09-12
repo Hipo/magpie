@@ -199,7 +199,7 @@ Note that the `Content-Type` HTTP header field of an encoded request is set to `
 
 ## Author
 
-Hipo team
+[Eray Diler](https://twitter.com/eray_diler)
 
 ## License
 
