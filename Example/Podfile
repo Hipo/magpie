@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'Magpie_Example' do
+  pod 'Magpie', :path => '../'
+
+  target 'Magpie_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
