@@ -10,4 +10,8 @@ import Foundation
 
 enum Path: String {
     case repos = "https://api.github.com/users/%@/repos"
+    
+    var url: URL {
+        return URL(string: self.rawValue)!
+    }
 }

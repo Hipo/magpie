@@ -12,7 +12,7 @@ import Magpie
 class ViewController: UIViewController {
     @IBOutlet weak var usernameField: UITextField!
     
-    private let magpie = Magpie()
+    private let magpie = MagpieExampleApi()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,23 +34,32 @@ class ViewController: UIViewController {
     }
     
     private func fetch(withUsername username: String) {
-        let urlString = String(format: Path.repos.rawValue, username)
+//        let urlString = String(format: Path.repos.rawValue, username)
+//        
+//        guard let url = URL(string: urlString) else {
+//            
+//            return
+//        }
         
-        guard let url = URL(string: urlString) else {
-            
-            return
-        }
+//        let request = Request(url: url, method: HTTPMethod.get)
+//
+//        magpie.send(
+//            request,
+//            onSuccess: { data in
+//                print(">>> RESPONSE: \(data)")
+//            },
+//            onFail: { error in
+//                print(">>> ERROR: \(error)")
+//            }
+//        )        
         
-        let request = Request(url: url, method: HTTPMethod.get)
-        
-        magpie.send(
-            request,
-            onSuccess: { data in
-                print(">>> RESPONSE: \(data)")
-            },
-            onFail: { error in
-                print(">>> ERROR: \(error)")
+        magpie.fetchGithubRepos(of: username) { (response) in
+            switch response {
+            case .success(let object):
+                print("\(object.id)")
+            case .failed(let error):
+                print("\(error.localizedDescription)")
             }
-        )
+        }
     }
 }

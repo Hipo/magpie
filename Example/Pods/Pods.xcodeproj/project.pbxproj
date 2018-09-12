@@ -11,21 +11,19 @@
 		10EB23E9ECC4B33E16933BB1EA560B6A /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87882A1F5A92C8138D54545E51D51E6F /* Timeline.swift */; };
 		1B9EDEDC964E6B08F78920B4F4B9DB84 /* Alamofire-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 03DECE84DC850B04690604AB7C521277 /* Alamofire-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		221AA8CC33012A6AAE2205CB8D8BB0B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D0533E4EC2277AAAC8888328EC5A64B /* Foundation.framework */; };
-		2A1B219B214931E0005473CB /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E5E8E420C4287D54B64CCED452C92 /* Request.swift */; };
-		2A1B219C214931E1005473CB /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E5E8E420C4287D54B64CCED452C92 /* Request.swift */; };
-		2A1B219D214931EA005473CB /* Magpie.swift in Sources */ = {isa = PBXBuildFile; fileRef = A097ABF1B1A3B200219D2259B3225E03 /* Magpie.swift */; };
-		2A1B219E214931EB005473CB /* Magpie.swift in Sources */ = {isa = PBXBuildFile; fileRef = A097ABF1B1A3B200219D2259B3225E03 /* Magpie.swift */; };
-		2A1B219F21493201005473CB /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F714AA136705500E88EBAAFBCB22D0 /* NetworkService.swift */; };
-		2A1B21A021493201005473CB /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F714AA136705500E88EBAAFBCB22D0 /* NetworkService.swift */; };
+		2A1B219B214931E0005473CB /* MagpieRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E5E8E420C4287D54B64CCED452C92 /* MagpieRequest.swift */; };
+		2A1B219C214931E1005473CB /* MagpieRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E5E8E420C4287D54B64CCED452C92 /* MagpieRequest.swift */; };
 		2A80024F214934BA0055A7DC /* Typealiases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80024E214934BA0055A7DC /* Typealiases.swift */; };
 		2A800250214934BA0055A7DC /* Typealiases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80024E214934BA0055A7DC /* Typealiases.swift */; };
 		2A800251214934BA0055A7DC /* Typealiases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80024E214934BA0055A7DC /* Typealiases.swift */; };
+		2A80025321494DAE0055A7DC /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80025221494DAE0055A7DC /* Api.swift */; };
+		2A80025421494DAE0055A7DC /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80025221494DAE0055A7DC /* Api.swift */; };
+		2A80025521494DAE0055A7DC /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80025221494DAE0055A7DC /* Api.swift */; };
 		3626B94094672CB1C9DEA32B9F9502E1 /* TaskDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01C037B4034EDA3D7955BC5E4E9D9D6 /* TaskDelegate.swift */; };
 		5387216E723A3C68E851CA15573CDD71 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E230A0448B394DE26E688DAC8E6201E /* Request.swift */; };
 		61200D01A1855D7920CEF835C8BE00B0 /* DispatchQueue+Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FCBF1EED873F61C6D46CE37FA5C39D3 /* DispatchQueue+Alamofire.swift */; };
 		62F65AD8DC4F0F9610F4B8B4738EC094 /* ServerTrustPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B030D27CAC730C5EB0F22390645310 /* ServerTrustPolicy.swift */; };
 		66F0AF74A3DF1394E468F2F3790CEDAD /* Pods-Magpie_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BD98817429F6D41A5638096FC701D4 /* Pods-Magpie_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6FE117181D25F12C7D4D2FA3E8AF0445 /* Magpie.swift in Sources */ = {isa = PBXBuildFile; fileRef = A097ABF1B1A3B200219D2259B3225E03 /* Magpie.swift */; };
 		7184A8142509B07E5EB4D5A336F07092 /* Magpie-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F950CCCDCAA059EE42E0C7A98D711A9A /* Magpie-dummy.m */; };
 		73B9C996AED49ED7CF8EC2A6F1738059 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D0533E4EC2277AAAC8888328EC5A64B /* Foundation.framework */; };
 		7B5FE28C7EA4122B0598738E54DBEBD8 /* SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 195D73DD9EF275A3C56569E2B1CA8026 /* SessionDelegate.swift */; };
@@ -43,11 +41,10 @@
 		BBEFE2F9CEB73DC7BD97FFA66A0D9D4F /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B029DBC43E49A740F12B5E4D2E6DD452 /* Validation.swift */; };
 		BE5C67A07E289FE1F9BE27335B159997 /* ParameterEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6639346628280A0D0FAD35196BF56108 /* ParameterEncoding.swift */; };
 		CB6D60925223897FFA2662667DF83E8A /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F47F5C9CDB035C5AFADEBA5BF44F1C /* Response.swift */; };
-		CF187C0FC4832524168B55EDA7E02EA1 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E5E8E420C4287D54B64CCED452C92 /* Request.swift */; };
+		CF187C0FC4832524168B55EDA7E02EA1 /* MagpieRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E5E8E420C4287D54B64CCED452C92 /* MagpieRequest.swift */; };
 		E5BB4467585CEACD6CBFC576BCB04460 /* Magpie-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = AF82DA429ACFE8612DDBDBE760413B31 /* Magpie-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EFD264FC408EBF3BA2528E70B08DDD94 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A46F517F0AF7E85A16D723F6406896 /* Notifications.swift */; };
 		F6BECD98B97CBFEBE2C96F0E9E72A6C0 /* ResponseSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F9510473F6FFD7AA66524DB16C2263 /* ResponseSerialization.swift */; };
-		F75E41788F0916B005A5286D1F0B35F7 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F714AA136705500E88EBAAFBCB22D0 /* NetworkService.swift */; };
 		F8B3D3092ED0417E8CDF32033F6122F5 /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFCB8C44DE758E906C0BCDA455937B85 /* Alamofire.swift */; };
 /* End PBXBuildFile section */
 
@@ -92,11 +89,12 @@
 		117EFB31D9AD9673BAF51B48596F19E2 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		155538D91ACEEEDF82069ACF6C1A02E7 /* MultipartFormData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MultipartFormData.swift; path = Source/MultipartFormData.swift; sourceTree = "<group>"; };
 		195D73DD9EF275A3C56569E2B1CA8026 /* SessionDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SessionDelegate.swift; path = Source/SessionDelegate.swift; sourceTree = "<group>"; };
-		1C3E5E8E420C4287D54B64CCED452C92 /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Magpie/Classes/Request.swift; sourceTree = "<group>"; };
+		1C3E5E8E420C4287D54B64CCED452C92 /* MagpieRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MagpieRequest.swift; path = Magpie/Classes/MagpieRequest.swift; sourceTree = "<group>"; };
 		1E230A0448B394DE26E688DAC8E6201E /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Source/Request.swift; sourceTree = "<group>"; };
 		210971763CB2FC0DC4E378271A37BE32 /* Alamofire.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Alamofire.modulemap; sourceTree = "<group>"; };
 		28A0F7EB7444757FFAC423A5B8C1B1C2 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2A80024E214934BA0055A7DC /* Typealiases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Typealiases.swift; path = Magpie/Classes/Typealiases.swift; sourceTree = "<group>"; };
+		2A80025221494DAE0055A7DC /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
 		32B030D27CAC730C5EB0F22390645310 /* ServerTrustPolicy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServerTrustPolicy.swift; path = Source/ServerTrustPolicy.swift; sourceTree = "<group>"; };
 		33A04B5D27E86AF4B84D95E21CF3F452 /* Alamofire.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Alamofire.xcconfig; sourceTree = "<group>"; };
 		3728AEB4BD99F5F078D8D8D3C9247326 /* Pods-Magpie_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Magpie_Example-dummy.m"; sourceTree = "<group>"; };
@@ -122,7 +120,6 @@
 		9C3158E830EC1F6998A75C6A45C201A5 /* Pods-Magpie_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Magpie_Example.release.xcconfig"; sourceTree = "<group>"; };
 		9EF23C50649A7C37457B7BF8E2E6B367 /* Pods-Magpie_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Magpie_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		A01C037B4034EDA3D7955BC5E4E9D9D6 /* TaskDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskDelegate.swift; path = Source/TaskDelegate.swift; sourceTree = "<group>"; };
-		A097ABF1B1A3B200219D2259B3225E03 /* Magpie.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Magpie.swift; path = Magpie/Classes/Magpie.swift; sourceTree = "<group>"; };
 		AF64429E096A58A2FD992EFC4F73555E /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AF82DA429ACFE8612DDBDBE760413B31 /* Magpie-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Magpie-umbrella.h"; sourceTree = "<group>"; };
 		B029DBC43E49A740F12B5E4D2E6DD452 /* Validation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Validation.swift; path = Source/Validation.swift; sourceTree = "<group>"; };
@@ -130,7 +127,6 @@
 		B61F5125B50CE14270BB1E8D5F694045 /* Pods-Magpie_Tests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Magpie_Tests-resources.sh"; sourceTree = "<group>"; };
 		BB9C6E78DDA55E5BD2EDD0A07CA7C408 /* Pods-Magpie_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Magpie_Example-resources.sh"; sourceTree = "<group>"; };
 		BE30E54CAD3950D6F5A4D49488E074D3 /* Pods-Magpie_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Magpie_Tests.modulemap"; sourceTree = "<group>"; };
-		C8F714AA136705500E88EBAAFBCB22D0 /* NetworkService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkService.swift; path = Magpie/Classes/NetworkService.swift; sourceTree = "<group>"; };
 		D1F50F37DFB6DC0B7B9D8C373E5A3EAE /* Alamofire-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Alamofire-dummy.m"; sourceTree = "<group>"; };
 		D389CECC3889C62C5B189AB5A4E70C6A /* Pods-Magpie_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Magpie_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		DB1061D9712BA5CC07556AC5BF9FDD6E /* Pods-Magpie_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Magpie_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -352,9 +348,8 @@
 		EAC0C6D3FA820F34E03BCA8E49941592 /* Magpie */ = {
 			isa = PBXGroup;
 			children = (
-				C8F714AA136705500E88EBAAFBCB22D0 /* NetworkService.swift */,
-				A097ABF1B1A3B200219D2259B3225E03 /* Magpie.swift */,
-				1C3E5E8E420C4287D54B64CCED452C92 /* Request.swift */,
+				1C3E5E8E420C4287D54B64CCED452C92 /* MagpieRequest.swift */,
+				2A80025221494DAE0055A7DC /* Api.swift */,
 				2A80024E214934BA0055A7DC /* Typealiases.swift */,
 				96CB67F453BCE4971BD19F1987EBB7BA /* Pod */,
 				3AE5ADCEF6A6B46B28845E058C317669 /* Support Files */,
@@ -507,11 +502,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FE117181D25F12C7D4D2FA3E8AF0445 /* Magpie.swift in Sources */,
+				2A80025321494DAE0055A7DC /* Api.swift in Sources */,
 				7184A8142509B07E5EB4D5A336F07092 /* Magpie-dummy.m in Sources */,
 				2A80024F214934BA0055A7DC /* Typealiases.swift in Sources */,
-				F75E41788F0916B005A5286D1F0B35F7 /* NetworkService.swift in Sources */,
-				CF187C0FC4832524168B55EDA7E02EA1 /* Request.swift in Sources */,
+				CF187C0FC4832524168B55EDA7E02EA1 /* MagpieRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,11 +538,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A80025421494DAE0055A7DC /* Api.swift in Sources */,
 				B5503AF778851E9265C0002FE9F25BFC /* Pods-Magpie_Example-dummy.m in Sources */,
-				2A1B219D214931EA005473CB /* Magpie.swift in Sources */,
 				2A800250214934BA0055A7DC /* Typealiases.swift in Sources */,
-				2A1B219B214931E0005473CB /* Request.swift in Sources */,
-				2A1B219F21493201005473CB /* NetworkService.swift in Sources */,
+				2A1B219B214931E0005473CB /* MagpieRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -556,11 +549,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A80025521494DAE0055A7DC /* Api.swift in Sources */,
 				ACEE0888170C1B6223352EB253F2B9F4 /* Pods-Magpie_Tests-dummy.m in Sources */,
-				2A1B219E214931EB005473CB /* Magpie.swift in Sources */,
 				2A800251214934BA0055A7DC /* Typealiases.swift in Sources */,
-				2A1B219C214931E1005473CB /* Request.swift in Sources */,
-				2A1B21A021493201005473CB /* NetworkService.swift in Sources */,
+				2A1B219C214931E1005473CB /* MagpieRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

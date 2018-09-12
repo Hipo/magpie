@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A80025721494DF00055A7DC /* MagpieExampleApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80025621494DF00055A7DC /* MagpieExampleApi.swift */; };
 		2A89B98821492DD900AE158A /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A89B98721492DD900AE158A /* Path.swift */; };
 		569620671145A13655CDC438 /* Pods_Magpie_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E1DCC0910E52CAB15DA4C21 /* Pods_Magpie_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -31,6 +32,7 @@
 /* Begin PBXFileReference section */
 		0066BC2D7948741D41044353 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		0E1DCC0910E52CAB15DA4C21 /* Pods_Magpie_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Magpie_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A80025621494DF00055A7DC /* MagpieExampleApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagpieExampleApi.swift; sourceTree = "<group>"; };
 		2A89B98721492DD900AE158A /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Magpie_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Magpie_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				2A80025621494DF00055A7DC /* MagpieExampleApi.swift */,
 				2A89B98721492DD900AE158A /* Path.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
@@ -329,6 +332,7 @@
 			files = (
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				2A89B98821492DD900AE158A /* Path.swift in Sources */,
+				2A80025721494DF00055A7DC /* MagpieExampleApi.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
