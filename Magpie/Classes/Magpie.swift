@@ -26,7 +26,9 @@ open class Magpie<TheNetworking: Networking> {
     /// TODO: Think of a nice way to generate&send the request.
     open func generateAndSendRequest() -> RequestOperatable {
         let req = generateRequest()
+        
         req.original = sendRequest(req)
+        
         return req
     }
     
@@ -56,7 +58,9 @@ internal extension Magpie {
 fileprivate extension Magpie {
     func generateRequest() -> TheRequest {
         let req = TheRequest(base: apiBase)
+        
         req.magpie = self
+        
         return req
     }
 }

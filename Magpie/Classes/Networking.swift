@@ -13,7 +13,6 @@ public protocol Networking {
     init()
     
     func sendRequest(_ request: Request<Self>) -> TheRequest
-
     func cancelRequest(_ request: Request<Self>)
     func cancelOngoingRequests()
 }

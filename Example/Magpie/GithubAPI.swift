@@ -9,17 +9,18 @@
 import Foundation
 import Magpie
 
-class MomentAPI: Magpie<AlamofireNetworking> {
+class GithubAPI: Magpie<AlamofireNetworking> {
+    
     // MARK: Magpie
     override var apiBase: String {
-        return "https://staging.moment.com/api"
+        return "https://api.github.com/"
     }
 }
 
 // MARK: Public:Interface
-extension MomentAPI {
+extension GithubAPI {
     @discardableResult
-    func authenticate(withEmail email: String, password: String) -> RequestOperatable {
+    func fetchGithubRepos(withUsername username: String) -> RequestOperatable {        
         return generateAndSendRequest()
     }
 }

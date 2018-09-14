@@ -8,6 +8,7 @@
 import Foundation
 
 open class Request<TheNetworking: Networking> {
+    
     /// MARK: Variables
     open let base: String
     
