@@ -10,56 +10,40 @@ import UIKit
 import Magpie
 
 class ViewController: UIViewController {
-    @IBOutlet weak var usernameField: UITextField!
+    // MARK: Variables:API
+    private var request: RequestOperatable?
+    private let api: MomentAPI
     
-    private let magpie = MagpieExampleApi()
-
+    // MARK: Initialization
+    init(api: MomentAPI) {
+        self.api = api
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        view.backgroundColor = UIColor.white
+        
+        loadData()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        request?.cancel()
+    }
+}
 
-    @IBAction func didTapReposButton(_ sender: UIButton) {
-        
-        fetchRepos()
-    }
-    
-    private func fetchRepos() {
-        guard let username = usernameField.text, !username.isEmpty else {
-            
-            return
-        }
-        
-        fetch(withUsername: username)
-    }
-    
-    private func fetch(withUsername username: String) {
-//        let urlString = String(format: Path.repos.rawValue, username)
-//        
-//        guard let url = URL(string: urlString) else {
-//            
-//            return
-//        }
-        
-//        let request = Request(url: url, method: HTTPMethod.get)
-//
-//        magpie.send(
-//            request,
-//            onSuccess: { data in
-//                print(">>> RESPONSE: \(data)")
-//            },
-//            onFail: { error in
-//                print(">>> ERROR: \(error)")
-//            }
-//        )        
-        
-        magpie.fetchGithubRepos(of: username) { (response) in
-            switch response {
-            case .success(let object):
-                print("\(object.id)")
-            case .failed(let error):
-                print("\(error.localizedDescription)")
-            }
-        }
+// MARK: Data
+private extension ViewController {
+    func loadData() {
+        request = api.authenticate(withEmail: "salih@hipolabs.com", password: "hipolabs")
     }
 }
