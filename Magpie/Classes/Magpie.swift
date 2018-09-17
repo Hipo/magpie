@@ -24,9 +24,24 @@ open class Magpie<TheNetworking: Networking> {
     
     /// MARK: Open+Operations
     /// TODO: Think of a nice way to generate&send the request.
-    open func generateAndSendRequest() -> RequestOperatable {
-        let req = generateRequest()
+    open func sendRequest(
+        withPath path: String,
+        headers: [String: String]? = nil,
+        method: HTTPMethod? = nil,
+        parameters: Parameters? = nil,
+        encoding: ParameterEncoding? = nil
+    ) -> RequestOperatable {
         
+        let req = TheRequest(
+            base: apiBase,
+            path: path,
+            headers: headers,
+            method: method,
+            parameters: parameters,
+            encoding: encoding
+        )
+
+        req.magpie = self
         req.original = sendRequest(req)
         
         return req
@@ -39,6 +54,7 @@ open class Magpie<TheNetworking: Networking> {
 
 /// MARK: Operations
 internal extension Magpie {
+    
     @discardableResult
     func sendRequest(_ request: TheRequest) -> TheNetworking.TheRequest {
         return networking.sendRequest(request)
@@ -51,16 +67,5 @@ internal extension Magpie {
     
     func cancelRequest(_ request: TheRequest) {
         networking.cancelRequest(request)
-    }
-}
-
-/// MARK: Builder
-fileprivate extension Magpie {
-    func generateRequest() -> TheRequest {
-        let req = TheRequest(base: apiBase)
-        
-        req.magpie = self
-        
-        return req
     }
 }

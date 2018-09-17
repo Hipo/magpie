@@ -12,15 +12,18 @@ import Magpie
 class GithubAPI: Magpie<AlamofireNetworking> {
     
     // MARK: Magpie
+    
     override var apiBase: String {
         return "https://api.github.com/"
     }
 }
 
 // MARK: Public:Interface
+
 extension GithubAPI {
+    
     @discardableResult
-    func fetchGithubRepos(withUsername username: String) -> RequestOperatable {        
-        return generateAndSendRequest()
+    func fetchGithubRepos(withUsername username: String) -> RequestOperatable {
+        return sendRequest(withPath: "users/\(username)/repos")
     }
 }
