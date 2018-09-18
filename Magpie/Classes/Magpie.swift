@@ -8,7 +8,7 @@
 import Foundation
 
 open class Magpie<TheNetworking: Networking> {
-    internal typealias TheRequest = Request<TheNetworking>
+    internal typealias TheRequest<C: Codable> = Request<TheNetworking, C>
     
     /// MARK: Variables
     open var apiBase: String {
@@ -24,7 +24,8 @@ open class Magpie<TheNetworking: Networking> {
     
     /// MARK: Open+Operations
     /// TODO: Think of a nice way to generate&send the request.
-    open func sendRequest(
+    open func sendRequest<C: Codable>(
+        for objectTypeToParse: C.Type,
         withPath path: String,
         headers: [String: String]? = nil,
         method: HTTPMethod? = nil,
@@ -32,7 +33,7 @@ open class Magpie<TheNetworking: Networking> {
         encoding: ParameterEncoding? = nil
     ) -> RequestOperatable {
         
-        let req = TheRequest(
+        let req = TheRequest<C>(
             base: apiBase,
             path: path,
             headers: headers,
@@ -56,16 +57,16 @@ open class Magpie<TheNetworking: Networking> {
 internal extension Magpie {
     
     @discardableResult
-    func sendRequest(_ request: TheRequest) -> TheNetworking.TheRequest {
+    func sendRequest<C: Codable>(_ request: TheRequest<C>) -> TheNetworking.TheRequest {
         return networking.sendRequest(request)
     }
     
     @discardableResult
-    func retryRequest(_ request: TheRequest) -> TheNetworking.TheRequest {
+    func retryRequest<C: Codable>(_ request: TheRequest<C>) -> TheNetworking.TheRequest {
         return networking.sendRequest(request)
     }
     
-    func cancelRequest(_ request: TheRequest) {
+    func cancelRequest<C: Codable>(_ request: TheRequest<C>) {
         networking.cancelRequest(request)
     }
 }

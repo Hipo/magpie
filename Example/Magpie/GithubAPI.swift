@@ -24,6 +24,15 @@ extension GithubAPI {
     
     @discardableResult
     func fetchGithubRepos(withUsername username: String) -> RequestOperatable {
-        return sendRequest(withPath: "users/\(username)/repos")
+        let request = sendRequest(
+            for: GithubRepo.self,
+            withPath: "users/\(username)/repos"
+        )
+        
+        return request
     }
+}
+
+class GithubRepo: Codable {
+    
 }

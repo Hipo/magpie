@@ -12,7 +12,7 @@ public protocol Networking {
     
     init()
     
-    func sendRequest(_ request: Request<Self>) -> TheRequest
-    func cancelRequest(_ request: Request<Self>)
+    func sendRequest<C: Codable>(_ request: Request<Self, C>) -> TheRequest
+    func cancelRequest<C: Codable>(_ request: Request<Self, C>)
     func cancelOngoingRequests()
 }
