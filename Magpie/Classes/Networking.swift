@@ -7,7 +7,6 @@
 
 import Foundation
 
-//public typealias ResponseClosure<C: Codable, E: Error> = (Response<C, E>) -> Void
 public typealias ResponseClosure = (Response<Codable, Error>) -> Void
 
 public protocol Networking {
@@ -16,10 +15,7 @@ public protocol Networking {
     
     init()
     
-    func sendRequest<C: Codable>(
-        _ request: Request<Self, C>
-        ) -> TheRequest?
-    
+    func sendRequest<C: Codable>(_ request: Request<Self, C>) -> TheRequest?    
     func cancelRequest<C: Codable>(_ request: Request<Self, C>)
     func cancelOngoingRequests()
 }

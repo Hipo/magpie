@@ -35,7 +35,6 @@ public final class AlamofireNetworking {
     
     fileprivate func logResponseIfNeeded(_ response: DataResponse<Any>) {
         if !shouldLogResponse {
-            
             return
         }
         
@@ -52,10 +51,22 @@ public final class AlamofireNetworking {
         }
         
         if let json = response.result.value {
-            print(">>> JSON: \(json)")
+            prettyPrint(json: json)
         }
         
         print(">>> RESULT: \(response.result)")
+    }
+    
+    fileprivate func prettyPrint(json: Any) {
+        guard let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) else {
+            return
+        }
+        
+        guard let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else {
+            return
+        }
+        
+        print(">>> JSON: \(string)")
     }
 }
 
@@ -63,8 +74,6 @@ extension AlamofireNetworking: Networking {
     public func sendRequest<C: Codable>(
         _ request: Request<AlamofireNetworking, C>
         ) -> TheRequest? {
-        
-        // TODO: Throw invalid url error here
         guard let url = URL(string: request.base + request.path) else {
             request.responseClosure(Response.failed(AlamofireNetworkingError.invalidUrl))
             return nil
@@ -75,17 +84,41 @@ extension AlamofireNetworking: Networking {
             .validate()
             .responseJSON { (response) in
                 self.logResponseIfNeeded(response)
-                
-                if let JSON = response.result.value {
-//                    responseClosure(ParsedObject)
-                } else {
-                    request.responseClosure(Response.failed(AlamofireNetworkingError.jsonParsing))
+                                
+                switch response.result {
+                case .success:
+                    guard let data = response.data else {
+                        // TODO: Return relevant AlamofireNetworkingError
+                        return
+                    }
+                    
+                    do {
+                        switch response.type {
+                        case .unknown,
+                             .dictionary:
+                            let parsedObject = try JSONDecoder().decode(C.self, from: data)
+                            
+                            request.responseClosure(Response.success(parsedObject))
+                        case .array:
+                            let parsedObject = try JSONDecoder().decode([C].self, from: data)
+                            
+                            request.responseClosure(Response.success(parsedObject))
+                        }
+                    } catch {
+                        request.responseClosure(
+                            Response.failed(AlamofireNetworkingError.jsonParsing)
+                        )
+                    }
+                    
+                case .failure(let error):
+                    // TODO: Convert errors into AlamofireNetworkingError cases
+                    request.responseClosure(Response.failed(error))
                 }
         }
         
         return dataRequest
     }
-    
+        
     public func cancelRequest<C: Codable>(_ request: Request<AlamofireNetworking, C>) {
         /// (request.original as? DataRequest)?.cancel()
         /// If it is ok using the code above, we can remove the generic dependency throughout the code.
@@ -98,7 +131,6 @@ extension AlamofireNetworking: Networking {
             .default
             .session
             .getTasksWithCompletionHandler { (dataTasks, uploadTasks, downloadTasks) in
-                
                 dataTasks.forEach { $0.cancel() }
                 uploadTasks.forEach { $0.cancel() }
                 downloadTasks.forEach { $0.cancel() }

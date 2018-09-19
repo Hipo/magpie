@@ -11,6 +11,12 @@
 		10EB23E9ECC4B33E16933BB1EA560B6A /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87882A1F5A92C8138D54545E51D51E6F /* Timeline.swift */; };
 		19BFB6ED6A24B909C7D89146C7FF066F /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 706C7AFFE37BA158C3553250F4B5FAED /* Alamofire.framework */; };
 		1B9EDEDC964E6B08F78920B4F4B9DB84 /* Alamofire-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 03DECE84DC850B04690604AB7C521277 /* Alamofire-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2A18BCBC2152DCE7007A97E3 /* DataResponse+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A18BCBB2152DCE7007A97E3 /* DataResponse+Type.swift */; };
+		2A18BCBD2152DCE7007A97E3 /* DataResponse+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A18BCBB2152DCE7007A97E3 /* DataResponse+Type.swift */; };
+		2A18BCBE2152DCE7007A97E3 /* DataResponse+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A18BCBB2152DCE7007A97E3 /* DataResponse+Type.swift */; };
+		2A18BCC12152DF38007A97E3 /* Data+Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A18BCC02152DF38007A97E3 /* Data+Json.swift */; };
+		2A18BCC22152DF38007A97E3 /* Data+Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A18BCC02152DF38007A97E3 /* Data+Json.swift */; };
+		2A18BCC32152DF38007A97E3 /* Data+Json.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A18BCC02152DF38007A97E3 /* Data+Json.swift */; };
 		2A947B192151A1D900B526EE /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A947B182151A1D900B526EE /* Response.swift */; };
 		2A947B1A2151A1D900B526EE /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A947B182151A1D900B526EE /* Response.swift */; };
 		2A947B1B2151A1D900B526EE /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A947B182151A1D900B526EE /* Response.swift */; };
@@ -105,6 +111,8 @@
 		195D73DD9EF275A3C56569E2B1CA8026 /* SessionDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SessionDelegate.swift; path = Source/SessionDelegate.swift; sourceTree = "<group>"; };
 		1E230A0448B394DE26E688DAC8E6201E /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Source/Request.swift; sourceTree = "<group>"; };
 		210971763CB2FC0DC4E378271A37BE32 /* Alamofire.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Alamofire.modulemap; sourceTree = "<group>"; };
+		2A18BCBB2152DCE7007A97E3 /* DataResponse+Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataResponse+Type.swift"; sourceTree = "<group>"; };
+		2A18BCC02152DF38007A97E3 /* Data+Json.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Json.swift"; sourceTree = "<group>"; };
 		2A947B182151A1D900B526EE /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Response.swift; path = Magpie/Classes/Response.swift; sourceTree = "<group>"; };
 		2A947B1C2151A4EC00B526EE /* AlamofireNetworkingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireNetworkingError.swift; sourceTree = "<group>"; };
 		32B030D27CAC730C5EB0F22390645310 /* ServerTrustPolicy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServerTrustPolicy.swift; path = Source/ServerTrustPolicy.swift; sourceTree = "<group>"; };
@@ -269,6 +277,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2A18BCBF2152DF19007A97E3 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				2A18BCBB2152DCE7007A97E3 /* DataResponse+Type.swift */,
+				2A18BCC02152DF38007A97E3 /* Data+Json.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		2E5925946A4DE3B8F7E4137BACAD9618 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -376,6 +393,7 @@
 				CDD409B2214A876300D4A2AB /* Networking.swift */,
 				CDD409C3214A9B7500D4A2AB /* AlamofireNetworking.swift */,
 				2A947B1C2151A4EC00B526EE /* AlamofireNetworkingError.swift */,
+				2A18BCBF2152DF19007A97E3 /* Extensions */,
 				4AA6F3C7611852EE03FA4EB2478000CC /* Pod */,
 				0A022C0AA928AD7B68E876EF5BF5FCFD /* Support Files */,
 			);
@@ -563,11 +581,13 @@
 				CDD409C5214A9B7500D4A2AB /* AlamofireNetworking.swift in Sources */,
 				CDD409BE214A8C5500D4A2AB /* Request.swift in Sources */,
 				2A947B1E2151A4EC00B526EE /* AlamofireNetworkingError.swift in Sources */,
+				2A18BCC22152DF38007A97E3 /* Data+Json.swift in Sources */,
 				CDD409B4214A876300D4A2AB /* Networking.swift in Sources */,
 				2A947B1A2151A1D900B526EE /* Response.swift in Sources */,
 				CDD409B0214A874000D4A2AB /* Magpie.swift in Sources */,
 				CD531519214B477E00657252 /* RequestConvertible.swift in Sources */,
 				CDD409B8214A89F600D4A2AB /* RequestOperatable.swift in Sources */,
+				2A18BCBD2152DCE7007A97E3 /* DataResponse+Type.swift in Sources */,
 				B5503AF778851E9265C0002FE9F25BFC /* Pods-Magpie_Example-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -579,11 +599,13 @@
 				CDD409C4214A9B7500D4A2AB /* AlamofireNetworking.swift in Sources */,
 				AD4955F64690F68F636C5E635BED71C1 /* Magpie-dummy.m in Sources */,
 				2A947B1D2151A4EC00B526EE /* AlamofireNetworkingError.swift in Sources */,
+				2A18BCC12152DF38007A97E3 /* Data+Json.swift in Sources */,
 				CDD409AF214A874000D4A2AB /* Magpie.swift in Sources */,
 				2A947B192151A1D900B526EE /* Response.swift in Sources */,
 				006D7222778197D97EEE473427BCFA97 /* Request.swift in Sources */,
 				CD531518214B477E00657252 /* RequestConvertible.swift in Sources */,
 				CDD409B7214A89F600D4A2AB /* RequestOperatable.swift in Sources */,
+				2A18BCBC2152DCE7007A97E3 /* DataResponse+Type.swift in Sources */,
 				CDD409B3214A876300D4A2AB /* Networking.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -595,11 +617,13 @@
 				CDD409C6214A9B7500D4A2AB /* AlamofireNetworking.swift in Sources */,
 				CDD409BF214A8C5600D4A2AB /* Request.swift in Sources */,
 				2A947B1F2151A4EC00B526EE /* AlamofireNetworkingError.swift in Sources */,
+				2A18BCC32152DF38007A97E3 /* Data+Json.swift in Sources */,
 				CDD409B5214A876300D4A2AB /* Networking.swift in Sources */,
 				2A947B1B2151A1D900B526EE /* Response.swift in Sources */,
 				CDD409B1214A874000D4A2AB /* Magpie.swift in Sources */,
 				CD53151A214B477E00657252 /* RequestConvertible.swift in Sources */,
 				CDD409B9214A89F600D4A2AB /* RequestOperatable.swift in Sources */,
+				2A18BCBE2152DCE7007A97E3 /* DataResponse+Type.swift in Sources */,
 				ACEE0888170C1B6223352EB253F2B9F4 /* Pods-Magpie_Tests-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

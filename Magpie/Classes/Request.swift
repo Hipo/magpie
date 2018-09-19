@@ -17,7 +17,7 @@ open class Request<TheNetworking: Networking, CodableObject: Codable> {
     public var method: HTTPMethod?
     public var parameters: Parameters?
     public var encoding: ParameterEncoding?
-    public var responseClosure: ResponseClosure
+    public let responseClosure: ResponseClosure
     
     internal var original: TheNetworking.TheRequest?
     internal weak var magpie: Magpie<TheNetworking>?
