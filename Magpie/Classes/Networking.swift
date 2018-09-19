@@ -17,8 +17,7 @@ public protocol Networking {
     init()
     
     func sendRequest<C: Codable>(
-        _ request: Request<Self, C>,
-        _ responseClosure: @escaping ResponseClosure
+        _ request: Request<Self, C>
         ) -> TheRequest?
     
     func cancelRequest<C: Codable>(_ request: Request<Self, C>)

@@ -17,6 +17,7 @@ open class Request<TheNetworking: Networking, CodableObject: Codable> {
     public var method: HTTPMethod?
     public var parameters: Parameters?
     public var encoding: ParameterEncoding?
+    public var responseClosure: ResponseClosure
     
     internal var original: TheNetworking.TheRequest?
     internal weak var magpie: Magpie<TheNetworking>?
@@ -29,24 +30,26 @@ open class Request<TheNetworking: Networking, CodableObject: Codable> {
         headers: [String: String]?,
         method: HTTPMethod?,
         parameters: Parameters?,
-        encoding: ParameterEncoding?
+        encoding: ParameterEncoding?,
+        responseClosure: @escaping ResponseClosure
     ) {
         self.base = base
         self.path = path
-        
+        self.headers = headers
         self.method = method
         self.parameters = parameters
         self.encoding = encoding
+        self.responseClosure = responseClosure
     }
 }
 
 extension Request: RequestOperatable {
-    public func send(_ responseClosure: @escaping ResponseClosure) {
-        magpie?.sendRequest(self, responseClosure)
+    public func send() {
+        magpie?.sendRequest(self)
     }
     
-    public func retry(_ responseClosure: @escaping ResponseClosure) {
-        magpie?.retryRequest(self, responseClosure)
+    public func retry() {
+        magpie?.retryRequest(self)
     }
     
     public func cancel() {

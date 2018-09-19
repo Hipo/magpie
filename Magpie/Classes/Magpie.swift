@@ -34,19 +34,21 @@ open class Magpie<TheNetworking: Networking> {
         _ responseClosure: @escaping ResponseClosure
     ) -> RequestOperatable {
         
-        let req = TheRequest<C>(
+        let request = TheRequest<C>(
             base: apiBase,
             path: path,
             headers: headers,
             method: method,
             parameters: parameters,
-            encoding: encoding
+            encoding: encoding,
+            responseClosure: responseClosure
         )
 
-        req.magpie = self
-        req.original = sendRequest(req, responseClosure)
+        request.magpie = self
+        request.original = sendRequest(request)
+        request.responseClosure = responseClosure
         
-        return req
+        return request
     }
     
     open func cancelOngoingRequests() {
@@ -55,24 +57,23 @@ open class Magpie<TheNetworking: Networking> {
 }
 
 /// MARK: Operations
+
 internal extension Magpie {
     
     @discardableResult
     func sendRequest<C: Codable>(
-        _ request: TheRequest<C>,
-        _ responseClosure: @escaping ResponseClosure
+        _ request: TheRequest<C>
         ) -> TheNetworking.TheRequest? {
         
-        return networking.sendRequest(request, responseClosure)
+        return networking.sendRequest(request)
     }
     
     @discardableResult
     func retryRequest<C: Codable>(
-        _ request: TheRequest<C>,
-        _ responseClosure: @escaping ResponseClosure
+        _ request: TheRequest<C>
         ) -> TheNetworking.TheRequest? {
         
-        return networking.sendRequest(request, responseClosure)
+        return networking.sendRequest(request)
     }
 
     func cancelRequest<C: Codable>(_ request: TheRequest<C>) {

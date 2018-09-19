@@ -59,20 +59,14 @@ public final class AlamofireNetworking {
     }
 }
 
-
-class CodableClass: Codable {
-    
-}
-
 extension AlamofireNetworking: Networking {
     public func sendRequest<C: Codable>(
-        _ request: Request<AlamofireNetworking, C>,
-        _ responseClosure: @escaping ResponseClosure
+        _ request: Request<AlamofireNetworking, C>
         ) -> TheRequest? {
         
         // TODO: Throw invalid url error here
         guard let url = URL(string: request.base + request.path) else {
-//            responseClosure(Response.failed(AlamofireNetworkingError.invalidUrl))
+            request.responseClosure(Response.failed(AlamofireNetworkingError.invalidUrl))
             return nil
         }
         
@@ -85,9 +79,7 @@ extension AlamofireNetworking: Networking {
                 if let JSON = response.result.value {
 //                    responseClosure(ParsedObject)
                 } else {
-                    let response = Response<C, AlamofireNetworkingError>.failed(.invalidUrl)
-                    
-                    responseClosure(response)
+                    request.responseClosure(Response.failed(AlamofireNetworkingError.jsonParsing))
                 }
         }
         

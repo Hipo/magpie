@@ -14,7 +14,7 @@ public protocol RequestOperatable: RequestConvertable {
     var parameters: Parameters? { get }
     var encoding: ParameterEncoding? { get }
 
-    func send(_ responseClosure: @escaping ResponseClosure)
-    func retry(_ responseClosure: @escaping ResponseClosure)
+    func send()
+    func retry()
     func cancel()
 }
