@@ -30,7 +30,8 @@ open class Magpie<TheNetworking: Networking> {
         headers: [String: String]? = nil,
         method: HTTPMethod? = nil,
         parameters: Parameters? = nil,
-        encoding: ParameterEncoding? = nil
+        encoding: ParameterEncoding? = nil,
+        _ responseClosure: @escaping ResponseClosure
     ) -> RequestOperatable {
         
         let req = TheRequest<C>(
@@ -43,7 +44,7 @@ open class Magpie<TheNetworking: Networking> {
         )
 
         req.magpie = self
-        req.original = sendRequest(req)
+        req.original = sendRequest(req, responseClosure)
         
         return req
     }
@@ -57,15 +58,23 @@ open class Magpie<TheNetworking: Networking> {
 internal extension Magpie {
     
     @discardableResult
-    func sendRequest<C: Codable>(_ request: TheRequest<C>) -> TheNetworking.TheRequest {
-        return networking.sendRequest(request)
+    func sendRequest<C: Codable>(
+        _ request: TheRequest<C>,
+        _ responseClosure: @escaping ResponseClosure
+        ) -> TheNetworking.TheRequest? {
+        
+        return networking.sendRequest(request, responseClosure)
     }
     
     @discardableResult
-    func retryRequest<C: Codable>(_ request: TheRequest<C>) -> TheNetworking.TheRequest {
-        return networking.sendRequest(request)
+    func retryRequest<C: Codable>(
+        _ request: TheRequest<C>,
+        _ responseClosure: @escaping ResponseClosure
+        ) -> TheNetworking.TheRequest? {
+        
+        return networking.sendRequest(request, responseClosure)
     }
-    
+
     func cancelRequest<C: Codable>(_ request: TheRequest<C>) {
         networking.cancelRequest(request)
     }

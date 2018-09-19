@@ -26,8 +26,14 @@ extension GithubAPI {
     func fetchGithubRepos(withUsername username: String) -> RequestOperatable {
         let request = sendRequest(
             for: GithubRepo.self,
-            withPath: "users/\(username)/repos"
-        )
+            withPath: "users/\(username)/repos") { response in                
+                switch response {
+                case .success(let repo):
+                    print(">>> GITHUB REPO: \(repo)")
+                case .failed(let error):
+                    print(">>> FETCHING ERROR: \(error)")
+                }
+        }
         
         return request
     }

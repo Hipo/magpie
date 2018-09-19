@@ -41,12 +41,12 @@ open class Request<TheNetworking: Networking, CodableObject: Codable> {
 }
 
 extension Request: RequestOperatable {
-    public func send() {
-        magpie?.sendRequest(self)
+    public func send(_ responseClosure: @escaping ResponseClosure) {
+        magpie?.sendRequest(self, responseClosure)
     }
     
-    public func retry() {
-        magpie?.retryRequest(self)
+    public func retry(_ responseClosure: @escaping ResponseClosure) {
+        magpie?.retryRequest(self, responseClosure)
     }
     
     public func cancel() {

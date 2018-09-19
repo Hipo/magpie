@@ -21,6 +21,7 @@ extension DataRequest: RequestConvertable {
 
 public final class AlamofireNetworking {
     public typealias TheRequest = DataRequest
+    public typealias TheError = AlamofireNetworkingError
     
     private let shouldLogResponse = true
 
@@ -58,17 +59,36 @@ public final class AlamofireNetworking {
     }
 }
 
+
+class CodableClass: Codable {
+    
+}
+
 extension AlamofireNetworking: Networking {
-    public func sendRequest<C: Codable>(_ request: Request<AlamofireNetworking, C>) -> TheRequest {
+    public func sendRequest<C: Codable>(
+        _ request: Request<AlamofireNetworking, C>,
+        _ responseClosure: @escaping ResponseClosure
+        ) -> TheRequest? {
+        
         // TODO: Throw invalid url error here
-        let url = URL(string: request.base + request.path)!
+        guard let url = URL(string: request.base + request.path) else {
+//            responseClosure(Response.failed(AlamofireNetworkingError.invalidUrl))
+            return nil
+        }
         
         let dataRequest = Alamofire
             .request(url)
             .validate()
             .responseJSON { (response) in
-                
                 self.logResponseIfNeeded(response)
+                
+                if let JSON = response.result.value {
+//                    responseClosure(ParsedObject)
+                } else {
+                    let response = Response<C, AlamofireNetworkingError>.failed(.invalidUrl)
+                    
+                    responseClosure(response)
+                }
         }
         
         return dataRequest
