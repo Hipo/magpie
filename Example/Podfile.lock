@@ -1,15 +1,22 @@
 PODS:
-  - Magpie (0.1.0)
+  - Alamofire (4.7.3)
+  - Magpie (0.1.0):
+    - Alamofire
 
 DEPENDENCIES:
   - Magpie (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
 
 EXTERNAL SOURCES:
   Magpie:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Magpie: 520a23aa5d448dbd92229b31c8addec31eab2c42
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  Magpie: 2dba0e31cecb57a2ffaa185b3c6a4ca79f236651
 
 PODFILE CHECKSUM: 9f05662adb01bfb4b0ad57f00433eda6f403b6d5
 
