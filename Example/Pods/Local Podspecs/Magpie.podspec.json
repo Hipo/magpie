@@ -1,22 +1,27 @@
 {
   "name": "Magpie",
   "version": "0.1.0",
-  "summary": "A short description of Magpie.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/eraydiler/Magpie",
+  "summary": "API client library for iOS, works with Alamofire",
+  "description": "API client library for iOS, to make network communications easy and standardized",
+  "homepage": "https://github.com/hipo/Magpie",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "eraydiler": "eray.diler@gmail.com"
+    "eraydiler": "eray@hipolabs.com"
   },
   "source": {
-    "git": "https://github.com/eraydiler/Magpie.git",
+    "git": "https://github.com/Hipo/magpie.git",
     "tag": "0.1.0"
   },
   "platforms": {
     "ios": "8.0"
   },
-  "source_files": "Magpie/Classes/**/*"
+  "source_files": "Magpie/Classes/**/*",
+  "dependencies": {
+    "Alamofire": [
+
+    ]
+  }
 }
