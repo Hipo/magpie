@@ -80,7 +80,13 @@ extension AlamofireNetworking: Networking {
         }
         
         let dataRequest = Alamofire
-            .request(url)
+            .request(
+                url,
+                method: request.method,
+                parameters: request.parameters,
+                encoding: request.encoding,
+                headers: request.headers
+            )
             .validate()
             .responseJSON { (response) in
                 self.logResponseIfNeeded(response)

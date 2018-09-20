@@ -14,9 +14,9 @@ open class Request<TheNetworking: Networking, CodableObject: Codable> {
     public let base: String
     public var path: String
     public var headers: [String: String]?
-    public var method: HTTPMethod?
-    public var parameters: Parameters?
-    public var encoding: ParameterEncoding?
+    public var method: HTTPMethod
+    public let parameters: Parameters?
+    public var encoding: ParameterEncoding
     public let responseClosure: ResponseClosure
     
     internal var original: TheNetworking.TheRequest?
@@ -28,9 +28,9 @@ open class Request<TheNetworking: Networking, CodableObject: Codable> {
         base: String,
         path: String,
         headers: [String: String]?,
-        method: HTTPMethod?,
+        method: HTTPMethod,
         parameters: Parameters?,
-        encoding: ParameterEncoding?,
+        encoding: ParameterEncoding,
         responseClosure: @escaping ResponseClosure
     ) {
         self.base = base

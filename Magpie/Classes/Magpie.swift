@@ -28,9 +28,9 @@ open class Magpie<TheNetworking: Networking> {
         for objectTypeToParse: C.Type,
         withPath path: String,
         headers: [String: String]? = nil,
-        method: HTTPMethod? = nil,
+        method: HTTPMethod = .get,
         parameters: Parameters? = nil,
-        encoding: ParameterEncoding? = nil,
+        encoding: ParameterEncoding = URLEncoding.default,
         _ responseClosure: @escaping ResponseClosure
         ) -> RequestOperatable {
         
