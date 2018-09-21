@@ -18,7 +18,7 @@ class GithubAPI: Magpie<AlamofireNetworking> {
     }
 }
 
-// MARK: Public:Interface
+// MARK: Public: Interface
 
 extension GithubAPI {
     

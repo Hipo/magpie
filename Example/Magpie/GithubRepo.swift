@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct GithubRepo: Codable {
+struct GithubRepo: Decodable {
     let id: Int
     let fullName: String
     let url: URL

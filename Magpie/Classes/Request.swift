@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class Request<TheNetworking: Networking, CodableObject: Codable> {
+open class Request<TheNetworking: Networking, DecodableObject: Decodable> {
     
     /// MARK: Properties
     

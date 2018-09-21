@@ -71,7 +71,7 @@ public final class AlamofireNetworking {
 }
 
 extension AlamofireNetworking: Networking {
-    public func sendRequest<C: Codable>(
+    public func sendRequest<C: Decodable>(
         _ request: Request<AlamofireNetworking, C>
         ) -> TheRequest? {
         guard let url = URL(string: request.base + request.path) else {
@@ -125,7 +125,7 @@ extension AlamofireNetworking: Networking {
         return dataRequest
     }
         
-    public func cancelRequest<C: Codable>(_ request: Request<AlamofireNetworking, C>) {
+    public func cancelRequest<C: Decodable>(_ request: Request<AlamofireNetworking, C>) {
         /// (request.original as? DataRequest)?.cancel()
         /// If it is ok using the code above, we can remove the generic dependency throughout the code.
         request.original?.cancel()
