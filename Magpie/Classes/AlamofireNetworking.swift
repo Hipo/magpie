@@ -1,5 +1,5 @@
 //
-//  AlamofireNeetworking.swift
+//  AlamofireNetworking.swift
 //  Pods
 //
 //  Created by Salih Karasuluoglu on 13.09.2018.
@@ -71,60 +71,101 @@ public final class AlamofireNetworking {
 }
 
 extension AlamofireNetworking: Networking {
-    public func sendRequest<C: Decodable>(
-        _ request: Request<AlamofireNetworking, C>
+    public func sendRequest<D: Decodable>(
+        _ request: Request<AlamofireNetworking, D>
         ) -> TheRequest? {
         guard let url = URL(string: request.base + request.path) else {
-            request.responseClosure(Response.failed(AlamofireNetworkingError.invalidUrl))
+            request.responseClosure(
+                Response.failed(AlamofireNetworkingError.invalidUrl)
+            )
+            
             return nil
         }
         
-        let dataRequest = Alamofire
-            .request(
-                url,
-                method: request.method,
-                parameters: request.parameters,
-                encoding: request.encoding,
-                headers: request.headers
+        let dataRequest = alamofireRequest(
+            url: url,
+            method: request.method,
+            parameters: request.parameters,
+            encoding: request.encoding,
+            headers: request.headers,
+            responseClosure: request.responseClosure,
+            type: D.self
+        )
+        
+        return dataRequest
+    }
+    
+    private func alamofireRequest<D>(
+        url: URL,
+        method: HTTPMethod,
+        parameters: Parameters?,
+        encoding: ParameterEncoding,
+        headers: HTTPHeaders?,
+        responseClosure: @escaping ResponseClosure,
+        type: D.Type
+        ) -> DataRequest where D : Decodable {
+        return Alamofire.request(
+            url,
+            method: method,
+            parameters: parameters,
+            encoding: encoding,
+            headers: headers
             )
             .validate()
             .responseJSON { (response) in
                 self.logResponseIfNeeded(response)
-                                
-                switch response.result {
-                case .success:
-                    guard let data = response.data else {
-                        // TODO: Return relevant AlamofireNetworkingError
-                        return
-                    }
-                    
-                    do {
-                        switch response.type {
-                        case .unknown,
-                             .dictionary:
-                            let parsedObject = try JSONDecoder().decode(C.self, from: data)
-                            
-                            request.responseClosure(Response.success(parsedObject))
-                        case .array:
-                            let parsedObject = try JSONDecoder().decode([C].self, from: data)
-                            
-                            request.responseClosure(Response.success(parsedObject))
-                        }
-                    } catch {
-                        request.responseClosure(
-                            Response.failed(AlamofireNetworkingError.jsonParsing)
-                        )
-                    }
-                    
-                case .failure(let error):
-                    // TODO: Convert errors into AlamofireNetworkingError cases
-                    request.responseClosure(Response.failed(error))
-                }
+                
+                self.performResponse(
+                    response,
+                    responseClosure: responseClosure,
+                    type: D.self
+                )
         }
-        
-        return dataRequest
     }
+    
+    private func performResponse<D>(
+        _ response: DataResponse<Any>,
+        responseClosure: @escaping ResponseClosure,
+        type: D.Type
+        ) where D : Decodable {
         
+        switch response.result {
+        case .success:
+            guard let data = response.data else {
+                // TODO: Return relevant AlamofireNetworkingError
+                return
+            }
+            
+            do {
+                switch response.type {
+                case .unknown,
+                     .dictionary:
+                    let parsedObject = try JSONDecoder().decode(D.self, from: data)
+                    
+                    responseClosure(
+                        Response.success(parsedObject)
+                    )
+                case .array:
+                    let parsedObject = try JSONDecoder().decode([D].self, from: data)
+                    
+                    responseClosure(
+                        Response.success(parsedObject)
+                    )
+                }
+            } catch {
+                responseClosure(
+                    Response.failed(
+                        AlamofireNetworkingError.jsonParsing
+                    )
+                )
+            }
+            
+        case .failure(let error):
+            // TODO: Convert errors into AlamofireNetworkingError cases
+            responseClosure(Response.failed(error))
+        }
+    }
+    
     public func cancelRequest<C: Decodable>(_ request: Request<AlamofireNetworking, C>) {
         /// (request.original as? DataRequest)?.cancel()
         /// If it is ok using the code above, we can remove the generic dependency throughout the code.
