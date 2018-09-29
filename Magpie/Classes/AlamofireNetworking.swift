@@ -16,9 +16,6 @@ public typealias ParameterEncoding = Alamofire.ParameterEncoding
 public typealias JSONEncoding = Alamofire.JSONEncoding
 public typealias URLEncoding = Alamofire.URLEncoding
 
-extension DataRequest: RequestConvertable {
-}
-
 public final class AlamofireNetworking {
     public typealias TheRequest = DataRequest
     public typealias TheError = AlamofireNetworkingError
@@ -140,13 +137,19 @@ extension AlamofireNetworking: Networking {
                 switch response.type {
                 case .unknown,
                      .dictionary:
-                    let parsedObject = try JSONDecoder().decode(D.self, from: data)
+                    let parsedObject = try JSONDecoder().decode(
+                        D.self,
+                        from: data
+                    )
                     
                     responseClosure(
                         Response.success(parsedObject)
                     )
                 case .array:
-                    let parsedObject = try JSONDecoder().decode([D].self, from: data)
+                    let parsedObject = try JSONDecoder().decode(
+                        [D].self,
+                        from: data
+                    )
                     
                     responseClosure(
                         Response.success(parsedObject)
