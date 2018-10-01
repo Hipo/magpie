@@ -35,35 +35,12 @@ public final class AlamofireNetworking {
             return
         }
         
-        if let request = response.request {
-            print(">>> REQUEST: \(request)")
-        }
-        
-        if let response = response.response {
-            print(">>> RESPONSE: \(response)")
-        }
-        
-        if let data = response.data {
-            print(">>> DATA: \(data)")
-        }
-        
-        if let json = response.result.value {
-            prettyPrint(json: json)
-        }
-        
-        print(">>> RESULT: \(response.result)")
-    }
-    
-    fileprivate func prettyPrint(json: Any) {
-        guard let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) else {
-            return
-        }
-        
-        guard let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else {
-            return
-        }
-        
-        print(">>> JSON: \(string)")
+        log(request: response.request,
+            response: response.response,
+            data: response.data,
+            value: response.value,
+            result: response.result
+        )
     }
 }
 
