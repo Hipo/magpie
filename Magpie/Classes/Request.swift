@@ -7,23 +7,23 @@
 
 import Foundation
 
-open class Request<TheNetworking: Networking, DecodableObject: Decodable> {
-    
+open class Request<TheNetworking: Networking, DecodableObjectType: Decodable>: RequestProtocol  {
+
     /// MARK: Properties
-    
+
     public let base: String
     public var path: String
     public var headers: [String: String]?
     public var method: HTTPMethod
-    public let parameters: Parameters?
+    public var parameters: Parameters?
     public var encoding: ParameterEncoding
     public let responseClosure: ResponseClosure
-    
+
     internal var original: TheNetworking.TheRequest?
     internal weak var magpie: Magpie<TheNetworking>?
-    
+
     /// MARK: Initialization
-    
+
     init(
         base: String,
         path: String,
@@ -47,11 +47,11 @@ extension Request: RequestOperatable {
     public func send() {
         magpie?.sendRequest(self)
     }
-    
+
     public func retry() {
         magpie?.retryRequest(self)
     }
-    
+
     public func cancel() {
         magpie?.cancelRequest(self)
     }

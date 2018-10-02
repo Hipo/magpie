@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol RequestOperatable: RequestConvertable {
+public protocol RequestOperatable {
     func send()
     func retry()
     func cancel()

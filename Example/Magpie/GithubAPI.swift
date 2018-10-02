@@ -24,17 +24,45 @@ extension GithubAPI {
     
     @discardableResult
     func fetchGithubRepos(withUsername username: String) -> RequestOperatable {
+        let path = "users/\(username)/repos"
+        
         let request = sendRequest(
             for: GithubRepo.self,
-            withPath: "users/\(username)/repos") { response in
-                switch response {
-                case .success(let repos):
-                    print(">>> GITHUB REPO: \(repos)")
-                case .failed(let error):
-                    print(">>> FETCHING ERROR: \(error)")
-                }
+            withPath: path
+        ) { response in
+            switch response {
+            case .success(let repos):
+                print(">>> GITHUB REPOS: \(repos)")
+            case .failed(let error):
+                print(">>> FETCHING ERROR: \(error)")
+            }
         }
         
         return request
+    }
+    
+    @discardableResult
+    func fetchGithubUser(withUsername username: String) -> RequestOperatable {
+        let path = "users/\(username)"
+        
+        let request = sendRequest(
+            for: GithubUser.self,
+            withPath: path
+        ) { (response) in
+            switch response {
+            case .success(let user):
+                print(">>> GITHUB User: \(user)")
+            case .failed(let error):
+                print(">>> FETCHING ERROR: \(error)")
+            }
+        }
+        
+        return request
+    }
+    
+    func cancelGithubReposFetchRequest(withUsername username: String) {
+        let path = "users/\(username)/repos"
+
+        cancelRequest(withPath: path)
     }
 }

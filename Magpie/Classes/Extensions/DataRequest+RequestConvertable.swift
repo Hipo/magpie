@@ -8,59 +8,49 @@
 import Foundation
 import Alamofire
 
-extension DataRequest: RequestConvertable {
-    private static var parameters = [String: Parameters]()
-    private static var encoding = [String: ParameterEncoding]()
-    
+extension DataRequest: RequestConvertible {
     public var path: String {
-        return request?.url?.absoluteString ?? String()
+        get {
+            fatalError("Must not be called from anywhere")
+        }
+        set {
+            fatalError("Must not be called from anywhere")
+        }
     }
     
     public var headers: [String : String]? {
-        return request?.allHTTPHeaderFields
+        get {
+            fatalError("Must not be called from anywhere")
+        }
+        set {
+            fatalError("Must not be called from anywhere")
+        }
     }
     
     public var method: HTTPMethod {
-        let httpMethod = request?.httpMethod ?? HTTPMethod.get.rawValue
-        
-        return HTTPMethod(rawValue: httpMethod) ?? HTTPMethod.get
+        get {
+            fatalError("Must not be called from anywhere")
+        }
+        set {
+            fatalError("Must not be called from anywhere")
+        }
     }
-    
+        
     public var parameters: Parameters? {
         get {
-            let tmpAddress = String(
-                format: "%p",
-                unsafeBitCast(self, to: Int.self)
-            )
-            
-            return DataRequest.parameters[tmpAddress]
+            fatalError("Must not be called from anywhere")
         }
-        set(newValue) {
-            let tmpAddress = String(
-                format: "%p",
-                unsafeBitCast(self, to: Int.self)
-            )
-            
-            DataRequest.parameters[tmpAddress] = newValue
+        set {
+            fatalError("Must not be called from anywhere")
         }
     }
     
     public var encoding: ParameterEncoding {
         get {
-            let tmpAddress = String(
-                format: "%p",
-                unsafeBitCast(self, to: Int.self)
-            )
-            
-            return DataRequest.encoding[tmpAddress] ?? URLEncoding.default
+            fatalError("Must not be called from anywhere")
         }
-        set(newValue) {
-            let tmpAddress = String(
-                format: "%p",
-                unsafeBitCast(self, to: Int.self)
-            )
-            
-            DataRequest.encoding[tmpAddress] = newValue
+        set {
+            fatalError("Must not be called from anywhere")
         }
     }
 }

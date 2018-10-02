@@ -8,14 +8,6 @@
 import Foundation
 import Alamofire
 
-public typealias HTTPMethod = Alamofire.HTTPMethod
-public typealias HTTPHeaders = [String: String]
-public typealias Parameters = [String: String]
-
-public typealias ParameterEncoding = Alamofire.ParameterEncoding
-public typealias JSONEncoding = Alamofire.JSONEncoding
-public typealias URLEncoding = Alamofire.URLEncoding
-
 public final class AlamofireNetworking {
     public typealias TheRequest = DataRequest
     public typealias TheError = AlamofireNetworkingError
@@ -57,12 +49,9 @@ extension AlamofireNetworking: Networking {
         }
         
         let dataRequest = alamofireRequest(
-            url: url,
-            method: request.method,
-            parameters: request.parameters,
-            encoding: request.encoding,
-            headers: request.headers,
-            responseClosure: request.responseClosure,
+            url,
+            request,
+            request.responseClosure,
             type: D.self
         )
         
@@ -70,36 +59,30 @@ extension AlamofireNetworking: Networking {
     }
     
     private func alamofireRequest<D>(
-        url: URL,
-        method: HTTPMethod,
-        parameters: Parameters?,
-        encoding: ParameterEncoding,
-        headers: HTTPHeaders?,
-        responseClosure: @escaping ResponseClosure,
+        _ url: URL,
+        _ request: Request<AlamofireNetworking, D>,
+        _ responseClosure: @escaping ResponseClosure,
         type: D.Type
-        ) -> DataRequest where D : Decodable {
+        ) -> DataRequest where D: Decodable {
         return Alamofire.request(
             url,
-            method: method,
-            parameters: parameters,
-            encoding: encoding,
-            headers: headers
+            method: request.method,
+            parameters: request.parameters,
+            encoding: request.encoding,
+            headers: request.headers
             )
             .validate()
             .responseJSON { (response) in
                 self.logResponseIfNeeded(response)
                 
-                self.performResponse(
-                    response,
-                    responseClosure: responseClosure,
-                    type: D.self
-                )
+                self.performResponse(request, response, responseClosure, type: D.self)
         }
     }
     
     private func performResponse<D>(
+        _ request: Request<AlamofireNetworking, D>,
         _ response: DataResponse<Any>,
-        responseClosure: @escaping ResponseClosure,
+        _ responseClosure: @escaping ResponseClosure,
         type: D.Type
         ) where D : Decodable {
         
@@ -114,30 +97,16 @@ extension AlamofireNetworking: Networking {
                 switch response.type {
                 case .unknown,
                      .dictionary:
-                    let parsedObject = try JSONDecoder().decode(
-                        D.self,
-                        from: data
-                    )
+                    let parsedObject = try JSONDecoder().decode(D.self, from: data)
                     
-                    responseClosure(
-                        Response.success(parsedObject)
-                    )
+                    responseClosure(Response.success(parsedObject))
                 case .array:
-                    let parsedObject = try JSONDecoder().decode(
-                        [D].self,
-                        from: data
-                    )
-                    
-                    responseClosure(
-                        Response.success(parsedObject)
-                    )
+                    let parsedObject = try JSONDecoder().decode([D].self, from: data)
+
+                    responseClosure(Response.success(parsedObject))
                 }
             } catch {
-                responseClosure(
-                    Response.failed(
-                        AlamofireNetworkingError.jsonParsing
-                    )
-                )
+                responseClosure(Response.failed(AlamofireNetworkingError.jsonParsing))
             }
             
         case .failure(let error):
@@ -146,7 +115,7 @@ extension AlamofireNetworking: Networking {
         }
     }
     
-    public func cancelRequest<C: Decodable>(_ request: Request<AlamofireNetworking, C>) {
+    public func cancelRequest<D: Decodable>(_ request: Request<AlamofireNetworking, D>) {
         /// (request.original as? DataRequest)?.cancel()
         /// If it is ok using the code above, we can remove the generic dependency throughout the code.
         request.original?.cancel()
