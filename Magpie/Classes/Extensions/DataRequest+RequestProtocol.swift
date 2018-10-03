@@ -8,7 +8,30 @@
 import Foundation
 import Alamofire
 
+extension DataRequest: RequestProtocol { }
+
 extension DataRequest: RequestConvertible {
+    public var decodableObjectType: Decodable.Type? {
+        fatalError("Must not be called from anywhere")
+    }
+    
+    public var base: String {
+        fatalError("Must not be called from anywhere")
+    }
+    
+    public var responseClosure: ResponseClosure {
+        fatalError("Must not be called from anywhere")
+    }
+    
+    public var original: RequestProtocol? {
+        get {
+            fatalError("Must not be called from anywhere")
+        }
+        set {
+            fatalError("Must not be called from anywhere")
+        }
+    }
+    
     public var path: String {
         get {
             fatalError("Must not be called from anywhere")
@@ -18,7 +41,7 @@ extension DataRequest: RequestConvertible {
         }
     }
     
-    public var headers: [String : String]? {
+    public var headers: [String: String]? {
         get {
             fatalError("Must not be called from anywhere")
         }
@@ -52,5 +75,15 @@ extension DataRequest: RequestConvertible {
         set {
             fatalError("Must not be called from anywhere")
         }
+    }
+}
+
+extension DataRequest: RequestOperatable {
+    open func send() {
+
+    }
+    
+    open func retry() {
+
     }
 }

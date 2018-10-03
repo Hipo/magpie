@@ -12,7 +12,7 @@ public final class AlamofireNetworking {
     public typealias TheRequest = DataRequest
     public typealias TheError = AlamofireNetworkingError
     
-    private let shouldLogResponse = true
+    private let shouldLogResponse = false
 
     /// MARK: Initialization
     
@@ -115,7 +115,7 @@ extension AlamofireNetworking: Networking {
         }
     }
     
-    public func cancelRequest<D: Decodable>(_ request: Request<AlamofireNetworking, D>) {
+    public func cancelRequest(_ request: RequestProtocol) {
         /// (request.original as? DataRequest)?.cancel()
         /// If it is ok using the code above, we can remove the generic dependency throughout the code.
         request.original?.cancel()

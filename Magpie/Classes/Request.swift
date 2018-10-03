@@ -10,7 +10,7 @@ import Foundation
 open class Request<TheNetworking: Networking, DecodableObjectType: Decodable>: RequestProtocol  {
 
     /// MARK: Properties
-
+    
     public let base: String
     public var path: String
     public var headers: [String: String]?
@@ -19,7 +19,7 @@ open class Request<TheNetworking: Networking, DecodableObjectType: Decodable>: R
     public var encoding: ParameterEncoding
     public let responseClosure: ResponseClosure
 
-    internal var original: TheNetworking.TheRequest?
+    public var original: RequestProtocol?
     internal weak var magpie: Magpie<TheNetworking>?
 
     /// MARK: Initialization

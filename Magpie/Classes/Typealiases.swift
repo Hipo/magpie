@@ -5,6 +5,9 @@
 //  Created by Eray on 1.10.2018.
 //
 
+
+// TODO: Split these from alamofire library
+
 import Alamofire
 
 public typealias HTTPMethod = Alamofire.HTTPMethod

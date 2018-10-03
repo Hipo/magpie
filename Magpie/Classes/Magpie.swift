@@ -9,7 +9,7 @@ import Foundation
 
 open class Magpie<TheNetworking: Networking> {
     internal typealias TheRequest<D: Decodable> = Request<TheNetworking, D>
-    
+
     /// MARK: Variables
     open var apiBase: String {
         fatalError("You should return a non-empty api base string here.")
@@ -63,7 +63,7 @@ open class Magpie<TheNetworking: Networking> {
                 return
             }
             
-            aRequest.cancel()
+            self.networking.cancelRequest(aRequest)
         }
     }
 }
@@ -81,7 +81,7 @@ internal extension Magpie {
         return networking.sendRequest(request)
     }
 
-    func cancelRequest<D: Decodable>(_ request: TheRequest<D>) {
+    func cancelRequest(_ request: RequestProtocol) {
         networking.cancelRequest(request)
     }
 }
