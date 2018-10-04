@@ -8,9 +8,10 @@
 import Foundation
 import Alamofire
 
-public final class AlamofireNetworking {
+public final class AlamofireNetworking<ErrorObject: Decodable> {
     public typealias TheRequest = DataRequest
-    public typealias TheError = AlamofireNetworkingError
+    public typealias TheError = NetworkingError<ErrorObject>
+    public typealias TheErrorObject = ErrorObject
     
     private let shouldLogResponse = false
 
@@ -41,9 +42,8 @@ extension AlamofireNetworking: Networking {
         _ request: Request<AlamofireNetworking, D>
         ) -> TheRequest? {
         guard let url = URL(string: request.base + request.path) else {
-            request.responseClosure(
-                Response.failed(AlamofireNetworkingError.invalidUrl)
-            )
+            let message = ""
+            request.responseClosure(Response.failed(LibraryError.invalidUrl(message)))
             
             return nil
         }
@@ -75,21 +75,23 @@ extension AlamofireNetworking: Networking {
             .responseJSON { (response) in
                 self.logResponseIfNeeded(response)
                 
-                self.performResponse(request, response, responseClosure, type: D.self)
+                self.perform(request, response, responseClosure, type: D.self)
         }
     }
     
-    private func performResponse<D>(
+    private func perform<D>(
         _ request: Request<AlamofireNetworking, D>,
         _ response: DataResponse<Any>,
         _ responseClosure: @escaping ResponseClosure,
         type: D.Type
-        ) where D : Decodable {
+        ) where D: Decodable {
         
         switch response.result {
         case .success:
             guard let data = response.data else {
-                // TODO: Return relevant AlamofireNetworkingError
+                let message = ""
+                responseClosure(Response.failed(LibraryError.invalidData(message)))
+                
                 return
             }
             
@@ -106,12 +108,20 @@ extension AlamofireNetworking: Networking {
                     responseClosure(Response.success(parsedObject))
                 }
             } catch {
-                responseClosure(Response.failed(AlamofireNetworkingError.jsonParsing))
+                let message = ""
+                responseClosure(Response.failed(LibraryError.jsonParsing(message)))
             }
             
         case .failure(let error):
             // TODO: Convert errors into AlamofireNetworkingError cases
-            responseClosure(Response.failed(error))
+            guard let data = response.data else {
+                let message = ""
+                responseClosure(Response.failed(LibraryError.invalidData(message)))
+                
+                return
+            }
+
+            responseClosure(Response.failed(handleError(error, with: data)))
         }
     }
     
@@ -131,5 +141,46 @@ extension AlamofireNetworking: Networking {
                 uploadTasks.forEach { $0.cancel() }
                 downloadTasks.forEach { $0.cancel() }
         }
+    }
+}
+
+extension AlamofireNetworking {
+    internal func handleError(_ error: Error, with data: Data) -> NetworkingError<ErrorObject> {
+        if let error = error as? AFError {
+            return handleAFError(error, with: data)
+        } else if let error = error as? URLError {
+            return handleURLError(error)
+        } else {
+            return .library(.unknown)
+        }
+    }
+    
+    internal func handleAFError(_ error: AFError, with data: Data) -> NetworkingError<ErrorObject> {
+        print(">>> AFError \(error)")
+        
+        guard let responseCode = error.responseCode else {
+            print(">>> Unknown Error")
+            
+            return .library(.unknown)
+        }
+        
+        guard let apiError = ApiError(rawValue: responseCode) else {
+            return .api(.unknown)
+        }
+        
+        do {
+            let errorObject = try JSONDecoder().decode(ErrorObject.self, from: data)
+            
+            // TODO: return error object
+            return .api(apiError, errorObject)
+        } catch {
+            return .library(.jsonParsing("Error while decoding error object"))
+        }        
+    }
+    
+    internal func handleURLError(_ error: URLError) -> NetworkingError<ErrorObject> {
+        print(">>> URL Error Code: \(error.code)")
+        
+        return .library(.urlError(error))
     }
 }

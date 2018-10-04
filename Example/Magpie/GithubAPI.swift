@@ -9,7 +9,7 @@
 import Foundation
 import Magpie
 
-class GithubAPI: Magpie<AlamofireNetworking> {
+class GithubAPI: Magpie<AlamofireNetworking<GithubError>> {
     
     // MARK: Magpie
     
@@ -53,7 +53,7 @@ extension GithubAPI {
             case .success(let user):
                 print(">>> GITHUB User: \(user)")
             case .failed(let error):
-                print(">>> FETCHING ERROR: \(error)")
+                print(">>> FETCHING ERROR: \(error)")                
             }
         }
         

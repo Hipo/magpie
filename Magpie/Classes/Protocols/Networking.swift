@@ -12,6 +12,7 @@ public typealias ResponseClosure = (Response<Decodable, Error>) -> Void
 public protocol Networking {
     associatedtype TheRequest: RequestProtocol
     associatedtype TheError: Error
+    associatedtype TheErrorObject: Decodable
     
     init()
     
