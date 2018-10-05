@@ -9,7 +9,9 @@
 import Foundation
 import Magpie
 
-class GithubAPI: Magpie<AlamofireNetworking<GithubError>> {
+typealias GithubAPIErrorObjectType = GithubError
+
+class GithubAPI: Magpie<AlamofireNetworking<GithubAPIErrorObjectType>> {
     
     // MARK: Magpie
     
@@ -35,6 +37,40 @@ extension GithubAPI {
                 print(">>> GITHUB REPOS: \(repos)")
             case .failed(let error):
                 print(">>> FETCHING ERROR: \(error)")
+            }
+        }
+        
+        return request
+    }
+    
+    @discardableResult
+    func tryToFetchGithubReposWithError(withUsername username: String) -> RequestOperatable {
+        let path = "users/\(username)/repo"
+        
+        let request = sendRequest(
+            for: GithubRepo.self,
+            withPath: path
+        ) { response in
+            switch response {
+            case .success(let repos):
+                print(">>> GITHUB REPOS: \(repos)")
+            case .failed(let error):
+                print(">>> FETCHING ERROR: \(error)")
+                
+                guard let networkingError = error as? NetworkingError<GithubAPIErrorObjectType> else {
+                    return
+                }
+                
+                switch networkingError {
+                case .libraryError(let error):
+                    print(">>> FETCHING ERROR: \(error)")
+                case .apiError(let error):
+                    print(">>> FETCHING ERROR: \(error)")
+                case .apiErrorWithObject(let apiError, let githubError):
+                    print(">>> FETCHING ERROR:")
+                    print(">>> API ERROR: \(apiError)")
+                    print(">>> GITHUB ERROR: \(githubError)")
+                }
             }
         }
         

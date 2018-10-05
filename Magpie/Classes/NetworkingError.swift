@@ -7,10 +7,10 @@
 
 import UIKit
 
-public enum NetworkingError<ObjectType>: Error {
-    case library(_ error: LibraryError)
-    case api(_ error: ApiError)
-    case api(_ apiError: ApiError, ObjectType)
+public enum NetworkingError<ObjectType: Decodable>: Error {
+    case libraryError(_ error: LibraryError)
+    case apiError(_ error: ApiError)
+    case apiErrorWithObject(_ apiError: ApiError, _ object: ObjectType)
 }
 
 public enum LibraryError: Error {
