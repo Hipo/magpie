@@ -12,7 +12,7 @@ public final class AlamofireNetworking<ErrorObject: Decodable> {
     public typealias TheRequest = DataRequest
     public typealias TheError = NetworkingError<ErrorObject>
     public typealias TheErrorObject = ErrorObject
-    
+        
     private let shouldLogResponse = false
 
     /// MARK: Initialization
