@@ -8,6 +8,19 @@
 
 import Foundation
 
-struct GithubError: Codable {
+struct GithubError: Decodable {
+    let message: String
+    let errors: [[String: String]]?
     
+    private enum CodingKeys: String, CodingKey {
+        case message
+        case errors
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        message = try values.decode(String.self, forKey: .message)
+        errors = try values.decodeIfPresent([[String: String]].self, forKey: .errors)
+    }
 }

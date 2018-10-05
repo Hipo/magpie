@@ -119,7 +119,9 @@ class ViewController: UIViewController {
 
         api.cancelGithubReposFetchRequest(withUsername: username)
 
-        api.fetchGithubUser(withUsername: username)        
+        api.fetchGithubUser(withUsername: username)
+        
+        api.tryToFetchGithubReposWithError(withUsername: username)
     }
 }
 

@@ -113,7 +113,6 @@ extension AlamofireNetworking: Networking {
             }
             
         case .failure(let error):
-            // TODO: Convert errors into AlamofireNetworkingError cases
             guard let data = response.data else {
                 let message = ""
                 responseClosure(Response.failed(LibraryError.invalidData(message)))
@@ -121,7 +120,9 @@ extension AlamofireNetworking: Networking {
                 return
             }
 
-            responseClosure(Response.failed(handleError(error, with: data)))
+            let handledError = handleError(error, with: data)
+            
+            responseClosure(Response.failed(handledError))
         }
     }
     
@@ -151,7 +152,7 @@ extension AlamofireNetworking {
         } else if let error = error as? URLError {
             return handleURLError(error)
         } else {
-            return .library(.unknown)
+            return .libraryError(.unknown)
         }
     }
     
@@ -159,28 +160,25 @@ extension AlamofireNetworking {
         print(">>> AFError \(error)")
         
         guard let responseCode = error.responseCode else {
-            print(">>> Unknown Error")
-            
-            return .library(.unknown)
+            return .libraryError(.unknown)
         }
         
         guard let apiError = ApiError(rawValue: responseCode) else {
-            return .api(.unknown)
+            return .apiError(.unknown)
         }
         
         do {
             let errorObject = try JSONDecoder().decode(ErrorObject.self, from: data)
             
-            // TODO: return error object
-            return .api(apiError, errorObject)
+            return .apiErrorWithObject(apiError, errorObject)
         } catch {
-            return .library(.jsonParsing("Error while decoding error object"))
-        }        
+            return .libraryError(.jsonParsing("Error while decoding error object"))
+        }
     }
     
     internal func handleURLError(_ error: URLError) -> NetworkingError<ErrorObject> {
         print(">>> URL Error Code: \(error.code)")
         
-        return .library(.urlError(error))
+        return .libraryError(.urlError(error))
     }
 }
