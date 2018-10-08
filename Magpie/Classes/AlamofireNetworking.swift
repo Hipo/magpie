@@ -66,7 +66,7 @@ extension AlamofireNetworking: Networking {
         ) -> DataRequest where D: Decodable {
         return Alamofire.request(
             url,
-            method: request.method,
+            method: Alamofire.HTTPMethod.mapped(from: request.method),
             parameters: request.parameters,
             encoding: request.encoding,
             headers: request.headers
@@ -180,5 +180,30 @@ extension AlamofireNetworking {
         print(">>> URL Error Code: \(error.code)")
         
         return .libraryError(.urlError(error))
+    }
+}
+
+extension Alamofire.HTTPMethod {
+    static func mapped(from method: HTTPMethod) -> Alamofire.HTTPMethod {
+        switch method  {
+        case HTTPMethod.options:
+            return Alamofire.HTTPMethod.options
+        case HTTPMethod.get:
+            return Alamofire.HTTPMethod.get
+        case HTTPMethod.head:
+            return Alamofire.HTTPMethod.head
+        case HTTPMethod.post:
+            return Alamofire.HTTPMethod.post
+        case HTTPMethod.put:
+            return Alamofire.HTTPMethod.put
+        case HTTPMethod.patch:
+            return Alamofire.HTTPMethod.patch
+        case HTTPMethod.delete:
+            return Alamofire.HTTPMethod.delete
+        case HTTPMethod.trace:
+            return Alamofire.HTTPMethod.trace
+        case HTTPMethod.connect:
+            return Alamofire.HTTPMethod.connect
+        }
     }
 }

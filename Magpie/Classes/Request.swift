@@ -27,7 +27,7 @@ open class Request<TheNetworking: Networking, DecodableObjectType: Decodable>: R
     init(
         base: String,
         path: String,
-        headers: [String: String]?,
+        headers: HTTPHeaders?,
         method: HTTPMethod,
         parameters: Parameters?,
         encoding: ParameterEncoding,
