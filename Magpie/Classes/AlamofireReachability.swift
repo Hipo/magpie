@@ -21,12 +21,14 @@ extension ReachabilityStatus {
     }
 }
 
-class AlamofireNetworkingReachability: Reachability {
+public class AlamofireReachability: Reachability {
     private static let baseURLString = "github.com"
     private let manager = Alamofire.NetworkReachabilityManager(host: baseURLString)
     private var listeners = [ReachabilityStatusListener]()
     
-    var status: ReachabilityStatus {
+    public init() { }
+    
+    public var status: ReachabilityStatus {
         guard let networkStatus = manager?.networkReachabilityStatus else {
             return .unknown
         }
@@ -34,7 +36,7 @@ class AlamofireNetworkingReachability: Reachability {
         return ReachabilityStatus.mapped(from: networkStatus)
     }
 
-    var isReachable: Bool {
+    public var isReachable: Bool {
         guard let manager = manager else {
             return false
         }
@@ -42,7 +44,7 @@ class AlamofireNetworkingReachability: Reachability {
         return manager.isReachable
     }
     
-    func startListening() {
+    public func startListening() {
         manager?.startListening()
         
         manager?.listener = { status in
@@ -58,15 +60,15 @@ class AlamofireNetworkingReachability: Reachability {
         }
     }
     
-    func stopListening() {
+    public func stopListening() {
         manager?.stopListening()
     }
     
-    func addListener(_ listener: ReachabilityStatusListener) {
+    public func addListener(_ listener: ReachabilityStatusListener) {
         listeners.append(listener)
     }
     
-    func remove(_ listener: ReachabilityStatusListener) {
+    public func remove(_ listener: ReachabilityStatusListener) {
         listeners = listeners.filter() { $0 !== listener }
     }
 }
