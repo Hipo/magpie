@@ -169,21 +169,43 @@ extension Path: ExpressibleByStringLiteral {
 
 /// query & body parameters
 public protocol ParamsPairValue {
+    func asQueryItemValue() -> String?
+}
+
+extension ParamsPairValue {
+    public func asQueryItemValue() -> String? {
+        return nil
+    }
 }
 
 extension String: ParamsPairValue {
+    public func asQueryItemValue() -> String? {
+        return self
+    }
 }
 
 extension Int: ParamsPairValue {
+    public func asQueryItemValue() -> String? {
+        return "\(self)"
+    }
 }
 
 extension Double: ParamsPairValue {
+    public func asQueryItemValue() -> String? {
+        return "\(self)"
+    }
 }
 
 extension Float: ParamsPairValue {
+    public func asQueryItemValue() -> String? {
+        return "\(self)"
+    }
 }
 
 extension Bool: ParamsPairValue {
+    public func asQueryItemValue() -> String? {
+        return self ? "true" : "false"
+    }
 }
 
 extension Array: ParamsPairValue where Element: ParamsPairValue {
@@ -245,7 +267,7 @@ extension Params {
                     value = aValue
                 }
                 
-                guard let theValue = value as? String else {
+                guard let theValue = value?.asQueryItemValue() else {
                     throw Error.requestEncoding(.invalidURLQuery(self))
                 }
                 

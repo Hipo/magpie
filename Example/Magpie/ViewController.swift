@@ -15,10 +15,10 @@ class ViewController: UIViewController {
     
     // MARK: Variables: API
     private var request: EndpointOperatable?
-    private let api: GithubAPI
+    private let api: MOMAPI
     
     // MARK: Initialization
-    init(api: GithubAPI) {
+    init(api: MOMAPI) {
         self.api = api
         
         super.init(nibName: nil, bundle: nil)
@@ -51,6 +51,7 @@ class ViewController: UIViewController {
         usernameField.placeholder = "Github Username"
         usernameField.textAlignment = .center
         usernameField.borderStyle = .roundedRect
+        usernameField.autocapitalizationType = .none
         
         setupUsernameFieldLayout()
     }
@@ -110,18 +111,14 @@ class ViewController: UIViewController {
     // MARK: Actions
     
     @objc func fetchGithubRepos() {
-//        guard let username = usernameField.text else {
-//            
-//            return
-//        }
-    
-//        request = api.fetchGithubRepos(withUsername: username)
-//
-//        api.cancelGithubReposFetchRequest(withUsername: username)
-//
-//        api.fetchGithubUser(withUsername: username)
-//        
-//        api.tryToFetchGithubReposWithError(withUsername: username)
+        api.authenticate(with: "salih@hipolabs.com", password: "hipolabs") { (response) in
+            switch response {
+            case .success(let user):
+                print("\(user)")
+            case .failure(let error):
+                print("\(error.localizedDescription)")
+            }
+        }
     }
 }
 

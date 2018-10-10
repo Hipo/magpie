@@ -29,10 +29,14 @@ extension AlamofireNetworking: Networking {
                         handler?(.success(response.data ?? Data())) /// TODO: Data() is right???
                     case .failure(let error):
                         if let afError = error as? AFError {
-                            handler?(.failure(Error(afError: afError, responseData: response.data)))
+                            handler?(.failure(
+                                Error(afError: afError, responseData: response.data))
+                            )
                             return
                         }
-                        handler?(.failure(Error(error: error as NSError, responseData: response.data)))
+                        handler?(.failure(
+                            Error(error: error as NSError, responseData: response.data))
+                        )
                     }
             })
         } catch let error as Error {
@@ -48,7 +52,8 @@ extension AlamofireNetworking: Networking {
     }
     
     public func cancelAll() {
-        Alamofire.SessionManager.default.session.getTasksWithCompletionHandler { (dataTasks, _, _) in
+        Alamofire.SessionManager.default.session.getTasksWithCompletionHandler {
+            (dataTasks, _, _) in
             dataTasks.forEach { $0.cancel() }
         }
     }

@@ -20,10 +20,6 @@ extension GithubAPI {
     func fetchGithubRepos(with username: String) -> EndpointOperatable {
         return send(
             Endpoint<GithubRepo>(Path("/users/\(username)/repos/"))
-                .httpMethod(.get)
-                .query(nil)
-                .handler { (response) in
-                }
         )
     }
     

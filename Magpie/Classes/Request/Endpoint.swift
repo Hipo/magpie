@@ -18,6 +18,11 @@ public class Endpoint<ObjectType> where ObjectType: Mappable {
 }
 
 extension Endpoint {
+    public func base(_ value: String) -> Endpoint {
+        request.base = value
+        return self
+    }
+    
     public func httpMethod(_ value: HTTPMethod) -> Endpoint {
         request.httpMethod = value
         return self

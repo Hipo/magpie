@@ -7,7 +7,8 @@
 
 import Foundation
 
-public typealias ResponseHandler<ObjectType> = (Response<ObjectType>) -> Void where ObjectType: Mappable
+public typealias ResponseHandler<ObjectType> =
+    (Response<ObjectType>) -> Void where ObjectType: Mappable
 
 public enum Response<ObjectType> where ObjectType: Mappable {
     case success(ObjectType)

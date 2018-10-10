@@ -17,3 +17,9 @@ public extension Mappable {
         return try decoder.decode(Self.self, from: data)
     }
 }
+
+extension Array: Mappable where Element: Mappable {
+}
+
+extension Dictionary: Mappable where Key == String, Value: Mappable {
+}

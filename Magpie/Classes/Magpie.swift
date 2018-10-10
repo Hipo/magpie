@@ -19,8 +19,15 @@ open class Magpie<OuterNetworking: Networking> {
 }
 
 extension Magpie {
-    open func send<ObjectType>(_ endpoint: Endpoint<ObjectType>) -> EndpointOperatable where ObjectType: Mappable {
+    open func send<ObjectType>(
+        _ endpoint: Endpoint<ObjectType>)
+        -> EndpointOperatable
+    where ObjectType: Mappable {
         var request = endpoint.request
+
+        if request.base.isEmpty {
+            request.base = base
+        }
 
         request.magpie = self
         request.send()
@@ -36,16 +43,18 @@ extension Magpie {
 }
 
 extension Magpie: MagpieOperatable {
-    func send<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
-        return networking.send(request) { (dataResponse) in
-            request.handle(dataResponse)
-        }
+    func send<ObjectType>(
+        _ request: Request<ObjectType>)
+        -> TaskCancellable?
+    where ObjectType: Mappable {
+        return networking.send(request) { request.handle($0) }
     }
 
-    func retry<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
-        return networking.send(request) { (dataResponse) in
-            request.handle(dataResponse)
-        }
+    func retry<ObjectType>(
+        _ request: Request<ObjectType>)
+        -> TaskCancellable?
+    where ObjectType: Mappable {
+        return networking.send(request) { request.handle($0) }
     }
     
     func cancel<ObjectType>(_ request: Request<ObjectType>) where ObjectType: Mappable {

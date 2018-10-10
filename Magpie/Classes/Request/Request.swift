@@ -10,6 +10,7 @@ import Foundation
 public struct Request<ObjectType> where ObjectType: Mappable  {
     public typealias Handler = ResponseHandler<ObjectType>
 
+    public internal(set) var base = ""
     public internal(set) var path: Path
     public internal(set) var httpMethod: HTTPMethod = .get
     public internal(set) var httpHeaders = HTTPHeaders.defaults()
@@ -20,10 +21,6 @@ public struct Request<ObjectType> where ObjectType: Mappable  {
     public internal(set) var handler: Handler?
 
     public internal(set) var task: TaskCancellable?
-    
-    public var base: String {
-        return magpie?.base ?? ""
-    }
 
     weak var magpie: MagpieOperatable?
 
@@ -92,7 +89,9 @@ extension Request {
             do {
                 handler?(.success(try ObjectType.decoded(from: data)))
             } catch let error {
-                handler?(.failure(Error.responseSerialization(.jsonSerializationFailed(data, error))))
+                handler?(.failure(
+                    Error.responseSerialization(.jsonSerializationFailed(data, error)))
+                )
             }
         case .failure(let error):
             handler?(.failure(error))

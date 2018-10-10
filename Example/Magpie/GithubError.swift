@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import Magpie
 
-struct GithubError: Decodable {
+struct GithubError: Mappable {
     let message: String
     let errors: [[String: String]]?
     
