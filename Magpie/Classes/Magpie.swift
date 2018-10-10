@@ -7,81 +7,48 @@
 
 import Foundation
 
-open class Magpie<TheNetworking: Networking> {
-    internal typealias TheRequest<D: Decodable> = Request<TheNetworking, D>
+open class Magpie<OuterNetworking: Networking> {
+    public let base: String
 
-    /// MARK: Variables
-    open var apiBase: String {
-        fatalError("You should return a non-empty api base string here.")
-    }
-    
-    fileprivate let networking: TheNetworking
-    fileprivate var requests = [RequestProtocol]()
-    
-    /// MARK: Initialization
-    required public init(networking: TheNetworking = TheNetworking()) {
+    private let networking: OuterNetworking
+
+    required public init(base: String, networking: OuterNetworking = OuterNetworking()) {
+        self.base = base
         self.networking = networking
-    }
-    
-    /// MARK: Open+Operations
-    /// TODO: Think of a nice way to generate&send the request.
-    open func sendRequest<D: Decodable>(
-        for objectTypeToParse: D.Type,
-        withPath path: String,
-        headers: [String: String]? = nil,
-        method: HTTPMethod = .get,
-        parameters: Parameters? = nil,
-        encoding: ParameterEncoding = URLEncoding.default,
-        _ responseClosure: @escaping ResponseClosure
-        ) -> RequestOperatable {
-        
-        let request = TheRequest<D>(
-            base: apiBase,
-            path: path,
-            headers: headers,
-            method: method,
-            parameters: parameters,
-            encoding: encoding,
-            responseClosure: responseClosure
-        )
-        
-        request.magpie = self
-        request.original = sendRequest(request)
-        
-        requests.append(request)
-
-        return request
-    }
-    
-    open func cancelOngoingRequests() {
-        networking.cancelOngoingRequests()
-    }
-    
-    open func cancelRequest(withPath path: String) {
-        requests.forEach { (aRequest) in
-            if aRequest.path != path {
-                return
-            }
-            
-            self.networking.cancelRequest(aRequest)
-        }
     }
 }
 
-/// MARK: Operations
+extension Magpie {
+    open func send<ObjectType>(_ endpoint: Endpoint<ObjectType>) -> EndpointOperatable where ObjectType: Mappable {
+        var request = endpoint.request
 
-internal extension Magpie {
-    @discardableResult
-    func sendRequest<D: Decodable>(_ request: TheRequest<D>) -> TheNetworking.TheRequest? {
-        return networking.sendRequest(request)
+        request.magpie = self
+        request.send()
+        
+        return request
+    }
+
+    open func cancelAllEndpoints() {
+        networking.cancelAll()
     }
     
-    @discardableResult
-    func retryRequest<D: Decodable>(_ request: TheRequest<D>) -> TheNetworking.TheRequest? {
-        return networking.sendRequest(request)
+    // TODO: Add a method to cancel endpoints using a path.
+}
+
+extension Magpie: MagpieOperatable {
+    func send<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
+        return networking.send(request) { (dataResponse) in
+            request.handle(dataResponse)
+        }
     }
 
-    func cancelRequest(_ request: RequestProtocol) {
-        networking.cancelRequest(request)
+    func retry<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
+        return networking.send(request) { (dataResponse) in
+            request.handle(dataResponse)
+        }
+    }
+    
+    func cancel<ObjectType>(_ request: Request<ObjectType>) where ObjectType: Mappable {
+        networking.cancel(request)
     }
 }

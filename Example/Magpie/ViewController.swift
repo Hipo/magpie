@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     private lazy var reposButton = UIButton()
     
     // MARK: Variables: API
-    private var request: RequestOperatable?
+    private var request: EndpointOperatable?
     private let api: GithubAPI
     
     // MARK: Initialization
@@ -42,7 +42,7 @@ class ViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        request?.cancel()
+        request?.invalidate()
     }
     
     // MARK: Setup
@@ -110,16 +110,16 @@ class ViewController: UIViewController {
     // MARK: Actions
     
     @objc func fetchGithubRepos() {
-        guard let username = usernameField.text else {
-            
-            return
-        }
+//        guard let username = usernameField.text else {
+//            
+//            return
+//        }
         
-        request = api.fetchGithubRepos(withUsername: username)
-
-        api.cancelGithubReposFetchRequest(withUsername: username)
-
-        api.fetchGithubUser(withUsername: username)        
+//        request = api.fetchGithubRepos(withUsername: username)
+//
+//        api.cancelGithubReposFetchRequest(withUsername: username)
+//
+//        api.fetchGithubUser(withUsername: username)
     }
 }
 

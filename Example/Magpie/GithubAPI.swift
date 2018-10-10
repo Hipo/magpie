@@ -9,13 +9,7 @@
 import Foundation
 import Magpie
 
-class GithubAPI: Magpie<AlamofireNetworking<GithubError>> {
-    
-    // MARK: Magpie
-    
-    override var apiBase: String {
-        return "https://api.github.com/"
-    }
+class GithubAPI: Magpie<AlamofireNetworking> {
 }
 
 // MARK: Public: Interface
@@ -23,46 +17,58 @@ class GithubAPI: Magpie<AlamofireNetworking<GithubError>> {
 extension GithubAPI {
     
     @discardableResult
-    func fetchGithubRepos(withUsername username: String) -> RequestOperatable {
-        let path = "users/\(username)/repos"
-        
-        let request = sendRequest(
-            for: GithubRepo.self,
-            withPath: path
-        ) { response in
-            switch response {
-            case .success(let repos):
-                print(">>> GITHUB REPOS: \(repos)")
-            case .failed(let error):
-                print(">>> FETCHING ERROR: \(error)")
-            }
-        }
-        
-        return request
+    func fetchGithubRepos(with username: String) -> EndpointOperatable {
+        return send(
+            Endpoint<GithubRepo>(Path("/users/\(username)/repos/"))
+                .httpMethod(.get)
+                .query(nil)
+                .handler { (response) in
+                }
+        )
     }
     
-    @discardableResult
-    func fetchGithubUser(withUsername username: String) -> RequestOperatable {
-        let path = "users/\(username)"
-        
-        let request = sendRequest(
-            for: GithubUser.self,
-            withPath: path
-        ) { (response) in
-            switch response {
-            case .success(let user):
-                print(">>> GITHUB User: \(user)")
-            case .failed(let error):
-                print(">>> FETCHING ERROR: \(error)")                
-            }
-        }
-        
-        return request
-    }
     
-    func cancelGithubReposFetchRequest(withUsername username: String) {
-        let path = "users/\(username)/repos"
-
-        cancelRequest(withPath: path)
-    }
+//    @discardableResult
+//    func fetchGithubRepos(withUsername username: String) -> RequestOperatable {
+//        let path = "users/\(username)/repos"
+//        
+//        let request = sendRequest(
+//            for: GithubRepo.self,
+//            withPath: path
+//        ) { response in
+//            switch response {
+//            case .success(let repos):
+//                print(">>> GITHUB REPOS: \(repos)")
+//            case .failed(let error):
+//                print(">>> FETCHING ERROR: \(error)")
+//            }
+//        }
+//        
+//        return request
+//    }
+//    
+//    @discardableResult
+//    func fetchGithubUser(withUsername username: String) -> RequestOperatable {
+//        let path = "users/\(username)"
+//        
+//        let request = sendRequest(
+//            for: GithubUser.self,
+//            withPath: path
+//        ) { (response) in
+//            switch response {
+//            case .success(let user):
+//                print(">>> GITHUB User: \(user)")
+//            case .failed(let error):
+//                print(">>> FETCHING ERROR: \(error)")                
+//            }
+//        }
+//        
+//        return request
+//    }
+//    
+//    func cancelGithubReposFetchRequest(withUsername username: String) {
+//        let path = "users/\(username)/repos"
+//
+//        cancelRequest(withPath: path)
+//    }
 }

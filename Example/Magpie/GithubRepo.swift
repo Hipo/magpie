@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import Magpie
 
-struct GithubRepo: Decodable {
+struct GithubRepo: Mappable {
     let id: Int
     let fullName: String
     let url: URL
