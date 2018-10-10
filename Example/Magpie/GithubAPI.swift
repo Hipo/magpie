@@ -27,11 +27,10 @@ extension GithubAPI {
         )
     }
     
-    
 //    @discardableResult
-//    func fetchGithubRepos(withUsername username: String) -> RequestOperatable {
-//        let path = "users/\(username)/repos"
-//        
+//    func tryToFetchGithubReposWithError(withUsername username: String) -> RequestOperatable {
+//        let path = "users/\(username)/repo"
+//
 //        let request = sendRequest(
 //            for: GithubRepo.self,
 //            withPath: path
@@ -41,16 +40,31 @@ extension GithubAPI {
 //                print(">>> GITHUB REPOS: \(repos)")
 //            case .failed(let error):
 //                print(">>> FETCHING ERROR: \(error)")
+//
+//                guard let networkingError = error as? NetworkingError<GithubAPIErrorObjectType> else {
+//                    return
+//                }
+//
+//                switch networkingError {
+//                case .libraryError(let error):
+//                    print(">>> FETCHING ERROR: \(error)")
+//                case .apiError(let error):
+//                    print(">>> FETCHING ERROR: \(error)")
+//                case .apiErrorWithObject(let apiError, let githubError):
+//                    print(">>> FETCHING ERROR:")
+//                    print(">>> API ERROR: \(apiError)")
+//                    print(">>> GITHUB ERROR: \(githubError)")
+//                }
 //            }
 //        }
-//        
+//
 //        return request
 //    }
-//    
+//
 //    @discardableResult
 //    func fetchGithubUser(withUsername username: String) -> RequestOperatable {
 //        let path = "users/\(username)"
-//        
+//
 //        let request = sendRequest(
 //            for: GithubUser.self,
 //            withPath: path
@@ -59,16 +73,10 @@ extension GithubAPI {
 //            case .success(let user):
 //                print(">>> GITHUB User: \(user)")
 //            case .failed(let error):
-//                print(">>> FETCHING ERROR: \(error)")                
+//                print(">>> FETCHING ERROR: \(error)")
 //            }
 //        }
-//        
-//        return request
-//    }
-//    
-//    func cancelGithubReposFetchRequest(withUsername username: String) {
-//        let path = "users/\(username)/repos"
 //
-//        cancelRequest(withPath: path)
+//        return request
 //    }
 }
