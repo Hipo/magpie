@@ -12,7 +12,7 @@ import Magpie
 enum MOMParamPairKey: String {
     case email = "email"
     case limit = "limit"
-    case passwotd = "password"
+    case password = "password"
 }
 
 extension MOMParamPairKey: ParamsPairKey {

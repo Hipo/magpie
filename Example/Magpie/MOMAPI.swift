@@ -20,7 +20,7 @@ extension MOMAPI {
                 .httpMethod(.post)
                 .body([
                     .custom(key: MOMParamPairKey.email, value: email),
-                    .custom(key: MOMParamPairKey.passwotd, value: password)
+                    .custom(key: MOMParamPairKey.password, value: password)
                 ])
                 .handler(handler)
         )
