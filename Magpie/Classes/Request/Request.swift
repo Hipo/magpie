@@ -63,6 +63,7 @@ extension Request {
         
         var urlRequest = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
         
+        urlRequest.httpShouldHandleCookies = false
         urlRequest.httpMethod = httpMethod.rawValue
         
         do {
