@@ -29,6 +29,7 @@ API client library for iOS, to make network communications easy and standardized
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'
+  s.osx.deployment_target = '10.14'
 
   s.source_files = 'Magpie/Classes/**/*'
   
