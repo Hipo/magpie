@@ -7,6 +7,9 @@
 
 import Foundation
 
+public class EndpointWithNoObject: Endpoint<NoObject> {
+}
+
 public class Endpoint<ObjectType> where ObjectType: Mappable {
     typealias RequestRef = Request<ObjectType>
     
@@ -29,7 +32,7 @@ extension Endpoint {
     }
     
     public func httpHeaders(_ value: HTTPHeaders) -> Endpoint {
-        request.httpHeaders.merge(with: value)
+        request.httpHeaders = value
         return self
     }
     

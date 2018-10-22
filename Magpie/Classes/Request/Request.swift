@@ -13,7 +13,7 @@ public struct Request<ObjectType> where ObjectType: Mappable  {
     public internal(set) var base = ""
     public internal(set) var path: Path
     public internal(set) var httpMethod: HTTPMethod = .get
-    public internal(set) var httpHeaders = HTTPHeaders.defaults()
+    public internal(set) var httpHeaders: HTTPHeaders = []
     public internal(set) var bodyParams: Params?
     public internal(set) var cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData
     public internal(set) var timeout: TimeInterval = 60.0
@@ -88,7 +88,17 @@ extension Request {
         switch dataResponse {
         case .success(let data):
             do {
-                handler?(.success(try ObjectType.decoded(from: data)))
+                if let d = data {
+                    handler?(.success(try ObjectType.decoded(from: d)))
+                    return
+                }
+                
+                if let none = NoObject() as? ObjectType {
+                    handler?(.success(none))
+                    return
+                }
+                
+                handler?(.failure(Error.responseSerialization(.emptyOrCorruptedData(nil))))
             } catch let error {
                 handler?(.failure(
                     Error.responseSerialization(.jsonSerializationFailed(data, error)))

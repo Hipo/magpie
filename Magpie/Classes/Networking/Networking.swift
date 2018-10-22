@@ -8,7 +8,7 @@
 import Foundation
 
 public enum DataResponse {
-    case success(Data)
+    case success(Data?)
     case failure(Error)
 }
 

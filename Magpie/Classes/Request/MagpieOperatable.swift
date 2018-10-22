@@ -8,14 +8,10 @@
 import Foundation
 
 protocol MagpieOperatable: class {
-    func send<ObjectType>(
-        _ request: Request<ObjectType>)
-        -> TaskCancellable?
+    func send<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable?
     where ObjectType: Mappable
 
-    func retry<ObjectType>(
-        _ request: Request<ObjectType>)
-        -> TaskCancellable?
+    func retry<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable?
     where ObjectType: Mappable
 
     func cancel<ObjectType>(_ request: Request<ObjectType>) where ObjectType: Mappable

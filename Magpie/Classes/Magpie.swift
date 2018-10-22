@@ -9,19 +9,24 @@ import Foundation
 
 open class Magpie<OuterNetworking: Networking> {
     public let base: String
+    
+    open var permanentHttpHeaders: HTTPHeaders {
+        return [
+            .accept("application/json"),
+            .contentType("application/json")
+        ]
+    }
 
     private let networking: OuterNetworking
 
-    required public init(base: String, networking: OuterNetworking = OuterNetworking()) {
+    public required init(base: String, networking: OuterNetworking = OuterNetworking()) {
         self.base = base
         self.networking = networking
     }
 }
 
 extension Magpie {
-    open func send<ObjectType>(
-        _ endpoint: Endpoint<ObjectType>)
-        -> EndpointOperatable
+    open func send<ObjectType>(_ endpoint: Endpoint<ObjectType>) -> EndpointOperatable
     where ObjectType: Mappable {
         var request = endpoint.request
 
@@ -30,6 +35,8 @@ extension Magpie {
         }
 
         request.magpie = self
+        request.httpHeaders.merge(with: permanentHttpHeaders)
+
         request.send()
         
         return request
@@ -43,16 +50,12 @@ extension Magpie {
 }
 
 extension Magpie: MagpieOperatable {
-    func send<ObjectType>(
-        _ request: Request<ObjectType>)
-        -> TaskCancellable?
+    func send<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable?
     where ObjectType: Mappable {
         return networking.send(request) { request.handle($0) }
     }
 
-    func retry<ObjectType>(
-        _ request: Request<ObjectType>)
-        -> TaskCancellable?
+    func retry<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable?
     where ObjectType: Mappable {
         return networking.send(request) { request.handle($0) }
     }

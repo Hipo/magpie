@@ -8,6 +8,7 @@
 
 import UIKit
 import Magpie
+import enum Magpie.Error
 
 class ViewController: UIViewController {
     private lazy var usernameField = UITextField()
@@ -111,14 +112,18 @@ class ViewController: UIViewController {
     // MARK: Actions
     
     @objc func fetchGithubRepos() {
-        api.authenticate(with: "salih@hipolabs.com", password: "hipolabs") { (response) in
+        api.authenticate(with: "salih@hipolabs.com", password: "hipolabs") { [weak self] (response) in
             switch response {
             case .success(let user):
                 print("\(user)")
             case .failure(let error):
-                print("\(error.localizedDescription)")
+                self?.handle(error)
             }
         }
+    }
+    
+    func handle(_ error: Error) {
+        print("\(error.localizedDescription)")
     }
 }
 

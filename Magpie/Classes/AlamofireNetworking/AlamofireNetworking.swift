@@ -26,7 +26,7 @@ extension AlamofireNetworking: Networking {
                 .responseData(completionHandler: { (response) in
                     switch response.result {
                     case .success:
-                        handler?(.success(response.data ?? Data())) /// TODO: Data() is right???
+                        handler?(.success(response.data))
                     case .failure(let error):
                         if let afError = error as? AFError {
                             handler?(.failure(
