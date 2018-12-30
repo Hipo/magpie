@@ -7,27 +7,30 @@
 
 import Foundation
 
-open class Magpie<OuterNetworking: Networking> {
+open class Magpie<Networking> where Networking: NetworkingProtocol {
     public let base: String
+    public let networking: Networking
     
-    open var permanentHttpHeaders: HTTPHeaders {
+    open var commonHttpHeaders: HTTPHeaders {
         return [
             .accept("application/json"),
             .contentType("application/json")
         ]
     }
 
-    private let networking: OuterNetworking
+    private var requestBin = RequestBin()
 
-    public required init(base: String, networking: OuterNetworking = OuterNetworking()) {
+    public required init(
+        base: String,
+        networking: Networking = Networking()
+    ) {
         self.base = base
         self.networking = networking
     }
 }
 
 extension Magpie {
-    open func send<ObjectType>(_ endpoint: Endpoint<ObjectType>) -> EndpointOperatable
-    where ObjectType: Mappable {
+    public func send<ObjectType>(_ endpoint: Endpoint<ObjectType>) -> EndpointInteractable where ObjectType: Mappable {
         var request = endpoint.request
 
         if request.base.isEmpty {
@@ -35,32 +38,45 @@ extension Magpie {
         }
 
         request.magpie = self
-        request.httpHeaders.merge(with: permanentHttpHeaders)
-
+        request.httpHeaders.merge(with: commonHttpHeaders)
+        
         request.send()
         
         return request
     }
 
-    open func cancelAllEndpoints() {
-        networking.cancelAll()
+    public func cancelEndpoints(with path: Path) {
+        requestBin.invalidateAndRemoveRequests(with: path)
     }
     
-    // TODO: Add a method to cancel endpoints using a path.
+    public func cancelEndpoints(relativeTo path: Path) {
+        requestBin.invalidateAndRemoveRequests(relativeTo: path)
+    }
+    
+    public func cancelAllEndpoints() {
+        requestBin.invalidateAndRemoveAll()
+    }
 }
 
-extension Magpie: MagpieOperatable {
-    func send<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable?
-    where ObjectType: Mappable {
-        return networking.send(request) { request.handle($0) }
+extension Magpie: MagpieInteractable {
+    func send<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
+        requestBin.append(request)
+        return networking.send(request) { [weak self] dataResponse in
+            self?.requestBin.remove(request)
+            request.handle(dataResponse)
+        }
     }
 
-    func retry<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable?
-    where ObjectType: Mappable {
-        return networking.send(request) { request.handle($0) }
+    func retry<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
+        requestBin.append(request)
+        return networking.send(request) { [weak self] dataResponse in
+            self?.requestBin.remove(request)
+            request.handle(dataResponse)
+        }
     }
     
     func cancel<ObjectType>(_ request: Request<ObjectType>) where ObjectType: Mappable {
+        requestBin.remove(request)
         networking.cancel(request)
     }
 }

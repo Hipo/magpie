@@ -7,8 +7,7 @@
 
 import Foundation
 
-public typealias ResponseHandler<ObjectType> =
-    (Response<ObjectType>) -> Void where ObjectType: Mappable
+public typealias ResponseHandler<ObjectType> = (Response<ObjectType>) -> Void where ObjectType: Mappable
 
 public enum Response<ObjectType> where ObjectType: Mappable {
     case success(ObjectType)
@@ -34,7 +33,6 @@ extension Response {
         if case .failure(let err) = self {
             return err
         }
-        
         return nil
     }
 }

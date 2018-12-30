@@ -8,6 +8,7 @@
 import Foundation
 
 public struct Request<ObjectType> where ObjectType: Mappable  {
+    public typealias ObjectRef = ObjectType
     public typealias Handler = ResponseHandler<ObjectType>
 
     public internal(set) var base = ""
@@ -22,64 +23,10 @@ public struct Request<ObjectType> where ObjectType: Mappable  {
 
     public internal(set) var task: TaskCancellable?
 
-    weak var magpie: MagpieOperatable?
+    weak var magpie: MagpieInteractable?
 
     init(path: Path) {
         self.path = path
-    }
-}
-
-extension Request {
-    public func asURLRequest() throws -> URLRequest {
-        if base.isEmpty {
-            throw Error.requestEncoding(.emptyOrInvalidBaseURL(base))
-        }
-        
-        guard let baseUrl = URL(string: base) else {
-            throw Error.requestEncoding(.emptyOrInvalidBaseURL(base))
-        }
-        
-        var components = URLComponents()
-        
-        components.scheme = baseUrl.scheme
-        components.host = baseUrl.host
-        components.path = path.value
-        
-        do {
-            components.queryItems = try path.queryParams?.asQuery()
-        } catch let error {
-            throw error
-        }
-        
-        guard let url = components.url else {
-            throw Error.requestEncoding(.emptyOrInvalidURL(
-                """
-                Base: \(base)
-                Path: \(path.value)
-                Query: \(path.queryParams?.description ?? "null")
-                """
-                ))
-        }
-        
-        var urlRequest = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
-        
-        urlRequest.httpShouldHandleCookies = false
-        urlRequest.httpMethod = httpMethod.rawValue
-        
-        do {
-            urlRequest.httpBody = try bodyParams?.asBody()
-            
-            if let body = urlRequest.httpBody {
-                let contentLength = HTTPHeader.contentLength("\(body.count)")
-                urlRequest.setValue(contentLength.value, forHTTPHeaderField: contentLength.header)
-            }
-        } catch let error {
-            throw error
-        }
-        
-        httpHeaders.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.header) }
-        
-        return urlRequest
     }
 }
 
@@ -110,7 +57,10 @@ extension Request {
     }
 }
 
-extension Request: EndpointOperatable {
+extension Request: RequestConvertible {
+}
+
+extension Request: EndpointInteractable {
     public mutating func send() {
         task = magpie?.send(self)
     }

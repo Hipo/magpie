@@ -17,7 +17,7 @@ class GithubAPI: Magpie<AlamofireNetworking> {
 extension GithubAPI {
     
     @discardableResult
-    func fetchGithubRepos(with username: String) -> EndpointOperatable {
+    func fetchGithubRepos(with username: String) -> EndpointInteractable {
         return send(
             Endpoint<GithubRepo>(Path("/users/\(username)/repos/"))
         )

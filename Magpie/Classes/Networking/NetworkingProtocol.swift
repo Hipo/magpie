@@ -12,19 +12,17 @@ public enum DataResponse {
     case failure(Error)
 }
 
-public protocol Networking {
+public protocol NetworkingProtocol {
     typealias DataResponseHandler = (DataResponse) -> Void
 
     init()
     
     func send<ObjectType>(
         _ request: Request<ObjectType>,
-        handler: DataResponseHandler?)
-        -> TaskCancellable?
-    where ObjectType: Mappable
+        handler: DataResponseHandler?
+    ) -> TaskCancellable? where ObjectType: Mappable
 
     func cancel<ObjectType>(_ request: Request<ObjectType>) where ObjectType: Mappable
-    func cancelAll()
 }
 
 // TODO: Refactor logging method.

@@ -9,11 +9,15 @@ import Alamofire
 import Foundation
 
 extension Error {
-    init(afError: AFError, responseData: Data?) {
+    init(
+        afError: AFError,
+        responseData: Data?
+    ) {
         guard let code = afError.responseCode else {
             self = .unknown(afError.underlyingError)
             return
         }
+
         self = Error.error(from: (
             statusCode: code,
             underlyingError: afError.underlyingError,

@@ -41,6 +41,114 @@ public enum Error {
     case unknown(SystemError?)
 }
 
+extension Error {
+    public var underlyingError: SystemError? {
+        switch self {
+        case .requestEncoding(let err):
+            return err
+        case .responseSerialization(let err):
+            return err
+        case .redirection(let err),
+             .client(let err),
+             .server(let err):
+            return err.underlyingError
+        case .networkUnavailable(let err):
+            return err
+        case .unexpected(let err):
+            return err
+        case .unknown(let err):
+            return err
+        default:
+            return nil
+        }
+    }
+}
+
+extension Error {
+    init(
+        error: NSError,
+        responseData: Data? = nil
+    ) {
+        if error.domain == NSURLErrorDomain,
+           let urlError = error as? URLError {
+            self = Error.error(from: urlError)
+            return
+        }
+        self = Error.error(from: (
+            statusCode: error.code,
+            underlyingError: error,
+            responseData: responseData
+            )
+        )
+    }
+}
+
+extension Error {
+    static func error(from urlError: URLError) -> Error {
+        switch urlError.code {
+        case .timedOut,
+             .cannotFindHost,
+             .cannotConnectToHost,
+             .networkConnectionLost,
+             .dnsLookupFailed,
+             .notConnectedToInternet,
+             .internationalRoamingOff,
+             .callIsActive,
+             .dataNotAllowed:
+            return .networkUnavailable(urlError)
+        case .cancelled:
+            return .cancelled
+        default:
+            return .unexpected(urlError)
+        }
+    }
+    
+    static func error(from httpError: HTTPError) -> Error {
+        switch httpError.statusCode {
+        case 300..<400:
+            return .redirection(httpError)
+        case 400:
+            return .badRequest(httpError.responseData)
+        case 401:
+            return .unauthorized(httpError.responseData)
+        case 403:
+            return .forbidden(httpError.responseData)
+        case 404:
+            return .notFound(httpError.responseData)
+        case 400..<500:
+            return .client(httpError)
+        case 501:
+            return .notImplemented(httpError.responseData)
+        case 503:
+            return .serviceUnavailable(httpError.responseData)
+        case 500..<600:
+            return .server(httpError)
+        default:
+            return .unknown(httpError.underlyingError)
+        }
+    }
+}
+
+extension Error {
+    public func decodedError<T>() -> T? where T: Mappable {
+        switch self {
+        case .redirection(let err),
+             .client(let err),
+             .server(let err):
+            return err.responseData.map { try? T.decoded(from: $0) } ?? nil
+        case .badRequest(let responseData),
+             .unauthorized(let responseData),
+             .forbidden(let responseData),
+             .notFound(let responseData),
+             .notImplemented(let responseData),
+             .serviceUnavailable(let responseData):
+            return responseData.map { try? T.decoded(from: $0) } ?? nil
+        default:
+            return nil
+        }
+    }
+}
+
 extension Error: SystemError {
     public var localizedDescription: String {
         switch self {
@@ -111,111 +219,6 @@ extension Error.ResponseSerialization: SystemError {
             JSON serialization failed. Data: \(responseJSON ?? "null")
             Reason: \(err?.localizedDescription ?? "null")
             """
-        }
-    }
-}
-
-extension Error {
-    public var underlyingError: SystemError? {
-        switch self {
-        case .requestEncoding(let err):
-            return err
-        case .responseSerialization(let err):
-            return err
-        case .redirection(let err),
-             .client(let err),
-             .server(let err):
-            return err.underlyingError
-        case .networkUnavailable(let err):
-            return err
-        case .unexpected(let err):
-            return err
-        case .unknown(let err):
-            return err
-        default:
-            return nil
-            
-        }
-    }
-}
-
-extension Error {
-    init(error: NSError, responseData: Data? = nil) {
-        if error.domain == NSURLErrorDomain, let urlError = error as? URLError {
-            self = Error.error(from: urlError)
-            return
-        }
-        self = Error.error(from: (
-            statusCode: error.code,
-            underlyingError: error,
-            responseData: responseData
-            )
-        )
-    }
-}
-
-extension Error {
-    public func decodedError<T>() -> T? where T: Mappable {
-        switch self {
-        case .redirection(let err),
-             .client(let err),
-             .server(let err):
-            return err.responseData.map { try? T.decoded(from: $0) } ?? nil
-        case .badRequest(let responseData),
-             .unauthorized(let responseData),
-             .forbidden(let responseData),
-             .notFound(let responseData),
-             .notImplemented(let responseData),
-             .serviceUnavailable(let responseData):
-            return responseData.map { try? T.decoded(from: $0) } ?? nil
-        default:
-            return nil
-        }
-    }
-}
-
-extension Error {
-    static func error(from urlError: URLError) -> Error {
-        switch urlError.code {
-        case .timedOut,
-             .cannotFindHost,
-             .cannotConnectToHost,
-             .networkConnectionLost,
-             .dnsLookupFailed,
-             .notConnectedToInternet,
-             .internationalRoamingOff,
-             .callIsActive,
-             .dataNotAllowed:
-            return .networkUnavailable(urlError)
-        case .cancelled:
-            return .cancelled
-        default:
-            return .unexpected(urlError)
-        }
-    }
-    
-    static func error(from httpError: HTTPError) -> Error {
-        switch httpError.statusCode {
-        case 300..<400:
-            return .redirection(httpError)
-        case 400:
-            return .badRequest(httpError.responseData)
-        case 401:
-            return .unauthorized(httpError.responseData)
-        case 403:
-            return .forbidden(httpError.responseData)
-        case 404:
-            return .notFound(httpError.responseData)
-        case 400..<500:
-            return .client(httpError)
-        case 501:
-            return .notImplemented(httpError.responseData)
-        case 503:
-            return .serviceUnavailable(httpError.responseData)
-        case 500..<600:
-            return .server(httpError)
-        default:
-            return .unknown(httpError.underlyingError)
         }
     }
 }

@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     private lazy var reposButton = UIButton()
     
     // MARK: Variables: API
-    private var request: EndpointOperatable?
+    private var request: EndpointInteractable?
     private let api: MOMAPI
     
     // MARK: Initialization
@@ -112,12 +112,14 @@ class ViewController: UIViewController {
     // MARK: Actions
     
     @objc func fetchGithubRepos() {
-        api.authenticate(with: "salih@hipolabs.com", password: "hipolabs") { [weak self] (response) in
-            switch response {
-            case .success(let user):
-                print("\(user)")
-            case .failure(let error):
-                self?.handle(error)
+        for _ in 0..<5 {
+            api.authenticate(with: "salih@hipolabs.com", password: "hipolabs") { [weak self] (response) in
+                switch response {
+                case .success(let user):
+                    print("\(user)")
+                case .failure(let error):
+                    self?.handle(error)
+                }
             }
         }
     }

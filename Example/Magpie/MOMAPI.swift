@@ -14,7 +14,7 @@ class MOMAPI: Magpie<AlamofireNetworking> {
 
 extension MOMAPI {
     @discardableResult
-    func authenticate(with email: String, password: String, handler: ResponseHandler<MOMUser>?) -> EndpointOperatable {
+    func authenticate(with email: String, password: String, handler: ResponseHandler<MOMUser>?) -> EndpointInteractable {
         return send(
             Endpoint<MOMUser>("/api/profiles/authenticate/")
                 .httpMethod(.post)

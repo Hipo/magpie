@@ -16,7 +16,7 @@ public enum HTTPHeader {
 }
 
 extension HTTPHeader {
-    public var header: String {
+    public var field: String {
         switch self {
         case .accept:
             return "Accept"
@@ -47,13 +47,13 @@ extension HTTPHeader {
 
 extension HTTPHeader: Hashable {
     public var hashValue: Int {
-        return header.hashValue
+        return field.hashValue
     }
 }
 
 extension HTTPHeader: Equatable {
     public static func == (lhs: HTTPHeader, rhs: HTTPHeader) -> Bool {
-        return lhs.header == rhs.header
+        return lhs.field == rhs.field
     }
 }
 

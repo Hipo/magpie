@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol TaskCancellable {
+public protocol TaskCancellable: AnyObject {
     func cancel()
 }

@@ -20,13 +20,20 @@ extension ParamsPairKey {
 
 public protocol ParamsPairValue {
     func asQueryItemValue() -> String?
+    func asBodyElementValue() -> Any
 }
 
 extension ParamsPairValue {
     public func asQueryItemValue() -> String? {
         return nil
     }
+    
+    public func asBodyElementValue() -> Any {
+        return self
+    }
 }
+
+public typealias AnyParamsPairValue = Any & ParamsPairValue
 
 extension String: ParamsPairValue {
     public func asQueryItemValue() -> String? {
@@ -58,10 +65,44 @@ extension Bool: ParamsPairValue {
     }
 }
 
-extension Array: ParamsPairValue where Element: ParamsPairValue {
+extension Array: ParamsPairValue where Element == AnyParamsPairValue {
+    public func asQueryItemValue() -> String? {
+        var queryItemsValues: [String] = []
+        
+        for value in self {
+            guard let theValue = value.asQueryItemValue() else {
+                return nil
+            }
+            queryItemsValues.append(theValue)
+        }
+        
+        return "[" + queryItemsValues.joined(separator: ",") + "]"
+    }
+    
+    public func asBodyElementValue() -> Any {
+        return map { $0.asBodyElementValue() }
+    }
 }
 
-extension Dictionary: ParamsPairValue where Key: ParamsPairKey, Value: ParamsPairValue {
+extension Dictionary: ParamsPairValue where Key: ParamsPairKey, Value == AnyParamsPairValue {
+    public func asQueryItemValue() -> String? {
+        var queryItemValues: [String] = []
+        
+        for (key, value) in self {
+            guard let theValue = value.asQueryItemValue() else {
+                return nil
+            }
+            queryItemValues.append("\(key.description):\(theValue)")
+        }
+        
+        return "{" + queryItemValues.joined(separator: ",") + "}"
+    }
+    
+    public func asBodyElementValue() -> Any {
+        var bodyElementValues: [String: Any] = [:]
+        forEach { bodyElementValues[$0.key.description] = $0.value.asBodyElementValue() }
+        return bodyElementValues
+    }
 }
 
 public enum ParamsPair {
@@ -98,37 +139,7 @@ extension Params {
             return nil
         }
         
-        do {
-            return try pairs.map { (pair) in
-                let key: ParamsPairKey
-                let value: ParamsPairValue?
-                
-                switch pair {
-                case .default(let aKey):
-                    key = aKey
-                    value = aKey.defaultValue
-                case .custom(let aKey, let aValue):
-                    key = aKey
-                    value = aValue
-                }
-                
-                guard let theValue = value?.asQueryItemValue() else {
-                    throw Error.requestEncoding(.invalidURLQuery(self))
-                }
-                
-                return URLQueryItem(name: key.description, value: theValue)
-            }
-        } catch let exp {
-            throw exp
-        }
-    }
-    
-    public func asBody() throws -> Data? {
-        if pairs.isEmpty {
-            return nil
-        }
-        
-        let pairsJSON: [String: ParamsPairValue] = pairs.reduce([:]) { (JSON, pair) in
+        return try pairs.map { (pair) in
             let key: ParamsPairKey
             let value: ParamsPairValue?
             
@@ -141,8 +152,34 @@ extension Params {
                 value = aValue
             }
             
-            guard let theValue = value else {
-                return JSON
+            guard let theValue = value?.asQueryItemValue() else {
+                throw Error.requestEncoding(.invalidURLQuery(self))
+            }
+            
+            return URLQueryItem(name: key.description, value: theValue)
+        }
+    }
+    
+    public func asBody() throws -> Data? {
+        if pairs.isEmpty {
+            return nil
+        }
+        
+        let pairsJSON: [String: Any] = try pairs.reduce([:]) { (JSON, pair) in
+            let key: ParamsPairKey
+            let value: ParamsPairValue?
+            
+            switch pair {
+            case .default(let aKey):
+                key = aKey
+                value = aKey.defaultValue
+            case .custom(let aKey, let aValue):
+                key = aKey
+                value = aValue
+            }
+            
+            guard let theValue = value?.asBodyElementValue() else {
+                throw Error.requestEncoding(.invalidHTTPBody(self, nil))
             }
             
             var mutableJSON = JSON

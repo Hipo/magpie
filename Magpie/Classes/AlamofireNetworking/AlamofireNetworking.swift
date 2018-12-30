@@ -13,14 +13,13 @@ public class AlamofireNetworking {
     }
 }
 
-extension AlamofireNetworking: Networking {
+extension AlamofireNetworking: NetworkingProtocol {
     public func send<ObjectType>(
         _ request: Request<ObjectType>,
-        handler: DataResponseHandler?)
-        -> TaskCancellable?
-    where ObjectType : Mappable {
+        handler: DataResponseHandler?
+    ) -> TaskCancellable? where ObjectType : Mappable {
         do {
-            let urlRequest = try request.asURLRequest()
+            let urlRequest = try request.asUrlRequest()
             return Alamofire.request(urlRequest)
                 .validate()
                 .responseData(completionHandler: { (response) in
@@ -44,17 +43,11 @@ extension AlamofireNetworking: Networking {
         } catch let err {
             handler?(.failure(.unknown(err)))
         }
+
         return nil
     }
     
     public func cancel<ObjectType>(_ request: Request<ObjectType>) where ObjectType: Mappable {
         request.task?.cancel()
-    }
-    
-    public func cancelAll() {
-        Alamofire.SessionManager.default.session.getTasksWithCompletionHandler {
-            (dataTasks, _, _) in
-            dataTasks.forEach { $0.cancel() }
-        }
     }
 }

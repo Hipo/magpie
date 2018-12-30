@@ -15,3 +15,9 @@ public enum HTTPMethod: String {
     case put = "PUT"
     case patch = "PATCH"
 }
+
+extension HTTPMethod: CustomStringConvertible {
+    public var description: String {
+        return rawValue
+    }
+}
