@@ -65,6 +65,12 @@ extension Bool: ParamsPairValue {
     }
 }
 
+extension NSNull: ParamsPairValue {
+    public func asQueryItemValue() -> String? {
+        return "null"
+    }
+}
+
 extension Array: ParamsPairValue where Element == AnyParamsPairValue {
     public func asQueryItemValue() -> String? {
         var queryItemsValues: [String] = []
