@@ -40,6 +40,7 @@ extension RequestConvertible {
         components.scheme = baseUrl.scheme
         components.host = baseUrl.host
         components.path = path.value
+        components.port = baseUrl.port
         
         do {
             components.queryItems = try path.queryParams?.asQuery()
