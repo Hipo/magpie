@@ -44,6 +44,21 @@ extension Magpie {
         
         return request
     }
+    
+    public func upload<ObjectType>(data: Data, toEndpoint endpoint: Endpoint<ObjectType>) -> EndpointInteractable where ObjectType: Mappable {
+        var request = endpoint.request
+        
+        if request.base.isEmpty {
+            request.base = base
+        }
+        
+        request.magpie = self
+        request.httpHeaders.merge(with: commonHttpHeaders)
+        
+        request.upload(data: data)
+        
+        return request
+    }
 
     public func cancelEndpoints(with path: Path) {
         requestBin.invalidateAndRemoveRequests(with: path)
@@ -65,6 +80,14 @@ extension Magpie: MagpieInteractable {
             self?.requestBin.remove(request)
             request.handle(dataResponse)
         }
+    }
+    
+    func upload<ObjectType>(_ request: Request<ObjectType>, withData data: Data) -> TaskCancellable? where ObjectType : Mappable {
+        requestBin.append(request)
+        return networking.upload(request, withData: data, handler: { [weak self] dataResponse in
+            self?.requestBin.remove(request)
+            request.handle(dataResponse)
+        })
     }
 
     func retry<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {

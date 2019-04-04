@@ -21,6 +21,12 @@ public protocol NetworkingProtocol {
         _ request: Request<ObjectType>,
         handler: DataResponseHandler?
     ) -> TaskCancellable? where ObjectType: Mappable
+    
+    func upload<ObjectType>(
+        _ request: Request<ObjectType>,
+        withData data: Data,
+        handler: DataResponseHandler?
+    ) -> TaskCancellable? where ObjectType : Mappable
 
     func cancel<ObjectType>(_ request: Request<ObjectType>) where ObjectType: Mappable
 }
