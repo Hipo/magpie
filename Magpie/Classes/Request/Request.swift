@@ -64,6 +64,10 @@ extension Request: EndpointInteractable {
     public mutating func send() {
         task = magpie?.send(self)
     }
+    
+    public mutating func upload(data: Data) {
+        task = magpie?.upload(self, withData: data)
+    }
 
     public mutating func retry() {
         task = magpie?.retry(self)
