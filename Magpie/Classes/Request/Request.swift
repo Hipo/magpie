@@ -35,13 +35,13 @@ extension Request {
         switch dataResponse {
         case .success(let data):
             do {
-                if let d = data {
-                    handler?(.success(try ObjectType.decoded(from: d)))
+                if let none = NoObject() as? ObjectType {
+                    handler?(.success(none))
                     return
                 }
                 
-                if let none = NoObject() as? ObjectType {
-                    handler?(.success(none))
+                if let d = data {
+                    handler?(.success(try ObjectType.decoded(from: d)))
                     return
                 }
                 
