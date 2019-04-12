@@ -45,6 +45,21 @@ extension Magpie {
         return request
     }
     
+    public func sendInvalidated<ObjectType>(_ endpoint: Endpoint<ObjectType>) -> EndpointInteractable where ObjectType: Mappable {
+        var request = endpoint.request
+        
+        if request.base.isEmpty {
+            request.base = base
+        }
+        
+        request.magpie = self
+        request.httpHeaders.merge(with: commonHttpHeaders)
+        
+        request.sendInvalidated()
+        
+        return request
+    }
+    
     public func upload<ObjectType>(data: Data, toEndpoint endpoint: Endpoint<ObjectType>) -> EndpointInteractable where ObjectType: Mappable {
         var request = endpoint.request
         
