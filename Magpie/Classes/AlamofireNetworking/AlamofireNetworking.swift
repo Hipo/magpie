@@ -47,6 +47,38 @@ extension AlamofireNetworking: NetworkingProtocol {
         return nil
     }
     
+    public func sendInvalidated<ObjectType>(
+        _ request: Request<ObjectType>,
+        handler: DataResponseHandler?
+    ) -> TaskCancellable? where ObjectType : Mappable {
+        do {
+            let urlRequest = try request.asUrlRequest()
+            return Alamofire.request(urlRequest)
+                .responseData(completionHandler: { (response) in
+                    switch response.result {
+                    case .success:
+                        handler?(.success(response.data))
+                    case .failure(let error):
+                        if let afError = error as? AFError {
+                            handler?(.failure(
+                                Error(afError: afError, responseData: response.data))
+                            )
+                            return
+                        }
+                        handler?(.failure(
+                            Error(error: error as NSError, responseData: response.data))
+                        )
+                    }
+                })
+        } catch let error as Error {
+            handler?(.failure(error))
+        } catch let err {
+            handler?(.failure(.unknown(err)))
+        }
+        
+        return nil
+    }
+    
     public func upload<ObjectType>(
         _ request: Request<ObjectType>,
         withData data: Data,
