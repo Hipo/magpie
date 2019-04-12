@@ -65,6 +65,10 @@ extension Request: EndpointInteractable {
         task = magpie?.send(self)
     }
     
+    public mutating func sendInvalidated() {
+        task = magpie?.sendInvalidated(self)
+    }
+    
     public mutating func upload(data: Data) {
         task = magpie?.upload(self, withData: data)
     }

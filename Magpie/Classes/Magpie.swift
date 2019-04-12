@@ -82,6 +82,14 @@ extension Magpie: MagpieInteractable {
         }
     }
     
+    func sendInvalidated<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
+        requestBin.append(request)
+        return networking.sendInvalidated(request) { [weak self] dataResponse in
+            self?.requestBin.remove(request)
+            request.handle(dataResponse)
+        }
+    }
+    
     func upload<ObjectType>(_ request: Request<ObjectType>, withData data: Data) -> TaskCancellable? where ObjectType : Mappable {
         requestBin.append(request)
         return networking.upload(request, withData: data, handler: { [weak self] dataResponse in
