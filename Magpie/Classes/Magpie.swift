@@ -8,7 +8,7 @@
 import Foundation
 
 open class Magpie<Networking> where Networking: NetworkingProtocol {
-    public let base: String
+    public var base: String
     public let networking: Networking
     
     open var commonHttpHeaders: HTTPHeaders {
