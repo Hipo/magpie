@@ -18,7 +18,7 @@ open class Magpie<Networking> where Networking: NetworkingProtocol {
         ]
     }
 
-    private var requestBin = RequestBin()
+    private var taskBin = TaskBin()
 
     public required init(
         base: String,
@@ -76,53 +76,69 @@ extension Magpie {
     }
 
     public func cancelEndpoints(with path: Path) {
-        requestBin.invalidateAndRemoveRequests(with: path)
+        taskBin.cancelAndRemoveAll(for: path)
     }
     
     public func cancelEndpoints(relativeTo path: Path) {
-        requestBin.invalidateAndRemoveRequests(relativeTo: path)
+        taskBin.cancelAndRemoveAll(relativeTo: path)
     }
     
     public func cancelAllEndpoints() {
-        requestBin.invalidateAndRemoveAll()
+        taskBin.cancelAndRemoveAll()
     }
 }
 
 extension Magpie: MagpieInteractable {
     func send<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
-        requestBin.append(request)
-        return networking.send(request) { [weak self] dataResponse in
-            self?.requestBin.remove(request)
+        let task = networking.send(request) { [weak self] dataResponse in
+            self?.taskBin.removeTask(for: request)
             request.handle(dataResponse)
         }
+
+        if let someTask = task {
+            taskBin.save(someTask, for: request)
+        }
+        return task
     }
     
     func sendInvalidated<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
-        requestBin.append(request)
-        return networking.sendInvalidated(request) { [weak self] dataResponse in
-            self?.requestBin.remove(request)
+        let task = networking.sendInvalidated(request) { [weak self] dataResponse in
+            self?.taskBin.removeTask(for: request)
             request.handle(dataResponse)
         }
+
+        if let someTask = task {
+            taskBin.save(someTask, for: request)
+        }
+        return task
     }
     
     func upload<ObjectType>(_ request: Request<ObjectType>, withData data: Data) -> TaskCancellable? where ObjectType : Mappable {
-        requestBin.append(request)
-        return networking.upload(request, withData: data, handler: { [weak self] dataResponse in
-            self?.requestBin.remove(request)
+        let task = networking.upload(request, withData: data, handler: { [weak self] dataResponse in
+            self?.taskBin.removeTask(for: request)
             request.handle(dataResponse)
         })
+
+        if let someTask = task {
+            taskBin.save(someTask, for: request)
+        }
+        return task
     }
 
     func retry<ObjectType>(_ request: Request<ObjectType>) -> TaskCancellable? where ObjectType: Mappable {
-        requestBin.append(request)
-        return networking.send(request) { [weak self] dataResponse in
-            self?.requestBin.remove(request)
+        let task = networking.send(request) { [weak self] dataResponse in
+            self?.taskBin.removeTask(for: request)
             request.handle(dataResponse)
         }
+
+        if let someTask = task {
+            taskBin.save(someTask, for: request)
+        }
+        return task
     }
     
     func cancel<ObjectType>(_ request: Request<ObjectType>) where ObjectType: Mappable {
-        requestBin.remove(request)
+        taskBin.removeTask(for: request)
         networking.cancel(request)
     }
 }

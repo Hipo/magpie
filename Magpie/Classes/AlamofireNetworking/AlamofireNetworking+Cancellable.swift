@@ -9,4 +9,7 @@ import Alamofire
 import Foundation
 
 extension Alamofire.DataRequest: TaskCancellable {
+    public var underlyingTask: URLSessionTask? {
+        return task
+    }
 }

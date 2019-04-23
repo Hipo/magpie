@@ -8,5 +8,6 @@
 import Foundation
 
 public protocol TaskCancellable: AnyObject {
+    var underlyingTask: URLSessionTask? { get }
     func cancel()
 }

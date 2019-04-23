@@ -302,7 +302,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Magpie_Example/Pods-Magpie_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Magpie_Example/Pods-Magpie_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Magpie/Magpie.framework",
 			);
@@ -313,7 +313,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Magpie_Example/Pods-Magpie_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Magpie_Example/Pods-Magpie_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		86D16D6074D1ED78D3C23BF0 /* [CP] Check Pods Manifest.lock */ = {
