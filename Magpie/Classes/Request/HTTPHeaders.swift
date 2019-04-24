@@ -83,11 +83,10 @@ extension HTTPHeaders {
     
     public mutating func merge(with newHeaders: HTTPHeaders) {
         newHeaders.forEach { (newHeader) in
-            guard let foundIdx = headers.index(of: newHeader) else {
+            guard headers.index(of: newHeader) != nil else {
                 headers.append(newHeader)
                 return
             }
-            headers[foundIdx] = newHeader
         }
     }
 }
