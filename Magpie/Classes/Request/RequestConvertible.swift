@@ -48,17 +48,7 @@ extension RequestConvertible {
             throw error
         }
         
-        guard let url = components.url else {
-            throw Error.requestEncoding(.emptyOrInvalidURL(
-                """
-                Base: \(base)
-                Path: \(path.value)
-                Query: \(path.queryParams?.description ?? "null")
-                """
-                ))
-        }
-        
-        var urlRequest = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
+        var urlRequest = URLRequest(url: baseUrl, cachePolicy: cachePolicy, timeoutInterval: timeout)
         
         urlRequest.httpShouldHandleCookies = false
         urlRequest.httpMethod = httpMethod.rawValue
