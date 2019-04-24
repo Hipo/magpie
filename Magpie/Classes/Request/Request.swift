@@ -7,23 +7,15 @@
 
 import Foundation
 
-public struct Request<ObjectType> where ObjectType: Mappable  {
-    public typealias ObjectRef = ObjectType
-    public typealias Handler = ResponseHandler<ObjectType>
-
-    public internal(set) var base = ""
-    public internal(set) var path: Path
-    public internal(set) var httpMethod: HTTPMethod = .get
-    public internal(set) var httpHeaders: HTTPHeaders = []
-    public internal(set) var bodyParams: Params?
-    public internal(set) var cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData
-    public internal(set) var timeout: TimeInterval = 60.0
-    
-    public internal(set) var handler: Handler?
-
-    public internal(set) var task: TaskCancellable?
-
-    weak var magpie: MagpieInteractable?
+public class Request  {
+    var base = ""
+    var path: Path
+    var httpMethod: Method = .get
+    var queryEncoder: QueryEncoding?
+    var httpBodyEncoder: HTTPBodyEncoding?
+    var httpHeaders: Headers = []
+    var cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData
+    var timeout: TimeInterval = 60.0
 
     init(path: Path) {
         self.path = path
@@ -31,54 +23,68 @@ public struct Request<ObjectType> where ObjectType: Mappable  {
 }
 
 extension Request {
-    func handle(_ dataResponse: DataResponse) {
-        switch dataResponse {
-        case .success(let data):
-            do {
-                if let none = NoObject() as? ObjectType {
-                    handler?(.success(none))
-                    return
-                }
-                
-                if let d = data {
-                    handler?(.success(try ObjectType.decoded(from: d)))
-                    return
-                }
-                
-                handler?(.failure(Error.responseSerialization(.emptyOrCorruptedData(nil))))
-            } catch let error {
-                handler?(.failure(
-                    Error.responseSerialization(.jsonSerializationFailed(data, error)))
-                )
+    public func asUrlRequest() throws -> URLRequest {
+        guard let baseUrl = URL(string: base) else {
+            throw Error.requestEncoding(.emptyOrInvalidBaseURL(base))
+        }
+
+        do {
+            var components = URLComponents()
+
+            components.scheme = baseUrl.scheme
+            components.host = baseUrl.host
+            components.port = baseUrl.port
+            components.path = baseUrl.path + path.decoded()
+
+            if let queryEncoder = queryEncoder {
+                components.queryItems = try queryEncoder.encode()
             }
-        case .failure(let error):
-            handler?(.failure(error))
+
+            guard let url = components.url else {
+                throw Error.requestEncoding(.emptyOrInvalidURL(self))
+            }
+
+            var urlRequest = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
+
+            urlRequest.httpMethod = httpMethod.decoded()
+            urlRequest.httpShouldHandleCookies = false
+
+            if let encoder = httpBodyEncoder {
+                if let httpBody = try encoder.encode() {
+                    let field = Headers.Field.contentLength(.some(String(httpBody.count))).decoded()
+
+                    urlRequest.httpBody = httpBody
+                    urlRequest.setValue(field.value, forHTTPHeaderField: field.key)
+                }
+            }
+
+            for field in httpHeaders {
+                urlRequest.setValue(field.value, forHTTPHeaderField: field.key)
+            }
+
+            return urlRequest
+        } catch let error {
+            throw Error.requestEncoding(.failed(self, error))
         }
     }
 }
 
-extension Request: RequestConvertible {
-}
-
-extension Request: EndpointInteractable {
-    public mutating func send() {
-        task = magpie?.send(self)
-    }
-    
-    public mutating func sendInvalidated() {
-        task = magpie?.sendInvalidated(self)
-    }
-    
-    public mutating func upload(data: Data) {
-        task = magpie?.upload(self, withData: data)
+extension Request: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        do {
+            let urlRequest = try asUrlRequest()
+            return "\(httpMethod.description) \(urlRequest.description)"
+        } catch {
+            return "<invalid>"
+        }
     }
 
-    public mutating func retry() {
-        task = magpie?.retry(self)
-    }
-
-    public mutating func invalidate() {
-        magpie?.cancel(self)
-        task = nil
+    public var debugDescription: String {
+        do {
+            let urlRequest = try asUrlRequest()
+            return urlRequest.asCURL() ?? urlRequest.debugDescription
+        } catch {
+            return "<invalid>"
+        }
     }
 }
