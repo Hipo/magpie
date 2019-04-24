@@ -39,7 +39,7 @@ extension RequestConvertible {
         
         components.scheme = baseUrl.scheme
         components.host = baseUrl.host
-        components.path = path.value
+        components.path = baseUrl.path.appending(path.value)
         components.port = baseUrl.port
         
         do {
@@ -48,7 +48,17 @@ extension RequestConvertible {
             throw error
         }
         
-        var urlRequest = URLRequest(url: baseUrl, cachePolicy: cachePolicy, timeoutInterval: timeout)
+        guard let url = components.url else {
+            throw Error.requestEncoding(.emptyOrInvalidURL(
+                """
+                Base: \(base)
+                Path: \(path.value)
+                Query: \(path.queryParams?.description ?? "null")
+                """
+                ))
+        }
+        
+        var urlRequest = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
         
         urlRequest.httpShouldHandleCookies = false
         urlRequest.httpMethod = httpMethod.rawValue
