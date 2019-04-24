@@ -190,7 +190,7 @@ extension Magpie {
     }
 
     func cancel(_ endpoint: Endpoint) {
-        endpoint.task?.cancel()
+        endpoint.task?.cancelImmediately()
     }
 }
 

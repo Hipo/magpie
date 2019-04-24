@@ -10,7 +10,7 @@ import Foundation
 public protocol TaskConvertible: AnyObject, CustomStringConvertible, CustomDebugStringConvertible {
     var underlyingTask: URLSessionTask? { get }
 
-    func cancel()
+    func cancelImmediately()
 }
 
 extension TaskConvertible {
