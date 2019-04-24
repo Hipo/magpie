@@ -2,7 +2,7 @@
 //  TaskBin.swift
 //  Magpie
 //
-//  Created by Salih Karasuluoglu on 23.04.2019.
+//  Created by Salih Karasuluoglu on 4.04.2019.
 //
 
 import Foundation
@@ -20,27 +20,25 @@ struct TaskBin {
 }
 
 extension TaskBin {
-    typealias Endpoint = RequestConvertible & EndpointInteractable
-
-    func save(_ task: TaskCancellable, for endpoint: Endpoint) {
-        save(task, for: endpoint.path)
+    func save(_ task: TaskConvertible, for endpoint: Endpoint) {
+        save(task, for: endpoint.request.path)
     }
 
     func removeTask(for endpoint: Endpoint) {
         if let task = endpoint.task {
-            remove(task, for: endpoint.path)
+            remove(task, for: endpoint.request.path)
         }
     }
 
     func cancelAndRemoveTask(for endpoint: Endpoint) {
         if let task = endpoint.task {
-            cancelAndRemove(task, for: endpoint.path)
+            cancelAndRemove(task, for: endpoint.request.path)
         }
     }
 }
 
 extension TaskBin {
-    func save(_ task: TaskCancellable, for path: Path) {
+    func save(_ task: TaskConvertible, for path: Path) {
         guard let urlSessionTask = task.underlyingTask else {
             return
         }
@@ -60,15 +58,15 @@ extension TaskBin {
         }
     }
 
-    func remove(_ task: TaskCancellable, for path: Path) {
+    func remove(_ task: TaskConvertible, for path: Path) {
         remove(task, for: path, afterCancellation: false)
     }
 
-    func cancelAndRemove(_ task: TaskCancellable, for path: Path) {
+    func cancelAndRemove(_ task: TaskConvertible, for path: Path) {
         remove(task, for: path, afterCancellation: true)
     }
 
-    private func remove(_ task: TaskCancellable, for path: Path, afterCancellation: Bool) {
+    private func remove(_ task: TaskConvertible, for path: Path, afterCancellation: Bool) {
         guard let urlSessionTask = task.underlyingTask else {
             return
         }
@@ -151,7 +149,7 @@ extension TaskBin {
     }
 
     private func makeKey(_ path: Path) -> String {
-        return path.value
+        return path.origin
     }
 }
 
@@ -172,4 +170,3 @@ extension TaskBin: CustomStringConvertible, CustomDebugStringConvertible {
         return "{\n\t\(elementDescriptions.joined(separator: ",\n\t"))\n}"
     }
 }
-

@@ -8,62 +8,41 @@
 import Foundation
 
 public struct Path {
-    let value: String
-    var queryParams: Params?
+    let origin: String
     
-    public init(_ path: String) {
-        self.value = path
-    }
-    
-    public mutating func with(query queryParams: Params?) {
-        self.queryParams = queryParams
+    public init(_ origin: String) {
+        self.origin = origin
     }
 }
 
 extension Path {
-    func toString() throws -> String {
-        guard let params = queryParams else {
-            return value
-        }
-        
-        let query = try params.asQuery()?.encoded() ?? ""
-        return value + query
+    public func decoded() -> String {
+        return origin
     }
 }
 
 extension Path {
-    func contains(_ path: Path) -> Bool {
-        do {
-            let string = try toString()
-            let otherString = try path.toString()
+    public func contains(_ otherPath: Path) -> Bool {
+        let decodedPath = decoded()
+        let otherDecodedPath = otherPath.decoded()
+        return decodedPath.contains(otherDecodedPath)
+    }
 
-            return string.contains(otherString)
-        } catch {
-            return false
-        }
+    public func contains(_ string: String) -> Bool {
+        let decodedPath = decoded()
+        return decodedPath.contains(string)
     }
 }
 
 extension Path: Hashable {
-    public var hashValue: Int {
-        guard let string = try? toString() else {
-            return value.hashValue
-        }
-        return string.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(decoded())
     }
     
-    public static func == (
-        lhs: Path,
-        rhs: Path
-    ) -> Bool {
-        do {
-            let lString = try lhs.toString()
-            let rString = try rhs.toString()
-            
-            return lString == rString
-        } catch {
-            return false
-        }
+    public static func == (lhs: Path, rhs: Path) -> Bool {
+        let lDecodedPath = lhs.decoded()
+        let rDecodedPath = rhs.decoded()
+        return lDecodedPath == rDecodedPath
     }
 }
 
@@ -72,5 +51,11 @@ extension Path: ExpressibleByStringLiteral {
     
     public init(stringLiteral value: StringLiteralType) {
         self = Path(value)
+    }
+}
+
+extension Path: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        return decoded()
     }
 }

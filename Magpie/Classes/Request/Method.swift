@@ -1,5 +1,5 @@
 //
-//  HTTPMethod.swift
+//  Method.swift
 //  Magpie
 //
 //  Created by Salih Karasuluoglu on 21.10.2018.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum HTTPMethod: String {
+public enum Method: String {
     case get = "GET"
     case head = "HEAD"
     case delete = "DELETE"
@@ -16,8 +16,14 @@ public enum HTTPMethod: String {
     case patch = "PATCH"
 }
 
-extension HTTPMethod: CustomStringConvertible {
-    public var description: String {
+extension Method {
+    public func decoded() -> String {
         return rawValue
+    }
+}
+
+extension Method: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        return decoded()
     }
 }

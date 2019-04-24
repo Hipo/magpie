@@ -7,38 +7,24 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'Magpie'
-  s.version          = '0.1.0'
-  s.summary          = 'API client library for iOS, works with Alamofire'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
-  s.description      = <<-DESC
-API client library for iOS, to make network communications easy and standardized
-                       DESC
-
-  s.homepage         = 'https://github.com/hipo/Magpie'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'eraydiler' => 'eray@hipolabs.com' }
-  s.source           = { :git => 'https://github.com/Hipo/magpie.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-
-  s.ios.deployment_target = '8.0'
+  s.name                  = 'Magpie'
+  s.version               = '1.0.0'
+  s.license               = { :type => 'MIT', :file => 'LICENSE' }
+  s.homepage              = 'https://github.com/hipo/Magpie'
+  s.summary               = 'Standardized & Simplified API layer for iOS'
+  s.source                = { :git => 'https://github.com/Hipo/magpie.git', :tag => s.version.to_s }
+  s.author                = { 'Hipo' => 'hello@hipolabs.com' }
+  s.ios.deployment_target = '10.0'
   s.osx.deployment_target = '10.14'
+  s.swift_version         = '4.2'
+  s.default_subspec       = 'Package'
 
-  s.source_files = 'Magpie/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'Magpie' => ['Magpie/Assets/*.png']
-  # }
+  s.subspec 'Lite' do |lite|
+      lite.source_files = 'Magpie/Classes/{Core,Endpoint,Error,Monitoring,Request,Response,Utilities}/*.swift'
+  end
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
-  s.dependency 'Alamofire'
+  s.subspec 'Package' do |package|
+      package.source_files = 'Magpie/Classes/**/*.swift'
+      package.dependency 'Alamofire', '~> 4.8'
+  end
 end

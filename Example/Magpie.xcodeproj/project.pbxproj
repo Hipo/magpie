@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2A87CD972163C0BA00A0E528 /* GithubEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A87CD962163C0BA00A0E528 /* GithubEvents.swift */; };
-		2AD2103221662D930066D306 /* GithubError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD2103121662D930066D306 /* GithubError.swift */; };
-		2AD29A002153F1BD00214A5B /* GithubAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD299FE2153F1BD00214A5B /* GithubAPI.swift */; };
-		2AD29A012153F1BD00214A5B /* GithubRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD299FF2153F1BD00214A5B /* GithubRepo.swift */; };
 		569620671145A13655CDC438 /* Pods_Magpie_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E1DCC0910E52CAB15DA4C21 /* Pods_Magpie_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -18,9 +14,6 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		B122446B25FDE38BCFE09701 /* Pods_Magpie_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BB5375CE679764B775A3B3 /* Pods_Magpie_Example.framework */; };
-		CD6BFA1B216E844A00C138A5 /* MOMAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6BFA1A216E844A00C138A5 /* MOMAPI.swift */; };
-		CD6BFA1D216E84EE00C138A5 /* MOMUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6BFA1C216E84EE00C138A5 /* MOMUser.swift */; };
-		CD6BFA1F216E872A00C138A5 /* MOMParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6BFA1E216E872A00C138A5 /* MOMParams.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,10 +29,6 @@
 /* Begin PBXFileReference section */
 		0066BC2D7948741D41044353 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		0E1DCC0910E52CAB15DA4C21 /* Pods_Magpie_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Magpie_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2A87CD962163C0BA00A0E528 /* GithubEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubEvents.swift; sourceTree = "<group>"; };
-		2AD2103121662D930066D306 /* GithubError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubError.swift; sourceTree = "<group>"; };
-		2AD299FE2153F1BD00214A5B /* GithubAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GithubAPI.swift; sourceTree = "<group>"; };
-		2AD299FF2153F1BD00214A5B /* GithubRepo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GithubRepo.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Magpie_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Magpie_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -55,9 +44,6 @@
 		B87AEE5B6C065787CCAEB2FB /* Pods-Magpie_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Tests/Pods-Magpie_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		C1D2CF8E73EC2C1580A761C2 /* Magpie.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Magpie.podspec; path = ../Magpie.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		C7BB5375CE679764B775A3B3 /* Pods_Magpie_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Magpie_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD6BFA1A216E844A00C138A5 /* MOMAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOMAPI.swift; sourceTree = "<group>"; };
-		CD6BFA1C216E84EE00C138A5 /* MOMUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOMUser.swift; sourceTree = "<group>"; };
-		CD6BFA1E216E872A00C138A5 /* MOMParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOMParams.swift; sourceTree = "<group>"; };
 		D927D811A8DD93430482D3EC /* Pods-Magpie_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Example/Pods-Magpie_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -107,13 +93,6 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
-				CD6BFA1A216E844A00C138A5 /* MOMAPI.swift */,
-				CD6BFA1C216E84EE00C138A5 /* MOMUser.swift */,
-				CD6BFA1E216E872A00C138A5 /* MOMParams.swift */,
-				2AD299FE2153F1BD00214A5B /* GithubAPI.swift */,
-				2AD299FF2153F1BD00214A5B /* GithubRepo.swift */,
-				2A87CD962163C0BA00A0E528 /* GithubEvents.swift */,
-				2AD2103121662D930066D306 /* GithubError.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
@@ -225,7 +204,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = CocoaPods;
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
@@ -241,7 +220,7 @@
 			};
 			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "Magpie" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -341,14 +320,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD6BFA1D216E84EE00C138A5 /* MOMUser.swift in Sources */,
-				2AD29A012153F1BD00214A5B /* GithubRepo.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
-				2A87CD972163C0BA00A0E528 /* GithubEvents.swift in Sources */,
-				CD6BFA1F216E872A00C138A5 /* MOMParams.swift in Sources */,
-				CD6BFA1B216E844A00C138A5 /* MOMAPI.swift in Sources */,
-				2AD2103221662D930066D306 /* GithubError.swift in Sources */,
-				2AD29A002153F1BD00214A5B /* GithubAPI.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -387,6 +359,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -442,6 +415,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -492,6 +466,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Magpie/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -507,6 +482,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Magpie/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -526,6 +502,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -541,6 +518,7 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";

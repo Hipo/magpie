@@ -2,7 +2,7 @@
 //  AtomicVar.swift
 //  Magpie
 //
-//  Created by Salih Karasuluoglu on 23.04.2019.
+//  Created by Salih Karasuluoglu on 5.04.2019.
 //
 
 /// <reference>
