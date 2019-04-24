@@ -8,15 +8,15 @@
 
 Pod::Spec.new do |s|
   s.name                  = 'Magpie'
-  s.version               = '1.0.6'
+  s.version               = '2.0.0'
   s.license               = { :type => 'MIT', :file => 'LICENSE' }
-  s.homepage              = 'https://github.com/hipo/Magpie'
+  s.homepage              = 'https://github.com/hipo/magpie'
   s.summary               = 'Standardized & Simplified API layer for iOS'
   s.source                = { :git => 'https://github.com/Hipo/magpie.git', :tag => s.version.to_s }
   s.author                = { 'Hipo' => 'hello@hipolabs.com' }
   s.ios.deployment_target = '10.0'
   s.osx.deployment_target = '10.14'
-  s.swift_version         = '4.2'
+  s.swift_version         = '5.0'
   s.default_subspec       = 'Package'
 
   s.subspec 'Lite' do |lite|
@@ -25,6 +25,6 @@ Pod::Spec.new do |s|
 
   s.subspec 'Package' do |package|
       package.source_files = 'Magpie/Classes/**/*.swift'
-      package.dependency 'Alamofire', '~> 4.8'
+      package.dependency 'Alamofire', '~> 5.0.0-beta.5'
   end
 end
