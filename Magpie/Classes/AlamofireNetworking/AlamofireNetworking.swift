@@ -55,6 +55,13 @@ extension AlamofireNetworking: NetworkingProtocol {
             let urlRequest = try request.asUrlRequest()
             return Alamofire.request(urlRequest)
                 .responseData(completionHandler: { (response) in
+                    let statusCode = response.response?.statusCode ?? 500
+                    
+                    guard statusCode >= 200 && statusCode < 300 else {
+                        handler?(.failure(.unknown(response.error)))
+                        return
+                    }
+                    
                     switch response.result {
                     case .success:
                         handler?(.success(response.data))
