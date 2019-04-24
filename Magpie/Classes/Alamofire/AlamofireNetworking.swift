@@ -14,7 +14,7 @@ public class AlamofireNetworking: Networking {
     public func send(_ request: Request, validateFirst: Bool, then handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
-            let dataRequest = Alamofire.request(urlRequest)
+            let dataRequest = AF.request(urlRequest)
 
             if validateFirst {
                 dataRequest.validate()
@@ -45,9 +45,9 @@ public class AlamofireNetworking: Networking {
 
             switch source {
             case .data(let data):
-                uploadRequest = Alamofire.upload(data, with: urlRequest)
+                uploadRequest = AF.upload(data, with: urlRequest)
             case .file(let url):
-                uploadRequest = Alamofire.upload(url, with: urlRequest)
+                uploadRequest = AF.upload(url, with: urlRequest)
             }
 
             if validateFirst {

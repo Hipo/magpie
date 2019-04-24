@@ -67,6 +67,8 @@ open class NWNetworkMonitor: NetworkMonitor {
             default:
                 return .disconnected(.none)
             }
+        @unknown default:
+            return .undetermined
         }
     }
 
