@@ -8,7 +8,7 @@
 import Alamofire
 import Foundation
 
-public class AlamofireNetworking {
+open class AlamofireNetworking {
     required public init() {
     }
 }
