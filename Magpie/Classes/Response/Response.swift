@@ -55,6 +55,19 @@ extension Response {
         return .failure(errorContainer.decoded())
     }
 
+    public func decoded<ErrorModel: Model>(using errorModelDecodingStrategy: ModelDecodingStrategy? = nil) -> ErrorResult<ErrorModel> {
+        guard let errorContainer = errorContainer else {
+            return .success
+        }
+        guard
+            let data = data,
+            let errorInstance = try? ErrorModel.decoded(from: data, using: errorModelDecodingStrategy)
+        else {
+            return .failure(errorContainer.decoded(), nil)
+        }
+        return .failure(errorContainer.decoded(), errorInstance)
+    }
+
     public func decoded<AnyModel: Model, ErrorModel: Model>(
         using modelDecodingStrategy: ModelDecodingStrategy? = nil,
         forErrorModel errorModelDecodingStrategy: ModelDecodingStrategy? = nil
@@ -90,6 +103,11 @@ extension Response {
     public enum ModelResult<AnyModel: Model> {
         case success(AnyModel)
         case failure(Error)
+    }
+
+    public enum ErrorResult<ErrorModel: Model> {
+        case success
+        case failure(Error, ErrorModel?)
     }
 
     public enum Result<AnyModel: Model, ErrorModel: Model> {
