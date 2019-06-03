@@ -119,8 +119,18 @@ public struct JSONBodyPair<Key: JSONBodyRequestParameter> {
         policy: EncodingPolicy = .setAlways
     ) {
         self.key = key
-        self.value = JSONBodyPairValue(value)
         self.policy = policy
+
+        switch policy {
+        case .useShared:
+            self.value = nil
+        default:
+            if let v = value {
+                self.value = JSONBodyPairValue(v)
+            } else {
+                self.value = nil
+            }
+        }
     }
 }
 
