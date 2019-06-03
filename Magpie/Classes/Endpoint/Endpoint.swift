@@ -96,13 +96,22 @@ extension Endpoint {
         return self
     }
 
+    public func resultHandler<ErrorModel: Model>(
+        _ resultHandler: @escaping ErrorResultHandler<ErrorModel>,
+        using errorModelDecodingStrategy: ModelDecodingStrategy? = nil
+    ) -> Self {
+        self.resultHandler = ErrorResultTransformer(resultHandler)
+        self.resultHandler?.errorModelDecodingStrategy = errorModelDecodingStrategy
+        return self
+    }
+
     public func resultHandler(_ resultHandler: @escaping RawResultHandler) -> Self {
         self.resultHandler = RawResultTransformer(resultHandler)
         return self
     }
 
-    public func resultHandler(_ resultHandler: @escaping ErrorResultHandler) -> Self {
-        self.resultHandler = ErrorResultTransformer(resultHandler)
+    public func resultHandler(_ resultHandler: @escaping RawErrorResultHandler) -> Self {
+        self.resultHandler = RawErrorResultTransformer(resultHandler)
         return self
     }
 
@@ -166,8 +175,9 @@ extension Endpoint {
     public typealias CompleteResultHandler<AnyModel: Model, ErrorModel: Model> = (Response.Result<AnyModel, ErrorModel>) -> Void
     public typealias DefaultResultHandler<AnyModel: Model> = (Response.ModelResult<AnyModel>) -> Void
     public typealias ModelResultHandler<AnyModel: Model> = (AnyModel?) -> Void
+    public typealias ErrorResultHandler<ErrorModel: Model> = (Response.ErrorResult<ErrorModel>) -> Void
     public typealias RawResultHandler = (Response.RawResult) -> Void
-    public typealias ErrorResultHandler = (Error?) -> Void
+    public typealias RawErrorResultHandler = (Error?) -> Void
 
     private struct CompleteResultTransformer<AnyModel: Model, ErrorModel: Model>: ResultHandler {
         typealias Handler = CompleteResultHandler<AnyModel, ErrorModel>
@@ -227,6 +237,23 @@ extension Endpoint {
         }
     }
 
+    private struct ErrorResultTransformer<ErrorModel: Model>: ResultHandler {
+        typealias Handler = ErrorResultHandler<ErrorModel>
+
+        var modelDecodingStrategy: ModelDecodingStrategy?
+        var errorModelDecodingStrategy: ModelDecodingStrategy?
+
+        let underlyingHandler: Handler
+
+        init(_ underlyingHandler: @escaping Handler) {
+            self.underlyingHandler = underlyingHandler
+        }
+
+        func awake(with response: Response) {
+            underlyingHandler(response.decoded(using: errorModelDecodingStrategy))
+        }
+    }
+
     private struct RawResultTransformer: ResultHandler {
         var modelDecodingStrategy: ModelDecodingStrategy?
         var errorModelDecodingStrategy: ModelDecodingStrategy?
@@ -242,13 +269,13 @@ extension Endpoint {
         }
     }
 
-    private struct ErrorResultTransformer: ResultHandler {
+    private struct RawErrorResultTransformer: ResultHandler {
         var modelDecodingStrategy: ModelDecodingStrategy?
         var errorModelDecodingStrategy: ModelDecodingStrategy?
 
-        let underlyingHandler: ErrorResultHandler
+        let underlyingHandler: RawErrorResultHandler
 
-        init(_ underlyingHandler: @escaping ErrorResultHandler) {
+        init(_ underlyingHandler: @escaping RawErrorResultHandler) {
             self.underlyingHandler = underlyingHandler
         }
 
