@@ -28,6 +28,12 @@ extension Body {
     }
 }
 
+extension Data: Body {
+    public func encoded() throws -> Data? {
+        return self
+    }
+}
+
 public protocol JSONBody: Encodable, CustomStringConvertible, CustomDebugStringConvertible {
     associatedtype Key: JSONBodyRequestParameter
     typealias Pair = JSONBodyPair<Key>
