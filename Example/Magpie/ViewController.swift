@@ -17,6 +17,8 @@ class API: Magpie {
         networkMonitor: NetworkMonitor? = nil
     ) {
         super.init(base: base, networking: networking, networkMonitor: networkMonitor)
+
+        sharedJsonBodyEncodingStrategy = JSONBodyEncodingStrategy(date: .iso8601, data: .base64)
     }
 
     convenience init() {
@@ -48,7 +50,9 @@ extension API {
 enum AnyRequestParameter: String, JSONBodyRequestParameter {
     case email = "email"
     case password = "password"
+    case password2 = "password2"
     case isNewUser = "is_new_user"
+    case date = "date"
 
     func sharedValue() -> Value? {
         switch self {
@@ -75,11 +79,27 @@ struct AuthenticationDraft: JSONBody {
 
     let email: String
     let password: String
+    let date: Date
+    let password2: String?
+
+    init(
+        email: String,
+        password: String,
+        date: Date = Date(),
+        password2: String? = nil
+    ) {
+        self.email = email
+        self.password = password
+        self.date = date
+        self.password2 = password2
+    }
 
     func decoded() -> [Pair]? {
         return [
             Pair(key: .email, value: email),
             Pair(key: .password, value: password),
+            Pair(key: .date, value: date),
+            Pair(key: .password2, value: password2, policy: .setIfPresent),
             Pair(key: .isNewUser)
         ]
     }
