@@ -24,6 +24,10 @@ open class Magpie {
         }
     }
 
+    public var isConnectedToInternet: Bool {
+        return networkMonitor?.isConnected ?? true
+    }
+
     var taskBin = TaskBin()
 
     var delegators: [ObjectIdentifier: MagpieDelegator] = [:]

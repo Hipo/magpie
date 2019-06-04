@@ -1,8 +1,8 @@
 PODS:
   - Alamofire (4.8.1)
-  - Magpie (1.0.2):
-    - Magpie/Package (= 1.0.2)
-  - Magpie/Package (1.0.2):
+  - Magpie (1.0.3):
+    - Magpie/Package (= 1.0.3)
+  - Magpie/Package (1.0.3):
     - Alamofire (~> 4.8)
 
 DEPENDENCIES:
@@ -18,7 +18,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
-  Magpie: 25c20bd19e831a0b918bd4abf638acb3dd13d56b
+  Magpie: 32f1dbed466b7b1a5656bad5ce81c17f5a8b8e91
 
 PODFILE CHECKSUM: 02a901ba92cc9e1d12732c2702adf665c261c54b
 
