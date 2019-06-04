@@ -12,13 +12,16 @@ public struct AnyEncodable: Encodable, CustomStringConvertible {
         return ""
     }
 
-    private let base: Encodable
+    private let _encode: (Encoder) throws -> Void
 
     public init<T: Encodable>(_ base: T) {
-        self.base = base
+        self._encode = { encoder in
+            var container = encoder.singleValueContainer()
+            try container.encode(base)
+        }
     }
 
     public func encode(to encoder: Encoder) throws {
-        return try base.encode(to: encoder)
+        try _encode(encoder)
     }
 }
