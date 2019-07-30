@@ -31,6 +31,7 @@ public struct Headers {
         case contentType(Value)
         case contentLength(Value)
         case authorizationToken(Value) /// Authorization: Token {value}
+        case bearerToken(Value) /// Authorization: Bearer {value}
         case custom(String, Value) /// {key}: {value}
     }
 
@@ -158,6 +159,8 @@ extension Headers.Field {
             return (Key.contentLength.rawValue, value.decoded())
         case .authorizationToken(let value):
             return (Key.authorization.rawValue, value.decoded().map { "Token \($0)" })
+        case .bearerToken(let value):
+            return (Key.authorization.rawValue, value.decoded().map { "Bearer \($0)" })
         case .custom(let key, let value):
             return (key, value.decoded())
         }
