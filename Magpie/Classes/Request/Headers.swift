@@ -88,10 +88,29 @@ extension Headers {
     }
     
     public mutating func set(from headerFields: [AnyHashable: Any]?) {
-        if let allFields = headerFields as? [String: Headers.Field] {
-            allFields.forEach { key, value in
-                set(value)
+        if let allFields = headerFields as? [Headers.Field.Key.RawValue: String] {
+            allFields.forEach { field in
+                set(encoded(field))
             }
+        }
+    }
+    
+    private func encoded(_ field: (key: String, value: String)) -> Headers.Field {
+        switch field.key {
+        case Headers.Field.Key.accept.rawValue:
+            return .accept(.some(field.value))
+        case Headers.Field.Key.acceptEncoding.rawValue:
+            return .acceptEncoding(.some(field.value))
+        case Headers.Field.Key.acceptLanguage.rawValue:
+            return .acceptLanguage(.some(field.value))
+        case Headers.Field.Key.contentType.rawValue:
+            return .contentType(.some(field.value))
+        case Headers.Field.Key.contentLength.rawValue:
+            return .contentLength(.some(field.value))
+        case Headers.Field.Key.authorization.rawValue:
+            return .authorizationToken(.some(field.value))
+        default:
+            return .custom(field.key, .some(field.value))
         }
     }
 }
