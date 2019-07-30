@@ -86,6 +86,14 @@ extension Headers {
     public mutating func remove(_ field: Field) -> Bool {
         return collection.removeValue(forKey: field.decodedKey()) != nil
     }
+    
+    public mutating func set(from headerFields: [AnyHashable: Any]?) {
+        if let allFields = headerFields as? [String: Headers.Field] {
+            allFields.forEach { key, value in
+                set(value)
+            }
+        }
+    }
 }
 
 extension Headers {

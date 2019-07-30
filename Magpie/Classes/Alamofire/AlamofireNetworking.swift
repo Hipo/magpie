@@ -70,9 +70,13 @@ public class AlamofireNetworking: Networking {
     private func populateResponse(from dataResponse: DataResponse<Data>, for request: Request) -> Response {
         switch dataResponse.result {
         case .success:
-            return Response(request: request, data: dataResponse.data)
+            var headers = Headers()
+            headers.set(from: dataResponse.response?.allHeaderFields)
+            return Response(request: request, data: dataResponse.data, headers: headers)
         case .failure(let error):
-            let response = Response(request: request, data: dataResponse.data)
+            var headers = Headers()
+            headers.set(from: dataResponse.response?.allHeaderFields)
+            let response = Response(request: request, data: dataResponse.data, headers: headers)
 
             if let afError = error as? AFError {
                 if let code = afError.responseCode {

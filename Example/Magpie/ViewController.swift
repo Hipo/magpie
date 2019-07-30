@@ -45,6 +45,21 @@ extension API {
             .notifyDelegatesWhenFailedFromUnavailableNetwork(true)
             .buildAndSend(self)
     }
+    
+    @discardableResult
+    func authenticateWithHeaders(
+        with draft: AuthenticationDraft,
+        then handler: @escaping (Response.HeaderResult<User>) -> Void
+    ) -> EndpointOperatable {
+        return Endpoint(path: "#path2")
+            .httpMethod(.post)
+            .httpBody(draft)
+            .resultHandler(handler)
+            .ignoreResultWhenCancelled(false)
+            .ignoreResultWhenDelegatesNotified(false)
+            .notifyDelegatesWhenFailedFromUnavailableNetwork(true)
+            .buildAndSend(self)
+    }
 }
 
 enum AnyRequestParameter: String, JSONBodyRequestParameter {
@@ -119,6 +134,9 @@ class ViewController: UIViewController {
 
         let draft = AuthenticationDraft(email: "#email", password: "#password")
         api.authenticate(with: draft) { result in
+        }
+        
+        api.authenticateWithHeaders(with: draft) { result in
         }
     }
 }

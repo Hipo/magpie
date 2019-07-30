@@ -114,6 +114,15 @@ extension Endpoint {
         self.resultHandler = RawErrorResultTransformer(resultHandler)
         return self
     }
+    
+    public func resultHandler<AnyModel: Model>(
+        _ resultHandler: @escaping HeaderResultHandler<AnyModel>,
+        using modelDecodingStrategy: ModelDecodingStrategy? = nil
+    ) -> Self {
+        self.resultHandler = HeaderResultTransformer(resultHandler)
+        self.resultHandler?.modelDecodingStrategy = modelDecodingStrategy
+        return self
+    }
 
     func setModelDecodingStrategyIfNeeded(_ decodingStrategy: ModelDecodingStrategy) {
         if resultHandler?.modelDecodingStrategy == nil {
@@ -174,6 +183,7 @@ extension Endpoint {
 extension Endpoint {
     public typealias CompleteResultHandler<AnyModel: Model, ErrorModel: Model> = (Response.Result<AnyModel, ErrorModel>) -> Void
     public typealias DefaultResultHandler<AnyModel: Model> = (Response.ModelResult<AnyModel>) -> Void
+    public typealias HeaderResultHandler<AnyModel: Model> = (Response.HeaderResult<AnyModel>) -> Void
     public typealias ModelResultHandler<AnyModel: Model> = (AnyModel?) -> Void
     public typealias ErrorResultHandler<ErrorModel: Model> = (Response.ErrorResult<ErrorModel>) -> Void
     public typealias RawResultHandler = (Response.RawResult) -> Void
@@ -286,6 +296,23 @@ extension Endpoint {
             case .failure(let error):
                 underlyingHandler(error)
             }
+        }
+    }
+    
+    private struct HeaderResultTransformer<AnyModel: Model>: ResultHandler {
+        typealias Handler = HeaderResultHandler<AnyModel>
+        
+        var modelDecodingStrategy: ModelDecodingStrategy?
+        var errorModelDecodingStrategy: ModelDecodingStrategy?
+        
+        let underlyingHandler: Handler
+        
+        init(_ underlyingHandler: @escaping Handler) {
+            self.underlyingHandler = underlyingHandler
+        }
+        
+        func awake(with response: Response) {
+            underlyingHandler(response.decoded(using: modelDecodingStrategy))
         }
     }
 }

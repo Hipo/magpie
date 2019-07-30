@@ -10,6 +10,7 @@ import Foundation
 public class Response {
     public var data: Data?
     public var errorContainer: ErrorContainer?
+    public var headers: Headers?
 
     public var isSucceed: Bool {
         return errorContainer == nil
@@ -24,11 +25,13 @@ public class Response {
     public init(
         request: Request,
         data: Data? = nil,
-        errorContainer: ErrorContainer? = nil
+        errorContainer: ErrorContainer? = nil,
+        headers: Headers? = nil
     ) {
         self.request = request
         self.data = data
         self.errorContainer = errorContainer
+        self.headers = headers
     }
 }
 
@@ -92,6 +95,22 @@ extension Response {
         }
         return .failure(errorContainer.decoded(), errorInstance)
     }
+    
+    public func decoded<AnyModel: Model>(using decodingStrategy: ModelDecodingStrategy? = nil) -> HeaderResult<AnyModel> {
+        guard let errorContainer = errorContainer else {
+            guard let data = data,
+                let headers = headers else {
+                return .failure(.responseSerialization(.emptyOrCorruptedData(nil)))
+            }
+            do {
+                let instance = try AnyModel.decoded(from: data, using: decodingStrategy)
+                return .success(instance, headers)
+            } catch let error {
+                return .failure(.responseSerialization(.jsonSerializationFailed(data, error)))
+            }
+        }
+        return .failure(errorContainer.decoded())
+    }
 }
 
 extension Response {
@@ -113,6 +132,11 @@ extension Response {
     public enum Result<AnyModel: Model, ErrorModel: Model> {
         case success(AnyModel)
         case failure(Error, ErrorModel?)
+    }
+    
+    public enum HeaderResult<AnyModel: Model> {
+        case success(AnyModel, Headers)
+        case failure(Error)
     }
 }
 
