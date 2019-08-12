@@ -20,13 +20,16 @@ public class Response {
     }
 
     public let request: Request
+    public let httpHeaders: Headers
 
     public init(
         request: Request,
+        fields: [AnyHashable: Any]? = nil,
         data: Data? = nil,
         errorContainer: ErrorContainer? = nil
     ) {
         self.request = request
+        self.httpHeaders = fields.map { Headers($0) } ?? []
         self.data = data
         self.errorContainer = errorContainer
     }
