@@ -47,9 +47,7 @@ extension Path: Hashable {
 }
 
 extension Path: ExpressibleByStringLiteral {
-    public typealias StringLiteralType = String
-    
-    public init(stringLiteral value: StringLiteralType) {
+    public init(stringLiteral value: String) {
         self = Path(value)
     }
 }

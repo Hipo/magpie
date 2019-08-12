@@ -54,6 +54,12 @@ extension Optional where Wrapped: CustomDebugStringConvertible {
     }
 }
 
+extension String {
+    func dropLastWord(_ k: Int = 1) -> String {
+        return split(separator: " ").suffix(k).joined(separator: " ")
+    }
+}
+
 /// <reference>
 /// See https://gist.github.com/shaps80/ba6a1e2d477af0383e8f19b87f53661d
 extension URLRequest {
