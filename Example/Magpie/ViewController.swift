@@ -39,6 +39,7 @@ extension API {
         return Endpoint(path: "#path")
             .httpMethod(.post)
             .httpBody(draft)
+            .urlResponseHandler({ print($0) })
             .resultHandler(handler)
             .ignoreResultWhenCancelled(false)
             .ignoreResultWhenDelegatesNotified(false)

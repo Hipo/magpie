@@ -16,9 +16,10 @@ open class Endpoint {
     /// for some cases.
     /// If you use your own Networking class, it can be used to determine if the response is success or fail before processing the result.
     private(set) var validatesResponseFirstWhenReceived = true
-    private(set) var resultHandler: ResultHandler?
+    private(set) var urlResponseHandler: URLResponseHandler?
     private(set) var ignoresResultWhenCancelled = true
     private(set) var ignoresResultWhenDelegatesNotified = true
+    private(set) var resultHandler: ResultHandler?
 
     private(set) var notifiesDelegatesWhenFailedFromUnauthorizedRequest = true
     private(set) var notifiesDelegatesWhenFailedFromUnavailableNetwork = false
@@ -62,6 +63,11 @@ extension Endpoint {
 extension Endpoint {
     public func validateResponseFirstWhenReceived(_ shouldValidate: Bool) -> Self {
         validatesResponseFirstWhenReceived = shouldValidate
+        return self
+    }
+
+    public func urlResponseHandler(_ urlResponseHandler: @escaping HTTPURLResponseHandler) -> Self {
+        self.urlResponseHandler = HTTPURLResponseTransformer(urlResponseHandler)
         return self
     }
 }
@@ -128,6 +134,7 @@ extension Endpoint {
     }
 
     func advance(_ response: Response) {
+        urlResponseHandler?.awake(with: response)
         resultHandler?.awake(with: response)
     }
 }
@@ -168,6 +175,22 @@ extension Endpoint {
     public func notifyDelegatesWhenFailedFromUnresponsiveServer(_ shouldNotify: Bool) -> Self {
         notifiesDelegatesWhenFailedFromUnresponsiveServer = shouldNotify
         return self
+    }
+}
+
+extension Endpoint {
+    public typealias HTTPURLResponseHandler = (Headers) -> Void
+
+    private struct HTTPURLResponseTransformer: URLResponseHandler {
+        let underlyingHandler: HTTPURLResponseHandler
+
+        init(_ underlyingHandler: @escaping HTTPURLResponseHandler) {
+            self.underlyingHandler = underlyingHandler
+        }
+
+        func awake(with response: Response) {
+            underlyingHandler(response.httpHeaders)
+        }
     }
 }
 
