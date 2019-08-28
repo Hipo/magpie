@@ -343,6 +343,11 @@ extension Endpoint: EndpointBuildable {
         request.httpBodyEncoder = JSONBodyEncoder(jsonBody: jsonBody, encodingStrategy: encodingStrategy)
         return self
     }
+    
+    public func httpBody<T: FormBody>(_ formBody: T, using encodingStrategy: FormBodyEncodingStrategy?) -> Self {
+        request.httpBodyEncoder = FormBodyEncoder(formBody: formBody, encodingStrategy: encodingStrategy)
+        return self
+    }
 
     public func httpHeaders(_ httpHeaders: Headers) -> Self {
         request.httpHeaders = httpHeaders
