@@ -263,7 +263,7 @@ extension FormBody {
             }
             return """
             \(data.toString())
-            [The actual values may be different considering the JSONBodyEncodingStrategy instance to be used]
+            [The actual values may be different considering the FormBodyEncodingStrategy instance to be used]
             """
         } catch {
             return "<invalid>"
