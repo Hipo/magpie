@@ -35,6 +35,9 @@ extension RequestParameter where Self: RawRepresentable, Self.RawValue == String
 public protocol JSONBodyRequestParameter: RequestParameter, CodingKey {
 }
 
+public protocol FormBodyRequestParameter: RequestParameter, CodingKey {
+}
+
 public protocol RequestParameterValue: CustomStringConvertible, CustomDebugStringConvertible {
     func queryValue() -> QueryPairValue?
     func bodyValue() -> JSONBodyPairValue?

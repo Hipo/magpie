@@ -73,6 +73,10 @@ extension JSONBody {
 protocol HTTPBodyEncodingStrategy {
 }
 
+public struct FormBodyEncodingStrategy: HTTPBodyEncodingStrategy {
+    let encoding: String.Encoding
+}
+
 public struct JSONBodyEncodingStrategy: HTTPBodyEncodingStrategy {
     var date: JSONEncoder.DateEncodingStrategy
     var data: JSONEncoder.DataEncodingStrategy
@@ -240,3 +244,113 @@ struct JSONBodyEncoder<T: JSONBody>: HTTPBodyEncoding {
         return try encoder.encode(jsonBody)
     }
 }
+
+// MARK: FormBody
+public protocol FormBody: Encodable, CustomStringConvertible, CustomDebugStringConvertible {
+    associatedtype Key: FormBodyRequestParameter
+    typealias Pair = FormBodyPair<Key>
+    
+    func decoded() -> [Pair]?
+}
+
+extension FormBody {
+    public var description: String {
+        do {
+            let encoder = FormBodyEncoder(formBody: self)
+            
+            guard let data: Data = try encoder.encode() else {
+                return "<nil>"
+            }
+            return """
+            \(data.toString())
+            [The actual values may be different considering the JSONBodyEncodingStrategy instance to be used]
+            """
+        } catch {
+            return "<invalid>"
+        }
+    }
+}
+
+struct FormBodyEncoder<T: FormBody>: HTTPBodyEncoding {
+    let formBody: T
+    private var encodingStrategy: FormBodyEncodingStrategy
+    
+    init(
+        formBody: T,
+        encodingStrategy: FormBodyEncodingStrategy? = nil
+        ) {
+        
+        self.formBody = formBody
+        self.encodingStrategy = encodingStrategy ?? FormBodyEncodingStrategy(encoding: .utf8)
+    }
+    
+    mutating func setIfNeeded(_ encodingStrategy: HTTPBodyEncodingStrategy) {
+        guard let strategy = encodingStrategy as? FormBodyEncodingStrategy else {
+            return
+        }
+        
+        self.encodingStrategy = strategy
+    }
+    
+    func encode() throws -> Data? {
+        guard let pairs = formBody.decoded() else {
+            return nil
+        }
+        
+        var keyValuePairs: [String] = []
+        
+        for pair in pairs {
+            guard let value = pair.value else {
+                continue
+            }
+            
+            let key = pair.key.stringValue
+            
+            keyValuePairs.append(key + "=\(value)")
+        }
+        
+        return keyValuePairs.map { String($0) }
+            .joined(separator: "&")
+            .data(using: self.encodingStrategy.encoding)
+    }
+}
+
+public struct FormBodyPair<Key: FormBodyRequestParameter> {
+    public enum EncodingPolicy {
+        case useShared /// <note> setAlways the shared value if it is 'Encodable'.
+        case setAlways /// <note> Set null if the value is nil.
+        case setIfPresent /// <note> Ignore if the value is nil.
+        case setIfPresentElseUseShared /// <note> Set the value if it is not nil, or use the shared value if present.
+    }
+    
+    let key: Key
+    let value: FormBodyPairValue?
+    let policy: EncodingPolicy
+    
+    public init(key: Key) {
+        self.key = key
+        self.value = nil
+        self.policy = .useShared
+    }
+    
+    public init<Value: CustomStringConvertible>(
+        key: Key,
+        value: Value?,
+        policy: EncodingPolicy = .setAlways
+        ) {
+        self.key = key
+        self.policy = policy
+        
+        switch policy {
+        case .useShared:
+            self.value = nil
+        default:
+            if let v = value {
+                self.value = v
+            } else {
+                self.value = nil
+            }
+        }
+    }
+}
+
