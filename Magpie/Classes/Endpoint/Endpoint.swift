@@ -344,8 +344,12 @@ extension Endpoint: EndpointBuildable {
         return self
     }
     
-    public func httpBody<T: FormBody>(_ formBody: T, using encodingStrategy: FormBodyEncodingStrategy? = nil) -> Self {
-        request.httpBodyEncoder = FormBodyEncoder(formBody: formBody, encodingStrategy: encodingStrategy)
+    public func httpBody<T: FormBody>(_ formBody: T, using encodingStrategy: FormBodyStringEncodingStrategy? = nil) -> Self {
+        request.httpBodyEncoder = FormBodyEncoder(
+            formBody: formBody,
+            stringEncodingStrategy: encodingStrategy,
+            encodingStrategy: nil
+        )
         return self
     }
 

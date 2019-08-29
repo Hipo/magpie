@@ -141,11 +141,11 @@ extension QueryPair {
                 return URLQueryItem(name: key.toString(), value: encodingStrategy.null.encoded())
             }
             if let booleanValue = someValue as? Bool {
-                return URLQueryItem(name: key.toString(), value: booleanValue.toString(for: encodingStrategy.boolean))
+                return URLQueryItem(name: key.toString(), value: booleanValue.queryString(for: encodingStrategy.boolean))
             }
-            return URLQueryItem(name: key.toString(), value: try someValue.toString())
+            return URLQueryItem(name: key.toString(), value: try someValue.queryString())
         case .some(let someValue):
-            return URLQueryItem(name: key.toString(), value: try someValue.toString())
+            return URLQueryItem(name: key.toString(), value: try someValue.queryString())
         }
     }
 }
@@ -166,13 +166,13 @@ extension QueryPair: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 public protocol QueryPairValue: CustomStringConvertible, CustomDebugStringConvertible {
-    func toString() throws -> String
+    func queryString() throws -> String
 }
 
 extension QueryPairValue {
     public var description: String {
         do {
-            return try toString()
+            return try queryString()
         } catch {
             return "<invalid>"
         }
@@ -180,49 +180,49 @@ extension QueryPairValue {
 }
 
 extension String: QueryPairValue {
-    public func toString() throws -> String {
+    public func queryString() throws -> String {
         return self
     }
 }
 
 extension Int: QueryPairValue {
-    public func toString() throws -> String {
+    public func queryString() throws -> String {
         return String(self)
     }
 }
 
 extension Float: QueryPairValue {
-    public func toString() throws -> String {
+    public func queryString() throws -> String {
         return String(self)
     }
 }
 
 extension Double: QueryPairValue {
-    public func toString() throws -> String {
+    public func queryString() throws -> String {
         return String(self)
     }
 }
 
 extension Bool: QueryPairValue {
-    public func toString() throws -> String {
-        return toString(for: .default)
+    public func queryString() throws -> String {
+        return queryString(for: .default)
     }
 
-    func toString(for strategy: QueryEncodingStrategy.Boolean) -> String {
+    func queryString(for strategy: QueryEncodingStrategy.Boolean) -> String {
         return strategy.encoded(boolean: self)
     }
 }
 
 extension Array: QueryPairValue where Element: QueryPairValue {
-    public func toString() throws -> String {
-        let values = try self.map { try $0.toString() }
+    public func queryString() throws -> String {
+        let values = try self.map { try $0.queryString() }
         return "[\(values.joined(separator: ","))]"
     }
 }
 
 extension Dictionary: QueryPairValue where Key: RequestParameter, Value: QueryPairValue {
-    public func toString() throws -> String {
-        let values = try self.map { "\($0.key.toString()):\(try $0.value.toString())" }
+    public func queryString() throws -> String {
+        let values = try self.map { "\($0.key.toString()):\(try $0.value.queryString())" }
         return "{\(values.joined(separator: ","))}"
     }
 }

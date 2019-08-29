@@ -73,7 +73,7 @@ extension JSONBody {
 protocol HTTPBodyEncodingStrategy {
 }
 
-public struct FormBodyEncodingStrategy: HTTPBodyEncodingStrategy {
+public struct FormBodyStringEncodingStrategy: HTTPBodyEncodingStrategy {
     let encoding: String.Encoding
 }
 
@@ -273,23 +273,26 @@ extension FormBody {
 
 struct FormBodyEncoder<T: FormBody>: HTTPBodyEncoding {
     let formBody: T
+    private var stringEncodingStrategy: FormBodyStringEncodingStrategy
     private var encodingStrategy: FormBodyEncodingStrategy
     
     init(
         formBody: T,
+        stringEncodingStrategy: FormBodyStringEncodingStrategy? = nil,
         encodingStrategy: FormBodyEncodingStrategy? = nil
         ) {
         
         self.formBody = formBody
-        self.encodingStrategy = encodingStrategy ?? FormBodyEncodingStrategy(encoding: .utf8)
+        self.stringEncodingStrategy = stringEncodingStrategy ?? FormBodyStringEncodingStrategy(encoding: .utf8)
+        self.encodingStrategy = encodingStrategy ?? FormBodyEncodingStrategy()
     }
     
     mutating func setIfNeeded(_ encodingStrategy: HTTPBodyEncodingStrategy) {
-        guard let strategy = encodingStrategy as? FormBodyEncodingStrategy else {
+        guard let strategy = encodingStrategy as? FormBodyStringEncodingStrategy else {
             return
         }
         
-        self.encodingStrategy = strategy
+        self.stringEncodingStrategy = strategy
     }
     
     func encode() throws -> Data? {
@@ -299,58 +302,186 @@ struct FormBodyEncoder<T: FormBody>: HTTPBodyEncoding {
         
         var keyValuePairs: [String] = []
         
-        for pair in pairs {
-            guard let value = pair.value else {
+        for pair in pairs {            
+            do {
+                guard let keyValue = try pair.encoded(using: encodingStrategy)?.first else {
+                    continue
+                }
+                
+                keyValuePairs.append("\(keyValue.key)=\(keyValue.value)")
+            } catch {
                 continue
             }
-            
-            let key = pair.key.stringValue
-            
-            keyValuePairs.append(key + "=\(value)")
         }
         
         return keyValuePairs.map { String($0) }
             .joined(separator: "&")
-            .data(using: self.encodingStrategy.encoding)
+            .data(using: self.stringEncodingStrategy.encoding)
     }
 }
 
 public struct FormBodyPair<Key: FormBodyRequestParameter> {
-    public enum EncodingPolicy {
-        case useShared /// <note> setAlways the shared value if it is 'Encodable'.
-        case setAlways /// <note> Set null if the value is nil.
-        case setIfPresent /// <note> Ignore if the value is nil.
-        case setIfPresentElseUseShared /// <note> Set the value if it is not nil, or use the shared value if present.
+    public enum Value {
+        case null
+        case some(FormBodyPairValue)
     }
     
     let key: Key
-    let value: FormBodyPairValue?
-    let policy: EncodingPolicy
+    let value: Value
     
-    public init(key: Key) {
+    public init(key: Key, value: Value) {
         self.key = key
-        self.value = nil
-        self.policy = .useShared
+        self.value = value
     }
-    
-    public init<Value: CustomStringConvertible>(
-        key: Key,
-        value: Value?,
-        policy: EncodingPolicy = .setAlways
-        ) {
-        self.key = key
-        self.policy = policy
-        
-        switch policy {
-        case .useShared:
-            self.value = nil
-        default:
-            if let v = value {
-                self.value = v
-            } else {
-                self.value = nil
+}
+
+extension FormBodyPair {
+    func encoded(using encodingStrategy: FormBodyEncodingStrategy) throws -> [String:String]? {
+        switch value {
+        case .null:
+            guard let nullString = encodingStrategy.null.encoded() else {
+                return nil
             }
+            return [key.toString(): nullString]
+        case .some(let someValue):
+            return [key.toString(): try someValue.bodyString()]
         }
     }
 }
 
+public struct FormBodyEncodingStrategy {
+    public enum Null {
+        case `default` /// nil
+        case empty /// ""
+        case dash /// "-"
+        case string /// "null"
+        case other(String) /// "{string}"
+    }
+    
+    public enum Boolean {
+        case `default`
+        case number
+    }
+    
+    let null: Null
+    let boolean: Boolean
+    
+    public init(
+        null: Null = .default,
+        boolean: Boolean = .default
+        ) {
+        self.null = null
+        self.boolean = boolean
+    }
+}
+
+extension FormBodyEncodingStrategy: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        return """
+        for null values: \(null.description)
+        for boolean values: \(boolean.description)
+        """
+    }
+}
+
+extension FormBodyEncodingStrategy.Null {
+    func encoded() -> String? {
+        switch self {
+        case .default:
+            return nil
+        case .empty:
+            return ""
+        case .dash:
+            return "-"
+        case .string:
+            return "null"
+        case .other(let string):
+            return string
+        }
+    }
+}
+
+extension FormBodyEncodingStrategy.Null: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        return encoded().absoluteDescription
+    }
+}
+
+extension FormBodyEncodingStrategy.Boolean {
+    func encoded(boolean: Bool) -> String {
+        switch self {
+        case .default:
+            return boolean ? "true" : "false"
+        case .number:
+            return boolean ? "1" : "0"
+        }
+    }
+}
+
+extension FormBodyEncodingStrategy.Boolean: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        return "\(encoded(boolean: true))/\(encoded(boolean: false))"
+    }
+}
+
+public protocol FormBodyPairValue: CustomStringConvertible, CustomDebugStringConvertible {
+    func bodyString() throws -> String
+}
+
+extension FormBodyPairValue {
+    public var description: String {
+        do {
+            return try bodyString()
+        } catch {
+            return "<invalid>"
+        }
+    }
+}
+
+extension String: FormBodyPairValue {
+    public func bodyString() throws -> String {
+        return self
+    }
+}
+
+extension Int: FormBodyPairValue {
+    public func bodyString() throws -> String {
+        return String(self)
+    }
+}
+
+extension Float: FormBodyPairValue {
+    public func bodyString() throws -> String {
+        return String(self)
+    }
+}
+
+extension Double: FormBodyPairValue {
+    public func bodyString() throws -> String {
+        return String(self)
+    }
+}
+
+extension Bool: FormBodyPairValue {
+    public func bodyString() throws -> String {
+        return queryString(for: .default)
+    }
+    
+    func bodyString(for strategy: FormBodyEncodingStrategy.Boolean) -> String {
+        return strategy.encoded(boolean: self)
+    }
+}
+
+extension Array: FormBodyPairValue where Element: FormBodyPairValue {
+    public func bodyString() throws -> String {
+        let values = try self.map { try $0.bodyString() }
+        return "[\(values.joined(separator: ","))]"
+    }
+}
+
+extension Dictionary: FormBodyPairValue where Key: RequestParameter, Value: FormBodyPairValue {
+    public func bodyString() throws -> String {
+        let values = try self.map { "\($0.key.toString()):\(try $0.value.bodyString())" }
+        return "{\(values.joined(separator: ","))}"
+    }
+}
