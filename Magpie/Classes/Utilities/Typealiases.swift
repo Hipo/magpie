@@ -8,7 +8,7 @@
 import Foundation
 
 public typealias FoundationError = Swift.Error
-public typealias ResponseHandler = (Response) -> Void
 public typealias JSONBodyPairValue = AnyEncodable
+public typealias ResponseHandler = (Response) -> Void
 
 typealias JSON = [String: Any]

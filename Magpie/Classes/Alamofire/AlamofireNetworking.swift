@@ -19,7 +19,7 @@ public class AlamofireNetworking: Networking {
             if validateFirst {
                 dataRequest.validate()
             }
-            return dataRequest.responseData() { [weak self] dataResponse in
+            return dataRequest.magpie_responseData { [weak self] dataResponse in
                 guard let self = self else {
                     return
                 }
@@ -53,7 +53,7 @@ public class AlamofireNetworking: Networking {
             if validateFirst {
                 uploadRequest.validate()
             }
-            return uploadRequest.responseData() { [weak self] dataResponse in
+            return uploadRequest.magpie_responseData { [weak self] dataResponse in
                 guard let self = self else {
                     return
                 }
