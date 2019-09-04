@@ -11,7 +11,6 @@ public struct ErrorContainer {
     public enum Origin {
         case magpie(Error)
         case foundation(FoundationError)
-        case legacy(NSError)
         case url(URLError)
         case unknown(Any?)
     }
@@ -30,8 +29,6 @@ extension ErrorContainer {
             return originalError
         case .foundation(let originalError):
             return .unknown(originalError)
-        case .legacy(let originalError):
-            return Error.populate(from: originalError)
         case .url(let originalError):
             return Error.populate(from: originalError)
         case .unknown(let originalError):

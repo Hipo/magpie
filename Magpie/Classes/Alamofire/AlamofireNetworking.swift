@@ -67,26 +67,21 @@ public class AlamofireNetworking: Networking {
         return nil
     }
 
-    private func populateResponse(from dataResponse: DataResponse<Data>, for request: Request) -> Response {
+    private func populateResponse(from dataResponse: AFDataResponse<Data>, for request: Request) -> Response {
         switch dataResponse.result {
         case .success:
             return Response(request: request, fields: dataResponse.response?.allHeaderFields, data: dataResponse.data)
         case .failure(let error):
             let response = Response(request: request, fields: dataResponse.response?.allHeaderFields, data: dataResponse.data)
 
-            if let afError = error as? AFError {
-                if let code = afError.responseCode {
-                    let httpError = HTTPError(statusCode: code, underlyingError: afError)
-                    let error = Error.populate(from: httpError)
+            if let code = error.responseCode {
+                let httpError = HTTPError(statusCode: code, underlyingError: error)
+                let error = Error.populate(from: httpError)
 
-                    response.errorContainer = ErrorContainer(origin: .magpie(error))
-                    return response
-                }
-                response.errorContainer = ErrorContainer(origin: .unknown(afError))
+                response.errorContainer = ErrorContainer(origin: .magpie(error))
                 return response
             }
-            let err = Error.populate(from: error as NSError)
-            response.errorContainer = ErrorContainer(origin: .magpie(err))
+            response.errorContainer = ErrorContainer(origin: .unknown(error))
             return response
         }
     }

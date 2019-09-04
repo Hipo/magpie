@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.0.0-beta.6)
+  - Alamofire (5.0.0-rc.1)
   - Magpie (2.0.0):
     - Magpie/Package (= 2.0.0)
   - Magpie/Package (2.0.0):
@@ -17,7 +17,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: cd08a4402bd12cacd0c66f23fb12fec8d6b965e4
+  Alamofire: b752289c6040d77e9738610c9080276f18276842
   Magpie: 8b21880f3fe89efafe70732802eedf152169f1dd
 
 PODFILE CHECKSUM: 02a901ba92cc9e1d12732c2702adf665c261c54b
