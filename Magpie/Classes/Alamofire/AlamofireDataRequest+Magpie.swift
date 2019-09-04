@@ -19,7 +19,7 @@ extension Alamofire.DataRequest: TaskConvertible {
 }
 
 extension Alamofire.DataRequest {
-    public func magpie_responseData(completionHandler: @escaping (DataResponse<Data>) -> Void) -> Self {
+    public func magpie_responseData(completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self {
         return response(responseSerializer: DataResponseSerializer(emptyResponseCodes: Set(200..<300)), completionHandler: completionHandler)
     }
 }

@@ -15,7 +15,7 @@ open class AlamofireNetworkMonitor: NetworkMonitor {
         guard let reachabilityManager = reachabilityManager else {
             return .unavailable
         }
-        return networkStatus(for: reachabilityManager.networkReachabilityStatus)
+        return networkStatus(for: reachabilityManager.status)
     }
 
     private var reachabilityManager: NetworkReachabilityManager?
@@ -34,7 +34,7 @@ open class AlamofireNetworkMonitor: NetworkMonitor {
         guard let reachabilityManager = NetworkReachabilityManager() else {
             throw Error.networkMonitoring(.notStarted)
         }
-        reachabilityManager.listener = { [weak self] status in
+        reachabilityManager.startListening(onQueue: queue) { [weak self] status in
             guard let self = self else {
                 return
             }
@@ -45,8 +45,6 @@ open class AlamofireNetworkMonitor: NetworkMonitor {
 
             self.lastStatus = new
         }
-        reachabilityManager.listenerQueue = queue
-        reachabilityManager.startListening()
 
         self.reachabilityManager = reachabilityManager
     }
@@ -76,11 +74,13 @@ open class AlamofireNetworkMonitor: NetworkMonitor {
     /// NetworkReachabilityManager.ConnectionType doesn't cover the all NetworkConnection cases correctly. We ignored this fact
     /// for the sake of using the Apple-supported NWNetworkMonitor's capabilities properly. After dropping support to iOS 11 and
     /// below versions, we will delete this class.
-    private func networkConnection(for reachabilityConnectionType: NetworkReachabilityManager.ConnectionType) -> NetworkConnection {
+    private func networkConnection(
+        for reachabilityConnectionType: NetworkReachabilityManager.NetworkReachabilityStatus.ConnectionType
+    ) -> NetworkConnection {
         switch reachabilityConnectionType {
         case .ethernetOrWiFi:
             return .wifi
-        case .wwan:
+        case .cellular:
             return .cellular
         }
     }

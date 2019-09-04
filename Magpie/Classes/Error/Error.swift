@@ -126,14 +126,6 @@ extension Error {
 }
 
 extension Error {
-    static func populate(from error: NSError) -> Error {
-        guard let urlError = error as? URLError else {
-            let httpError = HTTPError(statusCode: error.code, underlyingError: error)
-            return Error.populate(from: httpError)
-        }
-        return Error.populate(from: urlError)
-    }
-
     static func populate(from urlError: URLError) -> Error {
         switch urlError.code {
         case .timedOut,
