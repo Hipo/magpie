@@ -25,6 +25,6 @@ Pod::Spec.new do |s|
 
   s.subspec 'Package' do |package|
       package.source_files = 'Magpie/Classes/**/*.swift'
-      package.dependency 'Alamofire', '~> 5.0.0-beta.5'
+      package.dependency 'Alamofire', '~> 5.0.0-rc.2'
   end
 end
