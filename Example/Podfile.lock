@@ -9,7 +9,7 @@ DEPENDENCIES:
   - Magpie (from `../`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - Alamofire
 
 EXTERNAL SOURCES:
@@ -22,4 +22,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 02a901ba92cc9e1d12732c2702adf665c261c54b
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.0
