@@ -15,7 +15,9 @@ public protocol EndpointBuildable: AnyObject {
     func httpMethod(_ httpMethod: Method) -> Self
     func query<T: Query>(_ query: T, using encodingStrategy: QueryEncodingStrategy?) -> Self
     func httpBody(_ body: Body) -> Self
-    func httpBody<T: JSONBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy?) -> Self
+    func httpBody<T: JSONSingleValueBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy?) -> Self
+    func httpBody<T: JSONUnkeyedBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy?) -> Self
+    func httpBody<T: JSONKeyedBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy?) -> Self
     func httpHeaders(_ httpHeaders: Headers) -> Self
     func timeout(_ timeout: TimeInterval) -> Self
     func cachePolicy(_ cachePolicy: NSURLRequest.CachePolicy) -> Self
