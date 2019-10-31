@@ -129,15 +129,15 @@ public struct QueryPair<Key: RequestParameter> {
 }
 
 extension QueryPair {
-    func encoded(using encodingStrategy: QueryEncodingStrategy) throws -> URLQueryItem {
+    func encoded(using encodingStrategy: QueryEncodingStrategy) throws -> URLQueryItem? {
         switch value {
         case .null:
             return URLQueryItem(name: key.toString(), value: encodingStrategy.null.encoded())
         case .shared:
             guard let sharedValue = key.sharedValue() else {
-                throw Error.requestEncoding(.invalidSharedURLQueryPair(key))
+                return nil
             }
-            guard let someValue = sharedValue.queryValue() else {
+            guard let someValue = sharedValue.asQuery() else {
                 return URLQueryItem(name: key.toString(), value: encodingStrategy.null.encoded())
             }
             if let booleanValue = someValue as? Bool {
@@ -154,7 +154,10 @@ extension QueryPair: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         do {
             var urlComponents = URLComponents()
-            urlComponents.queryItems = [try encoded(using: QueryEncodingStrategy())]
+
+            if let queryItem = try encoded(using: QueryEncodingStrategy()) {
+                urlComponents.queryItems = [queryItem]
+            }
             return """
             \(urlComponents.query.absoluteDescription)
             [The actual values may be different considering the QueryEncodingStrategy instance to be used]
@@ -259,8 +262,9 @@ struct QueryEncoder<T: Query>: QueryEncoding {
         var queryItems: [URLQueryItem] = []
         for pair in pairs {
             do {
-                let queryItem = try pair.encoded(using: encodingStrategy ?? QueryEncodingStrategy())
-                queryItems.append(queryItem)
+                if let queryItem = try pair.encoded(using: encodingStrategy ?? QueryEncodingStrategy()) {
+                    queryItems.append(queryItem)
+                }
             } catch let error {
                 throw Error.requestEncoding(.invalidURLQueryPair(pair.key, error))
             }

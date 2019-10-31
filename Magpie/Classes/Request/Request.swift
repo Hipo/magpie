@@ -12,7 +12,7 @@ public class Request  {
     var path: Path
     var httpMethod: Method = .get
     var queryEncoder: QueryEncoding?
-    var httpBodyEncoder: HTTPBodyEncoding?
+    var httpBodyEncoder: BodyEncoding?
     var httpHeaders: Headers = []
     var cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData
     var timeout: TimeInterval = 60.0

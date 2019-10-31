@@ -12,8 +12,6 @@ public enum Error: FoundationError {
         case emptyOrInvalidBaseURL(String?)
         case emptyOrInvalidURL(Request)
         case invalidURLQueryPair(RequestParameter, FoundationError)
-        case invalidSharedURLQueryPair(RequestParameter)
-        case invalidSharedJSONBodyPair(RequestParameter)
         case failed(Request, FoundationError)
     }
 
@@ -196,18 +194,6 @@ extension Error.RequestEncoding {
             \(param.toString())
             reason:
             \(underlyingError.localizedDescription)
-            """
-        case .invalidSharedURLQueryPair(let param):
-            return """
-            Shared URL query item is invalid.
-            data:
-            \(param.toString())
-            """
-        case .invalidSharedJSONBodyPair(let param):
-            return """
-            Shared JSON body pair is invalid.
-            data:
-            \(param.toString())
             """
         case .failed(let request, let underlyingError):
             return """

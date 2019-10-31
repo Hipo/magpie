@@ -8,20 +8,12 @@
 import Foundation
 
 public protocol RequestParameter: CustomStringConvertible, CustomDebugStringConvertible {
-    typealias Value = RequestParameterValue
-    typealias SharedValue = RequestParameterSharedValue.Both
-    typealias SharedQueryValue = RequestParameterSharedValue.Query
-    typealias SharedJSONBodyValue = RequestParameterSharedValue.JSONBody
-
     func toString() -> String
-    /// <note>
-    /// The encoder for query/JSONBody will throw an error if the shared value is requested when the method returns nil.
-    /// But it will set null if the value itself returns nil.
-    func sharedValue() -> Value?
+    func sharedValue() -> RequestParameterValue?
 }
 
 extension RequestParameter {
-    public func sharedValue() -> Value? {
+    public func sharedValue() -> RequestParameterValue? {
         return nil
     }
 }
@@ -36,73 +28,48 @@ public protocol JSONBodyRequestParameter: RequestParameter, CodingKey {
 }
 
 public protocol RequestParameterValue: CustomStringConvertible, CustomDebugStringConvertible {
-    func queryValue() -> QueryPairValue?
-    func bodyValue() -> JSONBodyPairValue?
+    func asQuery() -> QueryPairValue?
+    func asJSONBody() -> JSONBodyPairValue?
 }
 
-public struct RequestParameterSharedValue {
-    public struct Query: RequestParameterValue {
-        public var description: String {
-            return originalValue?.description ?? "<nil>"
-        }
-
-        let originalValue: QueryPairValue?
-
-        public init(_ value: QueryPairValue?) {
-            originalValue = value
-        }
-
-        public func queryValue() -> QueryPairValue? {
-            return originalValue
-        }
-
-        public func bodyValue() -> JSONBodyPairValue? {
-            return nil
-        }
+public struct RequestParameterSharedValue: RequestParameterValue {
+    private var queryValue: QueryPairValue?
+    private var jsonBodyValue: JSONBodyPairValue?
+    
+    public func asQuery() -> QueryPairValue? {
+        return queryValue
     }
-
-    public struct JSONBody: RequestParameterValue {
-        public var description: String {
-            return originalValue?.description ?? "<nil>"
-        }
-
-        let originalValue: JSONBodyPairValue?
-
-        public init<Value: Encodable>(_ value: Value?) {
-            originalValue = value.map { JSONBodyPairValue($0) }
-        }
-
-        public func queryValue() -> QueryPairValue? {
-            return nil
-        }
-
-        public func bodyValue() -> JSONBodyPairValue? {
-            return originalValue
-        }
+    
+    public func asJSONBody() -> JSONBodyPairValue? {
+        return jsonBodyValue
     }
+    
+    private init(
+        queryValue: QueryPairValue?,
+        jsonBodyValue: JSONBodyPairValue?
+    ) {
+        self.queryValue = queryValue
+        self.jsonBodyValue = jsonBodyValue
+    }
+    
+    public static func forQuery(_ value: QueryPairValue?) -> RequestParameterSharedValue {
+        return RequestParameterSharedValue(queryValue: value, jsonBodyValue: nil)
+    }
+    
+    public static func forJSONBody<T: Encodable>(_ value: T?) -> RequestParameterSharedValue {
+        return RequestParameterSharedValue(queryValue: nil, jsonBodyValue: JSONBodyPairValue(value, .setIfPresent))
+    }
+    
+    public static func forAll<T: Encodable & QueryPairValue>(_ value: T?) -> RequestParameterSharedValue {
+        return RequestParameterSharedValue(queryValue: value, jsonBodyValue: JSONBodyPairValue(value, .setIfPresent))
+    }
+}
 
-    public struct Both: RequestParameterValue {
-        public var description: String {
-            return """
-            query: \(query.description)
-            body: \(jsonBody.description)
-            """
-        }
-
-        let query: Query
-        let jsonBody: JSONBody
-
-        public init<Value: QueryPairValue & Encodable>(_ value: Value?) {
-            query = Query(value)
-            jsonBody = JSONBody(value)
-        }
-
-        public func queryValue() -> QueryPairValue? {
-            return query.queryValue()
-        }
-
-        public func bodyValue() -> JSONBodyPairValue? {
-            return jsonBody.bodyValue()
-        }
+extension RequestParameterSharedValue {
+    public var description: String {
+        return """
+        query: \(queryValue?.description ?? "<nil>")
+        body: \(jsonBodyValue?.description ?? "<nil>")
+        """
     }
 }

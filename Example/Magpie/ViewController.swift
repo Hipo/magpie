@@ -55,10 +55,10 @@ enum AnyRequestParameter: String, JSONBodyRequestParameter {
     case isNewUser = "is_new_user"
     case date = "date"
 
-    func sharedValue() -> Value? {
+    func sharedValue() -> RequestParameterSharedValue? {
         switch self {
         case .isNewUser:
-            return SharedValue(true)
+            return RequestParameterSharedValue.forAll(true)
         default:
             return nil
         }
@@ -75,7 +75,7 @@ struct AuthenticationQuery: Query {
     }
 }
 
-struct AuthenticationDraft: JSONBody {
+struct AuthenticationDraft: JSONKeyedBody {
     typealias Key = AnyRequestParameter
 
     let email: String

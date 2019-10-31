@@ -338,9 +338,19 @@ extension Endpoint: EndpointBuildable {
         request.httpBodyEncoder = BodyEncoder(body: body)
         return self
     }
+    
+    public func httpBody<T: JSONSingleValueBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy? = nil) -> Self {
+        request.httpBodyEncoder = JSONBodyEncoder(encodingBody: jsonBody, encodingStrategy: encodingStrategy)
+        return self
+    }
 
-    public func httpBody<T: JSONBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy? = nil) -> Self {
-        request.httpBodyEncoder = JSONBodyEncoder(jsonBody: jsonBody, encodingStrategy: encodingStrategy)
+    public func httpBody<T: JSONUnkeyedBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy? = nil) -> Self {
+        request.httpBodyEncoder = JSONBodyEncoder(encodingBody: jsonBody, encodingStrategy: encodingStrategy)
+        return self
+    }
+
+    public func httpBody<T: JSONKeyedBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy? = nil) -> Self {
+        request.httpBodyEncoder = JSONBodyEncoder(encodingBody: jsonBody, encodingStrategy: encodingStrategy)
         return self
     }
 
