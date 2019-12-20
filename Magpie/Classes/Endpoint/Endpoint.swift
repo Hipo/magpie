@@ -7,405 +7,115 @@
 
 import Foundation
 
-open class Endpoint {
-    var context: EndpointContext
+class Endpoint {
     var task: TaskConvertible?
+    var responseResolver: ResponseResolver?
 
-    /// <note>
-    /// This variable is added considering the validation capability of Alamofire. Normally, you won't need it, but it may be useful
-    /// for some cases.
-    /// If you use your own Networking class, it can be used to determine if the response is success or fail before processing the result.
-    private(set) var validatesResponseFirstWhenReceived = true
-    private(set) var urlResponseHandler: URLResponseHandler?
-    private(set) var ignoresResultWhenCancelled = true
-    private(set) var ignoresResultWhenDelegatesNotified = true
-    private(set) var resultHandler: ResultHandler?
+    var type: EndpointType = .data
 
-    private(set) var notifiesDelegatesWhenFailedFromUnauthorizedRequest = true
-    private(set) var notifiesDelegatesWhenFailedFromUnavailableNetwork = false
-    private(set) var notifiesDelegatesWhenFailedFromUnresponsiveServer = false
+    var isSentOnce = false
+
+    /// <note> This variable is added considering the validation capability of Alamofire. It's not generally needed, but it may be useful for some cases.
+    /// If you use your own Networking class, it can be used to determine if the response is succeeded or failed before complete the endpoint.
+    var validatesResponseBeforeCompletion = true
+    var ignoresResponseOnCancelled = true
+    var ignoresResponseWhenListenersNotified = false
+
+    var notifiesListenersOnFailedFromUnauthorizedRequest = true
+
+    var notifiesListenersOnFailedFromUnavailableNetwork: Bool
+    var notifiesListenersOnFailedFromDefectiveClient: Bool
+    var notifiesListenersOnFailedFromUnresponsiveServer: Bool
+
+    weak var api: API?
 
     let request: Request
 
-    public required init(path: Path) {
-        context = .data
-        request = Request(path: path)
-    }
-}
-
-extension Endpoint {
-    func setIfNeeded(_ base: String) {
-        if request.base.isEmpty {
-            request.base = base
-        }
+    init(api: API) {
+        self.api = api
+        self.request = Request(base: api.base)
+        self.notifiesListenersOnFailedFromUnavailableNetwork = api.notifiesListenersWhenEndpointsFailedFromUnavailableNetwork
+        self.notifiesListenersOnFailedFromDefectiveClient = api.notifiesListenersWhenEndpointsFailedFromDefectiveClient
+        self.notifiesListenersOnFailedFromUnresponsiveServer = api.notifiesListenersWhenEndpointsFailedFromUnresponsiveServer
     }
 
-    func setIfNeeded(_ encodingStrategy: QueryEncodingStrategy) {
-        request.queryEncoder?.setIfNeeded(encodingStrategy)
-    }
-
-    func setIfNeeded(_ encodingStrategy: JSONBodyEncodingStrategy) {
-        request.httpBodyEncoder?.setIfNeeded(encodingStrategy)
-    }
-
-    /// <warning>
-    /// The headers which has already been set on the endpoint may override these ones.
-    func setIfNeeded(_ additionalHttpHeaders: Headers) {
-        let httpHeaders = request.httpHeaders
-        request.httpHeaders = additionalHttpHeaders + httpHeaders
-    }
-
-    func set(_ task: TaskConvertible?) {
-        self.task = task
-    }
-}
-
-extension Endpoint {
-    public func validateResponseFirstWhenReceived(_ shouldValidate: Bool) -> Self {
-        validatesResponseFirstWhenReceived = shouldValidate
-        return self
-    }
-
-    public func urlResponseHandler(_ urlResponseHandler: @escaping HTTPURLResponseHandler) -> Self {
-        self.urlResponseHandler = HTTPURLResponseTransformer(urlResponseHandler)
-        return self
-    }
-}
-
-extension Endpoint {
-    public func resultHandler<AnyModel: Model, ErrorModel: Model>(
-        _ resultHandler: @escaping CompleteResultHandler<AnyModel, ErrorModel>,
-        using modelDecodingStrategy: ModelDecodingStrategy? = nil,
-        forErrorModel errorModelDecodingStrategy: ModelDecodingStrategy? = nil
-    ) -> Self {
-        self.resultHandler = CompleteResultTransformer(resultHandler)
-        self.resultHandler?.modelDecodingStrategy = modelDecodingStrategy
-        self.resultHandler?.errorModelDecodingStrategy = errorModelDecodingStrategy
-        return self
-    }
-
-    public func resultHandler<AnyModel: Model>(
-        _ resultHandler: @escaping DefaultResultHandler<AnyModel>,
-        using modelDecodingStrategy: ModelDecodingStrategy? = nil
-    ) -> Self {
-        self.resultHandler = DefaultResultTransformer(resultHandler)
-        self.resultHandler?.modelDecodingStrategy = modelDecodingStrategy
-        return self
-    }
-
-    public func resultHandler<AnyModel: Model>(
-        _ resultHandler: @escaping ModelResultHandler<AnyModel>,
-        using modelDecodingStrategy: ModelDecodingStrategy? = nil
-    ) -> Self {
-        self.resultHandler = ModelResultTransformer(resultHandler)
-        self.resultHandler?.modelDecodingStrategy = modelDecodingStrategy
-        return self
-    }
-
-    public func resultHandler<ErrorModel: Model>(
-        _ resultHandler: @escaping ErrorResultHandler<ErrorModel>,
-        using errorModelDecodingStrategy: ModelDecodingStrategy? = nil
-    ) -> Self {
-        self.resultHandler = ErrorResultTransformer(resultHandler)
-        self.resultHandler?.errorModelDecodingStrategy = errorModelDecodingStrategy
-        return self
-    }
-
-    public func resultHandler(_ resultHandler: @escaping RawResultHandler) -> Self {
-        self.resultHandler = RawResultTransformer(resultHandler)
-        return self
-    }
-
-    public func resultHandler(_ resultHandler: @escaping RawErrorResultHandler) -> Self {
-        self.resultHandler = RawErrorResultTransformer(resultHandler)
-        return self
-    }
-
-    func setModelDecodingStrategyIfNeeded(_ decodingStrategy: ModelDecodingStrategy) {
-        if resultHandler?.modelDecodingStrategy == nil {
-            resultHandler?.modelDecodingStrategy = decodingStrategy
-        }
-    }
-
-    func setErrorModelDecodingStrategyIfNeeded(_ decodingStrategy: ModelDecodingStrategy) {
-        if resultHandler?.errorModelDecodingStrategy == nil {
-            resultHandler?.errorModelDecodingStrategy = decodingStrategy
-        }
-    }
-
-    func advance(_ response: Response) {
-        urlResponseHandler?.awake(with: response)
-        resultHandler?.awake(with: response)
-    }
-}
-
-extension Endpoint {
-    /// <note>
-    /// The result handler won't be called by default when the request is cancelled.
-    public func ignoreResultWhenCancelled(_ shouldIgnore: Bool) -> Self {
-        ignoresResultWhenCancelled = shouldIgnore
-        return self
-    }
-
-    /// <note>
-    /// The result handler won't be called by default when the delegates are notified for a case.
-    public func ignoreResultWhenDelegatesNotified(_ shouldNotify: Bool) -> Self {
-        ignoresResultWhenDelegatesNotified = shouldNotify
-        return self
-    }
-
-    /// <note>
-    /// The delegates will be notified by default when an authorized request received.
-    public func notifyDelegatesWhenFailedFromUnauthorizedRequest(_ shouldNotify: Bool) -> Self {
-        notifiesDelegatesWhenFailedFromUnauthorizedRequest = shouldNotify
-        return self
-    }
-
-    /// <note>
-    /// The delegates won't be notified by default from an unavailable network connection. It should be set true if it is intended to
-    /// track the error from a common place.
-    public func notifyDelegatesWhenFailedFromUnavailableNetwork(_ shouldNotify: Bool) -> Self {
-        notifiesDelegatesWhenFailedFromUnavailableNetwork = shouldNotify
-        return self
-    }
-
-    /// <note>
-    /// The delegates won't be notified by default from a server error. It should be set true if it is intended to
-    /// track the error from a common place.
-    public func notifyDelegatesWhenFailedFromUnresponsiveServer(_ shouldNotify: Bool) -> Self {
-        notifiesDelegatesWhenFailedFromUnresponsiveServer = shouldNotify
-        return self
-    }
-}
-
-extension Endpoint {
-    public typealias HTTPURLResponseHandler = (Headers) -> Void
-
-    private struct HTTPURLResponseTransformer: URLResponseHandler {
-        let underlyingHandler: HTTPURLResponseHandler
-
-        init(_ underlyingHandler: @escaping HTTPURLResponseHandler) {
-            self.underlyingHandler = underlyingHandler
-        }
-
-        func awake(with response: Response) {
-            underlyingHandler(response.httpHeaders)
-        }
-    }
-}
-
-extension Endpoint {
-    public typealias CompleteResultHandler<AnyModel: Model, ErrorModel: Model> = (Response.Result<AnyModel, ErrorModel>) -> Void
-    public typealias DefaultResultHandler<AnyModel: Model> = (Response.ModelResult<AnyModel>) -> Void
-    public typealias ModelResultHandler<AnyModel: Model> = (AnyModel?) -> Void
-    public typealias ErrorResultHandler<ErrorModel: Model> = (Response.ErrorResult<ErrorModel>) -> Void
-    public typealias RawResultHandler = (Response.RawResult) -> Void
-    public typealias RawErrorResultHandler = (Error?) -> Void
-
-    private struct CompleteResultTransformer<AnyModel: Model, ErrorModel: Model>: ResultHandler {
-        typealias Handler = CompleteResultHandler<AnyModel, ErrorModel>
-
-        var modelDecodingStrategy: ModelDecodingStrategy?
-        var errorModelDecodingStrategy: ModelDecodingStrategy?
-
-        let underlyingHandler: Handler
-
-        init(_ underlyingHandler: @escaping Handler) {
-            self.underlyingHandler = underlyingHandler
-        }
-
-        func awake(with response: Response) {
-            underlyingHandler(response.decoded(using: modelDecodingStrategy, forErrorModel: errorModelDecodingStrategy))
-        }
-    }
-
-    private struct DefaultResultTransformer<AnyModel: Model>: ResultHandler {
-        typealias Handler = DefaultResultHandler<AnyModel>
-
-        var modelDecodingStrategy: ModelDecodingStrategy?
-        var errorModelDecodingStrategy: ModelDecodingStrategy?
-
-        let underlyingHandler: Handler
-
-        init(_ underlyingHandler: @escaping Handler) {
-            self.underlyingHandler = underlyingHandler
-        }
-
-        func awake(with response: Response) {
-            underlyingHandler(response.decoded(using: modelDecodingStrategy))
-        }
-    }
-
-    private struct ModelResultTransformer<AnyModel: Model>: ResultHandler {
-        typealias Handler = ModelResultHandler<AnyModel>
-
-        var modelDecodingStrategy: ModelDecodingStrategy?
-        var errorModelDecodingStrategy: ModelDecodingStrategy?
-
-        let underlyingHandler: Handler
-
-        init(_ underlyingHandler: @escaping Handler) {
-            self.underlyingHandler = underlyingHandler
-        }
-
-        func awake(with response: Response) {
-            let result: Response.ModelResult<AnyModel> = response.decoded(using: modelDecodingStrategy)
-
-            switch result {
-            case .success(let model):
-                underlyingHandler(model)
-            case .failure:
-                underlyingHandler(nil)
-            }
-        }
-    }
-
-    private struct ErrorResultTransformer<ErrorModel: Model>: ResultHandler {
-        typealias Handler = ErrorResultHandler<ErrorModel>
-
-        var modelDecodingStrategy: ModelDecodingStrategy?
-        var errorModelDecodingStrategy: ModelDecodingStrategy?
-
-        let underlyingHandler: Handler
-
-        init(_ underlyingHandler: @escaping Handler) {
-            self.underlyingHandler = underlyingHandler
-        }
-
-        func awake(with response: Response) {
-            underlyingHandler(response.decoded(using: errorModelDecodingStrategy))
-        }
-    }
-
-    private struct RawResultTransformer: ResultHandler {
-        var modelDecodingStrategy: ModelDecodingStrategy?
-        var errorModelDecodingStrategy: ModelDecodingStrategy?
-
-        let underlyingHandler: RawResultHandler
-
-        init(_ underlyingHandler: @escaping RawResultHandler) {
-            self.underlyingHandler = underlyingHandler
-        }
-
-        func awake(with response: Response) {
-            underlyingHandler(response.decoded())
-        }
-    }
-
-    private struct RawErrorResultTransformer: ResultHandler {
-        var modelDecodingStrategy: ModelDecodingStrategy?
-        var errorModelDecodingStrategy: ModelDecodingStrategy?
-
-        let underlyingHandler: RawErrorResultHandler
-
-        init(_ underlyingHandler: @escaping RawErrorResultHandler) {
-            self.underlyingHandler = underlyingHandler
-        }
-
-        func awake(with response: Response) {
-            switch response.decoded() {
-            case .success:
-                underlyingHandler(nil)
-            case .failure(let error):
-                underlyingHandler(error)
-            }
-        }
-    }
-}
-
-extension Endpoint: EndpointBuildable {
-    public func context(_ context: EndpointContext) -> Self {
-        self.context = context
-        return self
-    }
-
-    public func base(_ base: String) -> Self {
+    func set(base: String) {
         request.base = base
-        return self
     }
 
-    public func httpMethod(_ httpMethod: Method) -> Self {
-        request.httpMethod = httpMethod
-        return self
+    func set(path: String) {
+        request.path = path
     }
 
-    public func query<T: Query>(_ query: T, using encodingStrategy: QueryEncodingStrategy? = nil) -> Self {
-        request.queryEncoder = QueryEncoder(query: query, encodingStrategy: encodingStrategy)
-        return self
+    func set(method: Method) {
+        request.method = method
     }
 
-    public func httpBody(_ body: Body) -> Self {
-        request.httpBodyEncoder = BodyEncoder(body: body)
-        return self
-    }
-    
-    public func httpBody<T: JSONSingleValueBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy? = nil) -> Self {
-        request.httpBodyEncoder = JSONBodyEncoder(encodingBody: jsonBody, encodingStrategy: encodingStrategy)
-        return self
+    func set(query: Query) {
+        request.query = query
     }
 
-    public func httpBody<T: JSONUnkeyedBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy? = nil) -> Self {
-        request.httpBodyEncoder = JSONBodyEncoder(encodingBody: jsonBody, encodingStrategy: encodingStrategy)
-        return self
+    func set(body: Body) {
+        request.body = body
     }
 
-    public func httpBody<T: JSONKeyedBody>(_ jsonBody: T, using encodingStrategy: JSONBodyEncodingStrategy? = nil) -> Self {
-        request.httpBodyEncoder = JSONBodyEncoder(encodingBody: jsonBody, encodingStrategy: encodingStrategy)
-        return self
+    func set(headers: Headers) {
+        request.headers = headers
     }
 
-    public func httpHeaders(_ httpHeaders: Headers) -> Self {
-        request.httpHeaders = httpHeaders
-        return self
-    }
-
-    public func timeout(_ timeout: TimeInterval) -> Self {
+    func set(timeout: TimeInterval) {
         request.timeout = timeout
-        return self
     }
 
-    public func cachePolicy(_ cachePolicy: NSURLRequest.CachePolicy) -> Self {
+    func set(cachePolicy: Request.CachePolicy) {
         request.cachePolicy = cachePolicy
-        return self
-    }
-
-    @discardableResult
-    public func build(_ magpie: Magpie) -> EndpointOperatable {
-        return EndpointOperator(endpoint: self, magpie: magpie)
-    }
-
-    @discardableResult
-    public func buildAndSend(_ magpie: Magpie) -> EndpointOperatable {
-        let endpointOperator = build(magpie)
-        endpointOperator.send()
-        return endpointOperator
     }
 }
 
-extension Endpoint: CustomStringConvertible, CustomDebugStringConvertible {
-    public var description: String {
+extension Endpoint {
+    func forward(_ response: Response) {
+        responseResolver?.resolve(response)
+    }
+}
+
+extension Endpoint: EndpointOperatable {
+    func send() {
+        isSentOnce = true
+        task = api?.send(self)
+    }
+
+    func retry() {
+        if isSentOnce {
+            task = api?.send(self)
+        } else {
+            let error = EndpointOperationError(reason: .retryBeforeSent)
+            forward(Response(request: request, error: error))
+        }
+    }
+
+    func cancel() {
+        task?.cancelNow()
+    }
+}
+
+extension Endpoint {
+    /// <mark> CustomStringConvertible
+    var description: String {
         return "\(request.description)"
     }
-
-    public var debugDescription: String {
+    /// <mark> CustomDebugStringConvertible
+    var debugDescription: String {
         return """
-        request(\(context.description)):
+        request(\(type.description))
         \(request.debugDescription)
-        task:
-        \(task?.debugDescription ?? "<nil>")
-        options:
-        validates response first when received \(validatesResponseFirstWhenReceived)
-        ignores result when cancelled \(ignoresResultWhenCancelled)
-        ignores result when delegates notified \(ignoresResultWhenDelegatesNotified)
-        notifies delegates when failed from unauthorized request \(notifiesDelegatesWhenFailedFromUnauthorizedRequest)
-        notifies delegates when failed from unavailable network \(notifiesDelegatesWhenFailedFromUnavailableNetwork)
-        notifies delegates when failed from unresponsive server \(notifiesDelegatesWhenFailedFromUnresponsiveServer)
+        \(task.map { "task with id(\($0.taskIdentifier))" } ?? "no task") attached
+        \(validatesResponseBeforeCompletion ? "validate" : "not validate") response before completion
+        \(ignoresResponseOnCancelled ? "ignores" : "not ignore") response on cancelled
+        \(ignoresResponseWhenListenersNotified ? "ignores" : "not ignore") response when listeners notified
+        \(notifiesListenersOnFailedFromUnauthorizedRequest ? "notifies" : "not notify") listeners on failed from unauthorized request
+        \(notifiesListenersOnFailedFromUnavailableNetwork ? "notifies" : "not notify") listeners on failed from unavailable network
+        \(notifiesListenersOnFailedFromDefectiveClient ? "notifies" : "not notify") listeners on failed from defective client
+        \(notifiesListenersOnFailedFromUnresponsiveServer ? "notifies" : "not notify") listeners on failed from unresponsive server
         """
-    }
-}
-
-extension Endpoint: LogPrintable {
-    var log: String {
-        return request.debugDescription
     }
 }

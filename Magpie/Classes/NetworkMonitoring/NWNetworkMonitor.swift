@@ -10,69 +10,64 @@ import Network
 
 @available (iOS 12.0, *)
 open class NWNetworkMonitor: NetworkMonitor {
-    public var watcher: NetworkStatusChangeWatcher?
+    public var pathMonitor: NWPathMonitor?
+    public var lastStatus: NetworkStatus = .unavailable
+
+    public weak var listener: NetworkListener?
 
     public var currentStatus: NetworkStatus {
-        guard let currentPath = pathMonitor?.currentPath else {
-            return .unavailable
+        if let currentPath = pathMonitor?.currentPath {
+            return formNetworkStatus(with: currentPath)
         }
-        return networkStatus(for: currentPath)
+        return .unavailable
     }
-
-    private var pathMonitor: NWPathMonitor?
-    private var lastStatus: NetworkStatus = .unavailable
-
-    public init() { }
 
     deinit {
         stop()
     }
 
-    public func start(on queue: DispatchQueue) throws {
+    open func start(on queue: DispatchQueue) {
         if pathMonitor != nil {
             return
         }
         let pathMonitor = NWPathMonitor()
         pathMonitor.pathUpdateHandler = { [weak self] path in
-            guard let self = self else {
-                return
+            if let self = self {
+                let newStatus = self.formNetworkStatus(with: path)
+                self.listener?.networkMonitor(self, didChangeNetworkStatus: NetworkStatusChange(newStatus, self.lastStatus))
+                self.lastStatus = newStatus
             }
-            let last = self.lastStatus
-            let new = self.networkStatus(for: path)
-
-            self.watcher?((new, last))
-
-            self.lastStatus = new
         }
         pathMonitor.start(queue: queue)
 
         self.pathMonitor = pathMonitor
     }
 
-    public func stop() {
+    open func stop() {
         pathMonitor?.cancel()
         pathMonitor = nil
     }
+}
 
-    private func networkStatus(for path: NWPath) -> NetworkStatus {
+@available (iOS 12.0, *)
+extension NWNetworkMonitor {
+    public func formNetworkStatus(with path: NWPath) -> NetworkStatus {
         switch path.status {
         case .requiresConnection:
             return .undetermined
         case .satisfied:
-            return .connected(networkConnection(for: path))
+            return .connected(formNetworkConnection(with: path))
         case .unsatisfied:
-            switch lastStatus {
-            case .connected(let connection):
+            if case .connected(let connection) = lastStatus {
                 return .disconnected(connection)
-            default:
-                return .disconnected(.none)
             }
+            return .disconnected(.none)
         @unknown default:
             return .undetermined
         }
     }
 
-    private func networkConnection(for path: NWPath) -> NetworkConnection {
+    public func formNetworkConnection(with path: NWPath) -> NetworkConnection {
         if path.status != .satisfied {
             return .none
         }

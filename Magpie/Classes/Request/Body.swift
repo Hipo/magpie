@@ -7,328 +7,275 @@
 
 import Foundation
 
-public protocol Body: CustomStringConvertible, CustomDebugStringConvertible {
-    func encoded() throws -> Data?
+public protocol Body: Printable {
+    func encoded() throws -> Data
 }
 
 extension Body {
-    public func encoded() throws -> Data? {
-        return nil
-    }
-}
-
-extension Body {
+    /// <mark> CustomStringConvertible
     public var description: String {
-        do {
-            if let data: Data = try encoded() {
-                return data.toString()
-            }
-            return "<nil>"
-        } catch {
-            return "<invalid>"
-        }
+        let data = try? encoded()
+        return data?.utf8Description ?? "<invalid>"
     }
 }
 
-extension Data: Body {
-    public func encoded() throws -> Data? {
-        return self
-    }
+/// <mark> application/json
+public protocol JSONBodyParamConvertible: Printable {
+    func encoded(in container: inout UnkeyedEncodingContainer) throws
+    func encoded<T: CodingKey>(for key: T, in container: inout KeyedEncodingContainer<T>) throws
 }
 
-public protocol JSONBody: Encodable, CustomStringConvertible, CustomDebugStringConvertible {
+public protocol JSONBodyKeyedParamConvertible: Printable {
+    associatedtype Key: CodingKey
+
+    var key: Key { get }
+
+    func encoded(in container: inout KeyedEncodingContainer<Key>) throws
+}
+
+public protocol JSONBody: Body, Encodable {
+    var encodingStrategy: JSONEncodingStrategy { get }
 }
 
 extension JSONBody {
-    public var description: String {
-        do {
-            let encoder = JSONBodyEncoder(encodingBody: self)
-            
-            if let data: Data = try encoder.encode() {
-                return """
-                \(data.toString())
-                [The actual values may be different considering the JSONBodyEncodingStrategy instance to be used]
-                """
-            }
-            return "<nil>"
-        } catch {
-            return "<invalid>"
+    public var encodingStrategy: JSONEncodingStrategy {
+        return JSONEncodingStrategy()
+    }
+
+    /// <mark> Body
+    public func encoded() throws -> Data {
+        return try encoded(encodingStrategy)
+    }
+}
+
+public protocol JSONArrayBody: JSONBody, JSONBodyParamConvertible {
+    var params: [JSONBodyParamConvertible] { get }
+}
+
+extension JSONArrayBody {
+    /// <mark> Encodable
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+
+        for param in params {
+            try param.encoded(in: &container)
         }
     }
-}
 
-public protocol JSONSingleValueBody: JSONBody {
-    func decoded() -> JSONBodyPairValue
-}
+    /// <mark> JSONBodyValueConvertible
+    public func encoded(in container: inout UnkeyedEncodingContainer) throws {
+        try container.encode(self)
+    }
 
-extension JSONSingleValueBody {
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try decoded().encoded(by: &container)
+    public func encoded<T: CodingKey>(for key: T, in container: inout KeyedEncodingContainer<T>) throws {
+        try container.encode(self, forKey: key)
     }
 }
 
-extension JSONSingleValueBody {
-    public var description: String {
-        return decoded().description
-    }
+public protocol JSONObjectBody: JSONBody, JSONBodyParamConvertible {
+    associatedtype SomeJSONBodyKeyedParam : JSONBodyKeyedParamConvertible
+
+    var params: [SomeJSONBodyKeyedParam] { get }
 }
 
-public protocol JSONUnkeyedBody: JSONBody {
-    associatedtype Key: JSONBodyRequestParameter
-    typealias Pair = JSONBodyPair<Key>
-    
-    func decoded() -> [[Pair]]?
-}
-
-extension JSONUnkeyedBody {
+extension JSONObjectBody {
+    /// <mark> Encodable
     public func encode(to encoder: Encoder) throws {
-        if let decodedPairs = decoded() {
-            var container = encoder.unkeyedContainer()
-            
-            for pairs in decodedPairs {
-                var pairsContainer = container.nestedContainer(keyedBy: Key.self)
-                
-                for pair in pairs {
-                    try pair.encoded(by: &pairsContainer)
-                }
-            }
+        var container = encoder.container(keyedBy: SomeJSONBodyKeyedParam.Key.self)
+
+        for param in params {
+            try param.encoded(in: &container)
         }
     }
-}
 
-public protocol JSONKeyedBody: JSONBody {
-    associatedtype Key: JSONBodyRequestParameter
-    typealias Pair = JSONBodyPair<Key>
+    /// <mark> JSONBodyValueConvertible
+    public func encoded(in container: inout UnkeyedEncodingContainer) throws {
+        try container.encode(self)
+    }
 
-    func decoded() -> [Pair]?
-}
-
-extension JSONKeyedBody {
-    public func encode(to encoder: Encoder) throws {
-        if let decodedPairs = decoded() {
-            var container = encoder.container(keyedBy: Key.self)
-            
-            for pair in decodedPairs {
-                try pair.encoded(by: &container)
-            }
-        }
+    public func encoded<T: CodingKey>(for key: T, in container: inout KeyedEncodingContainer<T>) throws {
+        try container.encode(self, forKey: key)
     }
 }
 
-protocol BodyEncodingStrategy {
-}
-
-public struct JSONBodyEncodingStrategy: BodyEncodingStrategy {
-    var date: JSONEncoder.DateEncodingStrategy
-    var data: JSONEncoder.DataEncodingStrategy
+public struct JSONBodyParam: JSONBodyParamConvertible {
+    public let value: AnyEncodable?
+    public let encodingPolicy: JSONBodyEncodingPolicy
 
     public init(
-        date: JSONEncoder.DateEncodingStrategy = .deferredToDate,
-        data: JSONEncoder.DataEncodingStrategy = .base64
+        _ value: AnyEncodable? = nil,
+        _ encodingPolicy: JSONBodyEncodingPolicy = .setAlways
     ) {
-        self.date = date
-        self.data = data
-    }
-}
-
-extension JSONBodyEncodingStrategy: CustomStringConvertible, CustomDebugStringConvertible {
-    public var description: String {
-        return """
-        Encoding strategy
-        for date values: \(date)
-        for data values: \(data)
-        """
-    }
-}
-
-public struct JSONBodyPair<Key: JSONBodyRequestParameter> {
-    public enum KeyedEncodingPolicy {
-        case setAlways /// <note> Set null if the value is nil.
-        case setIfPresent /// <note> Ignore if the value is nil.
-        case setIfPresentElseUseShared /// <note> Set the value if it is not nil, or use the shared value if present.
-    }
-    
-    let key: Key
-    let value: JSONBodyPairValue
-
-    public init(key: Key) {
-        self.key = key
-        
-        if let sharedValue = key.sharedValue()?.asJSONBody() {
-            self.value = sharedValue
-        } else {
-            let nilValue: String? = nil
-            self.value = JSONBodyPairValue(nilValue, .setIfPresent)
-        }
+        self.value = value
+        self.encodingPolicy = encodingPolicy
     }
 
-    public init<EncodingValue: Encodable>(
-        key: Key,
-        value: EncodingValue?,
-        policy: KeyedEncodingPolicy = .setAlways
-    ) {
-        self.key = key
-
-        switch policy {
-        case .setAlways:
-            self.value = JSONBodyPairValue(value, .setAlways)
-        case .setIfPresent:
-            self.value = JSONBodyPairValue(value, .setIfPresent)
-        case .setIfPresentElseUseShared:
-            if let v = value {
-                self.value = JSONBodyPairValue(v, .setAlways)
-            } else if let sharedValue = key.sharedValue()?.asJSONBody() {
-                self.value = sharedValue
-            } else {
-                let nilValue: String? = nil
-                self.value = JSONBodyPairValue(nilValue, .setIfPresent)
-            }
-        }
-    }
-}
-
-extension JSONBodyPair {
-    func encoded(by container: inout KeyedEncodingContainer<Key>) throws {
-        try value.encoded(for: key, by: &container)
-    }
-}
-
-extension JSONBodyPair: CustomStringConvertible, CustomDebugStringConvertible {
-    public var description: String {
-        return "\(key.description):\(value.description)"
-    }
-}
-
-public struct JSONBodyPairValue {
-    public enum EncodingPolicy {
-        case setAlways /// <note> Set null if the value is nil.
-        case setIfPresent /// <note> Ignore if the value is nil.
-    }
-    
-    let wrapped: AnyEncodable?
-    let policy: EncodingPolicy
-    
-    init(policy: EncodingPolicy) {
-        self.wrapped = nil
-        self.policy = policy
-    }
-    
-    init<EncodingValue: Encodable>(
-        _ value: EncodingValue?,
-        _ policy: EncodingPolicy
+    public init<T: Encodable>(
+        _ value: T?,
+        _ encodingPolicy: JSONBodyEncodingPolicy
     ) {
         if let v = value {
-            self.wrapped = AnyEncodable(v)
+            self.value = AnyEncodable(v)
         } else {
-            self.wrapped = nil
+            self.value = nil
         }
-        self.policy = policy
+        self.encodingPolicy = encodingPolicy
     }
-}
 
-extension JSONBodyPairValue {
-    func encoded(by container: inout SingleValueEncodingContainer) throws {
-        switch policy {
+    /// <mark> JSONBodyValueConvertible
+    public func encoded(in container: inout UnkeyedEncodingContainer) throws {
+        switch encodingPolicy {
         case .setAlways:
-            try container.encode(wrapped)
+            if let v = value {
+                try container.encode(v)
+            } else {
+                try container.encodeNil()
+            }
         case .setIfPresent:
-            if let someWrapped = wrapped {
-                try container.encode(someWrapped)
+            if let v = value {
+                try container.encode(v)
             }
         }
     }
-    
-    func encoded(by container: inout UnkeyedEncodingContainer) throws {
-        switch policy {
+
+    public func encoded<T: CodingKey>(for key: T, in container: inout KeyedEncodingContainer<T>) throws {
+        switch encodingPolicy {
         case .setAlways:
-            try container.encode(wrapped)
-        case .setIfPresent:
-            if let someWrapped = wrapped {
-                try container.encode(someWrapped)
-            }
-        }
-    }
-    
-    func encoded<T: JSONBodyRequestParameter>(for key: T, by container: inout KeyedEncodingContainer<T>) throws {
-        switch policy {
-        case .setAlways:
-            if let someWrapped = wrapped {
-                try container.encode(someWrapped, forKey: key)
+            if let v = value {
+                try container.encode(v, forKey: key)
             } else {
                 try container.encodeNil(forKey: key)
             }
         case .setIfPresent:
-            if let someWrapped = wrapped {
-                try container.encode(someWrapped, forKey: key)
+            if let v = value {
+                try container.encode(v, forKey: key)
             }
         }
     }
 }
 
-extension JSONBodyPairValue: CustomStringConvertible, CustomDebugStringConvertible {
+extension JSONBodyParam {
+    /// <mark> CustomStringConvertible
     public var description: String {
-        return "\(wrapped?.description ?? "<nil>")[\(policy.description)]"
+        return "\(value?.description ?? "<nil>")(\(encodingPolicy.description))"
     }
 }
 
-extension JSONBodyPairValue.EncodingPolicy: CustomStringConvertible, CustomDebugStringConvertible {
-    public var description: String {
-        switch self {
-        case .setAlways:
-            return "set always"
-        case .setIfPresent:
-            return "set if present"
-        }
-    }
-}
+public struct JSONBodyKeyedParam<Key: CodingKey>: JSONBodyKeyedParamConvertible {
+    public let key: Key
+    public let param: JSONBodyParam
 
-protocol BodyEncoding {
-    mutating func setIfNeeded(_ encodingStrategy: BodyEncodingStrategy)
-
-    func encode() throws -> Data?
-}
-
-struct BodyEncoder: BodyEncoding {
-    let body: Body
-
-    init(body: Body) {
-        self.body = body
-    }
-
-    mutating func setIfNeeded(_ encodingStrategy: BodyEncodingStrategy) { }
-
-    func encode() throws -> Data? {
-        return try body.encoded()
-    }
-}
-
-struct JSONBodyEncoder<Encoding: Encodable>: BodyEncoding {
-    let encodingBody: Encoding
-
-    private var encodingStrategy: JSONBodyEncodingStrategy?
-
-    init(
-        encodingBody: Encoding,
-        encodingStrategy: JSONBodyEncodingStrategy? = nil
+    public init(
+        _ key: Key,
+        _ value: AnyEncodable? = nil,
+        _ encodingPolicy: JSONBodyEncodingPolicy = .setAlways
     ) {
-        self.encodingBody = encodingBody
-        self.encodingStrategy = encodingStrategy
+        self.key = key
+        self.param = JSONBodyParam(value, encodingPolicy)
     }
 
-    mutating func setIfNeeded(_ encodingStrategy: BodyEncodingStrategy) {
-        if self.encodingStrategy == nil {
-            self.encodingStrategy = encodingStrategy as? JSONBodyEncodingStrategy
-        }
+    public init<T: Encodable>(
+        _ key: Key,
+        _ value: T?,
+        _ encodingPolicy: JSONBodyEncodingPolicy = .setAlways
+    ) {
+        self.key = key
+        self.param = JSONBodyParam(value, encodingPolicy)
     }
 
-    func encode() throws -> Data? {
-        let encoder = JSONEncoder()
+    /// <mark> JSONBodyKeyedValueConvertible
+    public func encoded(in container: inout KeyedEncodingContainer<Key>) throws {
+        try param.encoded(for: key, in: &container)
+    }
+}
 
-        if let encodingStrategy = encodingStrategy {
-            encoder.dateEncodingStrategy = encodingStrategy.date
-            encoder.dataEncodingStrategy = encodingStrategy.data
+extension JSONBodyKeyedParam {
+    /// <mark> CustomStringConvertible
+    public var description: String {
+        return "\(key.description):\(param.description)"
+    }
+}
+
+public enum JSONBodyEncodingPolicy: String, Printable {
+    case setAlways = "always" /// <note> Set null if the value is nil.
+    case setIfPresent = "ifPresent" /// <note> Ignore if the value is nil.
+}
+
+/// <mark> application/x-www-form-urlencoded
+public protocol FormURLEncodedBodyParamConvertible: Printable {
+    var key: String { get }
+    var value: URLParamValueEncodable? { get }
+}
+
+extension FormURLEncodedBodyParamConvertible {
+    /// <mark> CustomStringConvertible
+    public var description: String {
+        return "\(key):\(value?.description ?? "<nil>")"
+    }
+}
+
+public protocol FormURLEncodedBody: Body {
+    var params: [FormURLEncodedBodyParamConvertible] { get }
+    var encodingStrategy: URLEncodingStrategy { get }
+}
+
+extension FormURLEncodedBody {
+    public var encodingStrategy: URLEncodingStrategy {
+        return URLEncodingStrategy()
+    }
+}
+
+extension FormURLEncodedBody {
+    /// <mark> Body
+    public func encoded() throws -> Data {
+        let encoder = FormURLEncodedBodyEncoder()
+        encoder.encodingStrategy = encodingStrategy
+        return try encoder.encode(params)
+    }
+}
+
+public struct FormURLEncodedBodyParam: FormURLEncodedBodyParamConvertible {
+    public let key: String
+    public let value: URLParamValueEncodable?
+}
+
+private class FormURLEncodedBodyEncoder {
+    var encodingStrategy: URLEncodingStrategy = URLEncodingStrategy()
+
+    private static let allowedCharacters: CharacterSet = {
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.insert(" ")
+        allowed.remove("+")
+        allowed.remove("/")
+        allowed.remove("?")
+        return allowed
+    }()
+
+    func encode(_ params: [FormURLEncodedBodyParamConvertible]) throws -> Data {
+        var urlEncodedParams: [String] = []
+
+        for param in params {
+            let escapedKey = escape(param.key)
+
+            if let value = param.value {
+                urlEncodedParams.append("\(escapedKey)=\(escape(try value.urlEncoded(encodingStrategy)))")
+            } else {
+                if let encodedNil = encodingStrategy.nullity.encoded() {
+                    urlEncodedParams.append("\(escapedKey)=\(encodedNil)")
+                } else {
+                    throw RequestEncodingError.Reason.invalidFormURLBodyEncoding(key: param.key)
+                }
+            }
         }
-        return try encoder.encode(encodingBody)
+        return Data(urlEncodedParams.joined(separator: "&").utf8)
+    }
+}
+
+extension FormURLEncodedBodyEncoder {
+    private func escape(_ string: String) -> String {
+        return string
+            .replacingOccurrences(of: "\n", with: "\r\n")
+            .addingPercentEncoding(withAllowedCharacters: Self.allowedCharacters)!
+            .replacingOccurrences(of: " ", with: "+")
     }
 }

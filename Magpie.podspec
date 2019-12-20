@@ -8,23 +8,59 @@
 
 Pod::Spec.new do |s|
   s.name                  = 'Magpie'
-  s.version               = '2.1.0'
+  s.version               = '2.2.0'
   s.license               = { :type => 'MIT', :file => 'LICENSE' }
-  s.homepage              = 'https://github.com/hipo/magpie'
+  s.homepage              = 'https://github.com/Hipo/magpie'
   s.summary               = 'Standardized & Simplified API layer for iOS'
   s.source                = { :git => 'https://github.com/Hipo/magpie.git', :tag => s.version.to_s }
   s.author                = { 'Hipo' => 'hello@hipolabs.com' }
   s.ios.deployment_target = '10.0'
   s.osx.deployment_target = '10.14'
   s.swift_version         = '5.0'
-  s.default_subspec       = 'Package'
+  s.default_subspec       = 'Core'
 
-  s.subspec 'Lite' do |lite|
-      lite.source_files = 'Magpie/Classes/{Core,Endpoint,Error,Monitoring,Request,Response,Utilities}/*.swift'
+  s.subspec 'Core' do |ss|
+    ss.subspec 'API' do |sss|
+      sss.source_files = 'Magpie/Classes/API/*.swift'
+    end
+
+    ss.subspec 'Endpoint' do |sss|
+      sss.source_files = 'Magpie/Classes/Endpoint/*.swift'
+    end
+
+    ss.subspec 'NetworkMonitoring' do |sss|
+      sss.source_files = 'Magpie/Classes/NetworkMonitoring/*.swift'
+    end
+
+    ss.subspec 'Request' do |sss|
+      sss.source_files = 'Magpie/Classes/Request/*.swift'
+    end
+
+    ss.subspec 'Response' do |sss|
+      sss.source_files = 'Magpie/Classes/Response/*.swift'
+    end
+
+    ss.subspec 'Utils' do |sss|
+      sss.subspec 'Extensions' do |ssss|
+        ssss.source_files = 'Magpie/Classes/Utils/Extensions/*.swift'
+      end
+
+      sss.subspec 'Logging' do |ssss|
+        ssss.source_files = 'Magpie/Classes/Utils/Logging/*.swift'
+      end
+
+      sss.subspec 'Objects' do |ssss|
+        ssss.source_files = 'Magpie/Classes/Utils/Objects/*.swift'
+      end
+
+      sss.subspec 'Serializing' do |ssss|
+        ssss.source_files = 'Magpie/Classes/Utils/Serializing/*.swift'
+      end
+    end
   end
 
-  s.subspec 'Package' do |package|
-      package.source_files = 'Magpie/Classes/**/*.swift'
-      package.dependency 'Alamofire', '~> 5.0.0-rc.2'
+  s.subspec 'Alamofire' do |ss|
+    ss.source_files = 'Magpie/Classes/Alamofire/*.swift'
+    ss.dependency 'Alamofire', '~> 5.0.0-rc.3'
   end
 end

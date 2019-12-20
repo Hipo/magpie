@@ -8,39 +8,30 @@
 import Alamofire
 import Foundation
 
-public class AlamofireNetworking: Networking {
-    public init() { }
-
-    public func send(_ request: Request, validateFirst: Bool, then handler: @escaping ResponseHandler) -> TaskConvertible? {
+open class AlamofireNetworking: Networking {
+    public func send(_ request: Request, validateResponse: Bool, onReceived handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
             let dataRequest = AF.request(urlRequest)
 
-            if validateFirst {
+            if validateResponse {
                 dataRequest.validate()
             }
             return dataRequest.magpie_responseData { [weak self] dataResponse in
-                guard let self = self else {
-                    return
+                if let self = self {
+                    handler(self.populateResponse(dataResponse, for: request))
                 }
-                let response = self.populateResponse(from: dataResponse, for: request)
-                handler(response)
             }
         } catch let error {
-            let response = populateResponse(from: error, for: request)
-            handler(response)
+            handler(populateResponse(error, for: request))
+            return nil
         }
-        return nil
     }
 
-    public func upload(
-        _ source: EndpointContext.Source,
-        with request: Request,
-        validateFirst: Bool,
-        then handler: @escaping ResponseHandler
-    ) -> TaskConvertible? {
+    public func upload(_ source: EndpointType.Source, with request: Request, validateResponse: Bool, onCompleted handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
+
             let uploadRequest: UploadRequest
 
             switch source {
@@ -50,48 +41,57 @@ public class AlamofireNetworking: Networking {
                 uploadRequest = AF.upload(url, with: urlRequest)
             }
 
-            if validateFirst {
+            if validateResponse {
                 uploadRequest.validate()
             }
             return uploadRequest.magpie_responseData { [weak self] dataResponse in
-                guard let self = self else {
-                    return
+                if let self = self {
+                    handler(self.populateResponse(dataResponse, for: request))
                 }
-                let response = self.populateResponse(from: dataResponse, for: request)
-                handler(response)
             }
         } catch let error {
-            let response = populateResponse(from: error, for: request)
-            handler(response)
+            handler(populateResponse(error, for: request))
+            return nil
         }
-        return nil
     }
+}
 
-    private func populateResponse(from dataResponse: AFDataResponse<Data>, for request: Request) -> Response {
+extension AlamofireNetworking {
+    private func populateResponse(_ dataResponse: AFDataResponse<Data>, for request: Request) -> Response {
         switch dataResponse.result {
         case .success:
-            return Response(request: request, fields: dataResponse.response?.allHeaderFields, data: dataResponse.data)
-        case .failure(let error):
-            let response = Response(request: request, fields: dataResponse.response?.allHeaderFields, data: dataResponse.data)
-
-            if let code = error.responseCode {
-                let httpError = HTTPError(statusCode: code, underlyingError: error)
-                let error = Error.populate(from: httpError)
-
-                response.errorContainer = ErrorContainer(origin: .magpie(error))
-                return response
-            }
-            response.errorContainer = ErrorContainer(origin: .unknown(error))
-            return response
+            return Response(request: request, rawHeaders: dataResponse.response?.allHeaderFields, rawData: dataResponse.data)
+        case .failure(let afError):
+            let error = populateError(afError, with: dataResponse.data)
+            return Response(request: request, rawHeaders: dataResponse.response?.allHeaderFields, rawData: dataResponse.data, error: error)
         }
     }
 
-    private func populateResponse(from error: FoundationError, for request: Request) -> Response {
-        guard let magError = error as? Error else {
-            let errorContainer = ErrorContainer(origin: .foundation(error))
-            return Response(request: request, errorContainer: errorContainer)
+    private func populateError(_ afError: AFError, with data: Data?) -> APIError {
+        switch afError {
+        case .explicitlyCancelled:
+            return NetworkError(reason: .cancelled)
+        case .responseValidationFailed(let reason):
+            if case .unacceptableStatusCode(let code) = reason {
+                return HTTPError(statusCode: code, responseData: data, underlyingError: afError)
+            } else {
+                return UnexpectedError(responseData: data, underlyingError: afError)
+            }
+        case .sessionTaskFailed(let error):
+            if let urlError = error as? URLError {
+                return NetworkError(urlError: urlError)
+            } else {
+                return UnexpectedError(responseData: data, underlyingError: error)
+            }
+        default:
+            return UnexpectedError(responseData: data, underlyingError: afError)
         }
-        let errorContainer = ErrorContainer(origin: .magpie(magError))
-        return Response(request: request, errorContainer: errorContainer)
+    }
+
+    private func populateResponse(_ error: Error, for request: Request) -> Response {
+        if let apiError = error as? APIError {
+            return Response(request: request, error: apiError)
+        }
+        return Response(request: request, error: UnexpectedError(responseData: nil, underlyingError: error))
     }
 }

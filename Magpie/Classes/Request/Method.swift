@@ -16,14 +16,8 @@ public enum Method: String {
     case patch = "PATCH"
 }
 
-extension Method {
-    public func decoded() -> String {
-        return rawValue
-    }
-}
-
-extension Method: CustomStringConvertible, CustomDebugStringConvertible {
+extension Method: Printable {
     public var description: String {
-        return decoded()
+        return rawValue
     }
 }

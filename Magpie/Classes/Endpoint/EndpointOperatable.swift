@@ -7,7 +7,9 @@
 
 import Foundation
 
-public protocol EndpointOperatable: AnyObject, CustomStringConvertible, CustomDebugStringConvertible {
+public protocol EndpointOperatable: Printable {
+    var request: Request { get }
+
     func send()
     func retry()
     func cancel()

@@ -9,17 +9,21 @@ import Alamofire
 import Foundation
 
 extension Alamofire.DataRequest: TaskConvertible {
-    public var underlyingTask: URLSessionTask? {
-        return task
+    public var taskIdentifier: Int {
+        return task?.taskIdentifier ?? -1
     }
 
-    public func cancelImmediately() {
+    public var inProgress: Bool {
+        return task?.inProgress ?? false
+    }
+
+    public func cancelNow() {
         cancel()
     }
 }
 
 extension Alamofire.DataRequest {
-    public func magpie_responseData(completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self {
+    func magpie_responseData(completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self {
         return response(responseSerializer: DataResponseSerializer(emptyResponseCodes: Set(200..<300)), completionHandler: completionHandler)
     }
 }

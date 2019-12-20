@@ -8,77 +8,69 @@
 import Foundation
 
 public class Request  {
-    var base = ""
-    var path: Path
-    var httpMethod: Method = .get
-    var queryEncoder: QueryEncoding?
-    var httpBodyEncoder: BodyEncoding?
-    var httpHeaders: Headers = []
-    var cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData
-    var timeout: TimeInterval = 60.0
+    public typealias CachePolicy = URLRequest.CachePolicy
 
-    init(path: Path) {
-        self.path = path
+    public var base: String
+    public var path = ""
+    public var method: Method = .get
+    public var query: Query?
+    public var body: Body?
+    public var headers: Headers = []
+    public var cachePolicy: CachePolicy = .reloadIgnoringLocalCacheData
+    public var timeout: TimeInterval = 60.0
+
+    public init(base: String) {
+        self.base = base
     }
 }
 
 extension Request {
     public func asUrlRequest() throws -> URLRequest {
         guard let baseUrl = URL(string: base) else {
-            throw Error.requestEncoding(.emptyOrInvalidBaseURL(base))
+            throw RequestEncodingError(reason: .emptyOrInvalidURL)
         }
-
         do {
             var components = URLComponents()
-
             components.scheme = baseUrl.scheme
             components.host = baseUrl.host
             components.port = baseUrl.port
-            components.path = baseUrl.path + path.decoded()
-
-            if let queryEncoder = queryEncoder {
-                components.queryItems = try queryEncoder.encode()
-            }
+            components.path = baseUrl.path + path
+            components.queryItems = try query?.encoded()
 
             guard let url = components.url else {
-                throw Error.requestEncoding(.emptyOrInvalidURL(self))
+                throw RequestEncodingError(reason: .emptyOrInvalidURL)
             }
-
             var urlRequest = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
+            urlRequest.httpMethod = method.description
 
-            urlRequest.httpMethod = httpMethod.decoded()
-            urlRequest.httpShouldHandleCookies = false
-
-            if let encoder = httpBodyEncoder {
-                if let httpBody = try encoder.encode() {
-                    let field = Headers.Field.contentLength(.some(String(httpBody.count))).decoded()
-
-                    urlRequest.httpBody = httpBody
-                    urlRequest.setValue(field.value, forHTTPHeaderField: field.key)
-                }
+            if let body = body {
+                let httpBody = try body.encoded()
+                urlRequest.httpBody = httpBody
+                urlRequest.setValue(String(httpBody.count), forHTTPHeaderField: HTTPHeader.contentType)
             }
-
-            for field in httpHeaders {
-                urlRequest.setValue(field.value, forHTTPHeaderField: field.key)
+            for header in headers {
+                urlRequest.setValue(header.value, forHTTPHeaderField: header.key)
             }
-
             return urlRequest
+        } catch let error as RequestEncodingError.Reason {
+            throw RequestEncodingError(reason: error)
         } catch let error {
-            throw Error.requestEncoding(.failed(self, error))
+            throw UnexpectedError(responseData: nil, underlyingError: error)
         }
     }
 }
 
-extension Request: CustomStringConvertible, CustomDebugStringConvertible {
+extension Request: Printable {
+    /// <mark> CustomStringConvertible
     public var description: String {
         do {
             let urlRequest = try asUrlRequest()
-            return "\(httpMethod.description) \(urlRequest.description)"
+            return "\(method.description) \(urlRequest.description)"
         } catch {
             return "<invalid>"
         }
     }
-
+    /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         do {
             let urlRequest = try asUrlRequest()

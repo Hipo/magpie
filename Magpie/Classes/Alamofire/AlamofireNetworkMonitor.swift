@@ -9,17 +9,20 @@ import Alamofire
 import Foundation
 
 open class AlamofireNetworkMonitor: NetworkMonitor {
-    public var watcher: NetworkStatusChangeWatcher?
+    public typealias ReachabilityStatus = NetworkReachabilityManager.NetworkReachabilityStatus
+    public typealias ReachabilityConnection = NetworkReachabilityManager.NetworkReachabilityStatus.ConnectionType
+
+    public var reachabilityManager: NetworkReachabilityManager?
+    public var lastStatus: NetworkStatus = .unavailable
+
+    public weak var listener: NetworkListener?
 
     public var currentStatus: NetworkStatus {
-        guard let reachabilityManager = reachabilityManager else {
-            return .unavailable
+        if let reachabilityManager = reachabilityManager {
+            return formNetworkStatus(with: reachabilityManager.status)
         }
-        return networkStatus(for: reachabilityManager.status)
+        return .unavailable
     }
-
-    private var reachabilityManager: NetworkReachabilityManager?
-    public var lastStatus: NetworkStatus = .unavailable
 
     public init() { }
 
@@ -27,57 +30,47 @@ open class AlamofireNetworkMonitor: NetworkMonitor {
         stop()
     }
 
-    public func start(on queue: DispatchQueue) throws {
+    open func start(on queue: DispatchQueue) {
         if reachabilityManager != nil {
             return
         }
         guard let reachabilityManager = NetworkReachabilityManager() else {
-            throw Error.networkMonitoring(.notStarted)
+            return
         }
         reachabilityManager.startListening(onQueue: queue) { [weak self] status in
-            guard let self = self else {
-                return
+            if let self = self {
+                let newStatus = self.formNetworkStatus(with: status)
+                self.listener?.networkMonitor(self, didChangeNetworkStatus: NetworkStatusChange(newStatus, self.lastStatus))
+                self.lastStatus = newStatus
             }
-            let last = self.lastStatus
-            let new = self.networkStatus(for: status)
-
-            self.watcher?((new, last))
-
-            self.lastStatus = new
         }
 
         self.reachabilityManager = reachabilityManager
     }
 
-    public func stop() {
+    open func stop() {
         reachabilityManager?.stopListening()
         reachabilityManager = nil
     }
+}
 
-    private func networkStatus(for reachabilityStatus: NetworkReachabilityManager.NetworkReachabilityStatus) -> NetworkStatus {
-        switch reachabilityStatus {
+extension AlamofireNetworkMonitor {
+    public func formNetworkStatus(with status: ReachabilityStatus) -> NetworkStatus {
+        switch status {
         case .unknown:
             return .undetermined
-        case .reachable(let connectionType):
-            return .connected(networkConnection(for: connectionType))
+        case .reachable(let connection):
+            return .connected(formNetworkConnection(with: connection))
         case .notReachable:
-            switch lastStatus {
-            case .connected(let connection):
+            if case .connected(let connection) = lastStatus {
                 return .disconnected(connection)
-            default:
-                return .disconnected(.none)
             }
+            return .disconnected(.none)
         }
     }
 
-    /// <warning>
-    /// NetworkReachabilityManager.ConnectionType doesn't cover the all NetworkConnection cases correctly. We ignored this fact
-    /// for the sake of using the Apple-supported NWNetworkMonitor's capabilities properly. After dropping support to iOS 11 and
-    /// below versions, we will delete this class.
-    private func networkConnection(
-        for reachabilityConnectionType: NetworkReachabilityManager.NetworkReachabilityStatus.ConnectionType
-    ) -> NetworkConnection {
-        switch reachabilityConnectionType {
+    public func formNetworkConnection(with connection: ReachabilityConnection) -> NetworkConnection {
+        switch connection {
         case .ethernetOrWiFi:
             return .wifi
         case .cellular:

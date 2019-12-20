@@ -2,11 +2,10 @@ use_frameworks!
 platform :ios, '10.0'
 
 target 'Magpie_Example' do
-  pod 'Magpie', :path => '../'
+  pod 'Magpie/Core', :path => '../'
+  pod 'Magpie/Alamofire', :path => '../'
 
   target 'Magpie_Tests' do
     inherit! :search_paths
-
-    
   end
 end

@@ -7,18 +7,9 @@
 
 import Foundation
 
-public protocol TaskConvertible: AnyObject, CustomStringConvertible, CustomDebugStringConvertible {
-    var underlyingTask: URLSessionTask? { get }
+public protocol TaskConvertible: Printable {
+    var taskIdentifier: Int { get }
+    var inProgress: Bool { get }
 
-    func cancelImmediately()
-}
-
-extension TaskConvertible {
-    public var description: String {
-        return underlyingTask.absoluteDescription
-    }
-
-    public var debugDescription: String {
-        return underlyingTask.absoluteDebugDescription
-    }
+    func cancelNow()
 }

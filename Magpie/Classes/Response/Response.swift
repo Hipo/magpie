@@ -8,191 +8,110 @@
 import Foundation
 
 public class Response {
-    public var data: Data?
-    public var errorContainer: ErrorContainer?
-
     public var isSucceed: Bool {
-        return errorContainer == nil
+        return error == nil
     }
 
     public var isFailed: Bool {
-        return errorContainer != nil
+        return error != nil
     }
 
     public let request: Request
-    public let httpHeaders: Headers
+    public let headers: Headers
+    public let rawData: Data?
+
+    public var error: APIError?
 
     public init(
         request: Request,
-        fields: [AnyHashable: Any]? = nil,
-        data: Data? = nil,
-        errorContainer: ErrorContainer? = nil
+        rawHeaders: [AnyHashable: Any]? = nil,
+        rawData: Data? = nil,
+        error: APIError? = nil
     ) {
         self.request = request
-        self.httpHeaders = fields.map { Headers($0) } ?? []
-        self.data = data
-        self.errorContainer = errorContainer
+        self.headers = rawHeaders.map { Headers($0) } ?? []
+        self.rawData = rawData
+        self.error = error
     }
 }
 
 extension Response {
     public func decoded() -> RawResult {
-        guard let errorContainer = errorContainer else {
-            return .success(data)
+        if let error = error {
+            return .failure(error)
         }
-        return .failure(errorContainer.decoded())
+        return .success(rawData)
     }
 
-    public func decoded<AnyModel: Model>(using decodingStrategy: ModelDecodingStrategy? = nil) -> ModelResult<AnyModel> {
-        guard let errorContainer = errorContainer else {
-            guard let data = data else {
-                return .failure(.responseSerialization(.emptyOrCorruptedData(nil)))
+    public func decoded<SomeModel: Model, SomeErrorModel: Model>() -> Result<SomeModel, SomeErrorModel> {
+        if let error = error {
+            if let rawData = rawData {
+                return .failure(error, try? SomeErrorModel.decoded(rawData))
             }
-            do {
-                let instance = try AnyModel.decoded(from: data, using: decodingStrategy)
-                return .success(instance)
-            } catch let error {
-                return .failure(.responseSerialization(.jsonSerializationFailed(data, error)))
-            }
+            return .failure(error)
         }
-        return .failure(errorContainer.decoded())
-    }
-
-    public func decoded<ErrorModel: Model>(using errorModelDecodingStrategy: ModelDecodingStrategy? = nil) -> ErrorResult<ErrorModel> {
-        guard let errorContainer = errorContainer else {
-            return .success
+        guard let rawData = rawData else {
+            error = ResponseSerializationError(responseData: nil, reason: .corruptedData)
+            return .failure(error!)
         }
-        guard
-            let data = data,
-            let errorInstance = try? ErrorModel.decoded(from: data, using: errorModelDecodingStrategy)
-        else {
-            return .failure(errorContainer.decoded(), nil)
+        do {
+            return .success(try SomeModel.decoded(rawData))
+        } catch let err {
+            error = ResponseSerializationError(responseData: rawData, reason: .jsonSerializationFailed(underlyingError: err))
+            return .failure(error!, try? SomeErrorModel.decoded(rawData))
         }
-        return .failure(errorContainer.decoded(), errorInstance)
-    }
-
-    public func decoded<AnyModel: Model, ErrorModel: Model>(
-        using modelDecodingStrategy: ModelDecodingStrategy? = nil,
-        forErrorModel errorModelDecodingStrategy: ModelDecodingStrategy? = nil
-    ) -> Result<AnyModel, ErrorModel> {
-        guard let errorContainer = errorContainer else {
-            guard let data = data else {
-                return .failure(.responseSerialization(.emptyOrCorruptedData(nil)), nil)
-            }
-            do {
-                let instance = try AnyModel.decoded(from: data, using: modelDecodingStrategy)
-                return .success(instance)
-            } catch let error {
-                let errorInstance = try? ErrorModel.decoded(from: data, using: errorModelDecodingStrategy)
-                return .failure(.responseSerialization(.jsonSerializationFailed(data, error)), errorInstance)
-            }
-        }
-        guard
-            let data = data,
-            let errorInstance = try? ErrorModel.decoded(from: data, using: errorModelDecodingStrategy)
-        else {
-            return .failure(errorContainer.decoded(), nil)
-        }
-        return .failure(errorContainer.decoded(), errorInstance)
     }
 }
 
 extension Response {
     public enum RawResult {
         case success(Data?)
-        case failure(Error)
+        case failure(APIError)
     }
 
-    public enum ModelResult<AnyModel: Model> {
-        case success(AnyModel)
-        case failure(Error)
-    }
-
-    public enum ErrorResult<ErrorModel: Model> {
-        case success
-        case failure(Error, ErrorModel?)
-    }
-
-    public enum Result<AnyModel: Model, ErrorModel: Model> {
-        case success(AnyModel)
-        case failure(Error, ErrorModel?)
+    public enum Result<SomeModel: Model, SomeErrorModel: Model> {
+        case success(SomeModel)
+        case failure(APIError, SomeErrorModel? = nil)
     }
 }
 
-extension Response: CustomStringConvertible, CustomDebugStringConvertible {
+extension Response: Printable {
     public var description: String {
         let result: RawResult = decoded()
+        let aDescription = "\(request.description)\n\(result.description)"
 
-        var finalDescription = """
-        request:
-        \(request.description)
-        result:
-        \(result.description)
-        """
-
-        if case RawResult.failure = result {
-            if let data = data, data.count > 0 {
-                finalDescription += "\ndata:\n\(data.toString())"
-            }
+        switch result {
+        case .success:
+            return aDescription
+        case .failure:
+            return "\(aDescription)\n\(rawData.absoluteUtf8Description)"
         }
-        return finalDescription
     }
 }
 
-extension Response.RawResult: CustomStringConvertible, CustomDebugStringConvertible {
+extension Response.RawResult: Printable {
+    /// <mark> CustomStringConvertible
     public var description: String {
         switch self {
         case .success(let data):
-            return """
-            Success.
-            data:
-            \(data?.toString() ?? "<nil>")
-            """
+            return "[SUCCESS]\n\(data.absoluteUtf8Description)"
         case .failure(let error):
-            return """
-            Failed.
-            error:
-            \(error.localizedDescription)
-            """
+            return "[FAILED]\n\(error.localizedDescription)"
         }
     }
 }
 
-extension Response.ModelResult: CustomStringConvertible, CustomDebugStringConvertible {
+extension Response.Result: Printable {
+    /// <mark> CustomStringConvertible
     public var description: String {
         switch self {
-        case .success(let instance):
+        case .success(let model):
+            return "[SUCCESS]\n\(model.description)"
+        case .failure(let error, let errorModel):
             return """
-            Success.
-            data:
-            \(instance.description)
-            """
-        case .failure(let error):
-            return """
-            Failed.
-            error:
+            [FAILED]
             \(error.localizedDescription)
-            """
-        }
-    }
-}
-
-extension Response.Result: CustomStringConvertible, CustomDebugStringConvertible {
-    public var description: String {
-        switch self {
-        case .success(let instance):
-            return """
-            Success.
-            data:
-            \(instance.description)
-            """
-        case .failure(let error, let errorInstance):
-            return """
-            Failed.
-            error:
-            \(error.localizedDescription)
-            data:
-            \(errorInstance?.description ?? "<nil>")
+            \(errorModel?.description ?? "<nil>")
             """
         }
     }
