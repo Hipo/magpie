@@ -21,6 +21,7 @@ public struct AnyEncodable: Encodable {
         }
     }
 
+    /// <mark> Encodable
     public func encode(to encoder: Encoder) throws {
         try _encode(encoder)
     }

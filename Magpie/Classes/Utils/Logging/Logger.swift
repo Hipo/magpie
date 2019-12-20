@@ -56,16 +56,6 @@ public enum Logs: Equatable {
     case requests(RequestLogLevel = .verbose)
     case responses(ResponseLogLevel = .verbose)
     case networkMonitoring
-
-    public enum RequestLogLevel {
-        case info
-        case verbose
-    }
-
-    public enum ResponseLogLevel {
-        case error
-        case verbose
-    }
 }
 
 extension Logs {
@@ -78,5 +68,17 @@ extension Logs {
         case .networkMonitoring:
             return "networkmonitoring"
         }
+    }
+}
+
+extension Logs {
+    public enum RequestLogLevel {
+        case info
+        case verbose
+    }
+
+    public enum ResponseLogLevel {
+        case error
+        case verbose
     }
 }

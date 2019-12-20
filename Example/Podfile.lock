@@ -1,32 +1,34 @@
 PODS:
   - Alamofire (5.0.0-rc.3)
-  - Magpie/Alamofire (2.2.0):
+  - Magpie/Alamofire (2.3.0):
     - Alamofire (~> 5.0.0-rc.3)
-  - Magpie/Core (2.2.0):
-    - Magpie/Core/API (= 2.2.0)
-    - Magpie/Core/Endpoint (= 2.2.0)
-    - Magpie/Core/NetworkMonitoring (= 2.2.0)
-    - Magpie/Core/Request (= 2.2.0)
-    - Magpie/Core/Response (= 2.2.0)
-    - Magpie/Core/Utils (= 2.2.0)
-  - Magpie/Core/API (2.2.0)
-  - Magpie/Core/Endpoint (2.2.0)
-  - Magpie/Core/NetworkMonitoring (2.2.0)
-  - Magpie/Core/Request (2.2.0)
-  - Magpie/Core/Response (2.2.0)
-  - Magpie/Core/Utils (2.2.0):
-    - Magpie/Core/Utils/Extensions (= 2.2.0)
-    - Magpie/Core/Utils/Logging (= 2.2.0)
-    - Magpie/Core/Utils/Objects (= 2.2.0)
-    - Magpie/Core/Utils/Serializing (= 2.2.0)
-  - Magpie/Core/Utils/Extensions (2.2.0)
-  - Magpie/Core/Utils/Logging (2.2.0)
-  - Magpie/Core/Utils/Objects (2.2.0)
-  - Magpie/Core/Utils/Serializing (2.2.0)
+  - Magpie/Core (2.3.0):
+    - Magpie/Core/API (= 2.3.0)
+    - Magpie/Core/Endpoint (= 2.3.0)
+    - Magpie/Core/NetworkMonitoring (= 2.3.0)
+    - Magpie/Core/Request (= 2.3.0)
+    - Magpie/Core/Response (= 2.3.0)
+    - Magpie/Core/Utils (= 2.3.0)
+  - Magpie/Core/API (2.3.0)
+  - Magpie/Core/Endpoint (2.3.0)
+  - Magpie/Core/NetworkMonitoring (2.3.0)
+  - Magpie/Core/Request (2.3.0)
+  - Magpie/Core/Response (2.3.0)
+  - Magpie/Core/Utils (2.3.0):
+    - Magpie/Core/Utils/Extensions (= 2.3.0)
+    - Magpie/Core/Utils/Logging (= 2.3.0)
+    - Magpie/Core/Utils/Objects (= 2.3.0)
+    - Magpie/Core/Utils/Serializing (= 2.3.0)
+  - Magpie/Core/Utils/Extensions (2.3.0)
+  - Magpie/Core/Utils/Logging (2.3.0)
+  - Magpie/Core/Utils/Objects (2.3.0)
+  - Magpie/Core/Utils/Serializing (2.3.0)
+  - Magpie/HIPExceptions (2.3.0)
 
 DEPENDENCIES:
   - Magpie/Alamofire (from `../`)
   - Magpie/Core (from `../`)
+  - Magpie/HIPExceptions (from `../`)
 
 SPEC REPOS:
   trunk:
@@ -38,8 +40,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: ca8c0de6906873be89d6deec5c8de279e00bf872
-  Magpie: e82faf8922ad486674d35a603a13236a468e3843
+  Magpie: 8c965d4d9f2e70d7a142d093e36f879a468df22b
 
-PODFILE CHECKSUM: 87d5c640825fdda232c17d12395991f304de1e68
+PODFILE CHECKSUM: 4a5a0ba803e6808ee3a62e28e83e94b46b03daa5
 
 COCOAPODS: 1.8.4

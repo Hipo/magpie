@@ -10,7 +10,9 @@ import Foundation
 public enum EndpointType {
     case data
     case upload(Source)
+}
 
+extension EndpointType {
     public enum Source {
         case data(Data)
         case file(URL)

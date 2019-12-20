@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name                  = 'Magpie'
-  s.version               = '2.2.0'
+  s.version               = '2.3.0'
   s.license               = { :type => 'MIT', :file => 'LICENSE' }
   s.homepage              = 'https://github.com/Hipo/magpie'
   s.summary               = 'Standardized & Simplified API layer for iOS'
@@ -62,5 +62,9 @@ Pod::Spec.new do |s|
   s.subspec 'Alamofire' do |ss|
     ss.source_files = 'Magpie/Classes/Alamofire/*.swift'
     ss.dependency 'Alamofire', '~> 5.0.0-rc.3'
+  end
+
+  s.subspec 'HIPExceptions' do |ss|
+    ss.source_files = 'Magpie/Classes/HIPExceptions/*.swift'
   end
 end

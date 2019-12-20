@@ -36,7 +36,7 @@ extension Model {
     public var description: String {
         do {
             let data = try encoded()
-            return "[\(type(of: self))]\(data.utf8Description)"
+            return "[\(type(of: self))] \(data.utf8Description)"
         } catch {
             return "<invalid>"
         }
