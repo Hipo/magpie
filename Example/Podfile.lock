@@ -1,38 +1,43 @@
 PODS:
   - Alamofire (5.0.0-rc.3)
-  - Magpie/Alamofire (2.3.0):
+  - Magpie/Alamofire (2.4.0):
     - Alamofire (~> 5.0.0-rc.3)
-  - Magpie/Core (2.3.0):
-    - Magpie/Core/API (= 2.3.0)
-    - Magpie/Core/Endpoint (= 2.3.0)
-    - Magpie/Core/NetworkMonitoring (= 2.3.0)
-    - Magpie/Core/Request (= 2.3.0)
-    - Magpie/Core/Response (= 2.3.0)
-    - Magpie/Core/Utils (= 2.3.0)
-  - Magpie/Core/API (2.3.0)
-  - Magpie/Core/Endpoint (2.3.0)
-  - Magpie/Core/NetworkMonitoring (2.3.0)
-  - Magpie/Core/Request (2.3.0)
-  - Magpie/Core/Response (2.3.0)
-  - Magpie/Core/Utils (2.3.0):
-    - Magpie/Core/Utils/Extensions (= 2.3.0)
-    - Magpie/Core/Utils/Logging (= 2.3.0)
-    - Magpie/Core/Utils/Objects (= 2.3.0)
-    - Magpie/Core/Utils/Serializing (= 2.3.0)
-  - Magpie/Core/Utils/Extensions (2.3.0)
-  - Magpie/Core/Utils/Logging (2.3.0)
-  - Magpie/Core/Utils/Objects (2.3.0)
-  - Magpie/Core/Utils/Serializing (2.3.0)
-  - Magpie/HIPExceptions (2.3.0)
+  - Magpie/Core (2.4.0):
+    - Magpie/Core/API (= 2.4.0)
+    - Magpie/Core/Endpoint (= 2.4.0)
+    - Magpie/Core/NetworkMonitoring (= 2.4.0)
+    - Magpie/Core/Request (= 2.4.0)
+    - Magpie/Core/Response (= 2.4.0)
+    - Magpie/Core/Utils (= 2.4.0)
+  - Magpie/Core/API (2.4.0)
+  - Magpie/Core/Endpoint (2.4.0)
+  - Magpie/Core/NetworkMonitoring (2.4.0)
+  - Magpie/Core/Request (2.4.0)
+  - Magpie/Core/Response (2.4.0)
+  - Magpie/Core/Utils (2.4.0):
+    - Magpie/Core/Utils/Extensions (= 2.4.0)
+    - Magpie/Core/Utils/Logging (= 2.4.0)
+    - Magpie/Core/Utils/Objects (= 2.4.0)
+    - Magpie/Core/Utils/Serializing (= 2.4.0)
+  - Magpie/Core/Utils/Extensions (2.4.0)
+  - Magpie/Core/Utils/Logging (2.4.0)
+  - Magpie/Core/Utils/Objects (2.4.0)
+  - Magpie/Core/Utils/Serializing (2.4.0)
+  - Magpie/HIPAuthorization (2.4.0):
+    - Valet (~> 3.2)
+  - Magpie/HIPExceptions (2.4.0)
+  - Valet (3.2.6)
 
 DEPENDENCIES:
   - Magpie/Alamofire (from `../`)
   - Magpie/Core (from `../`)
+  - Magpie/HIPAuthorization (from `../`)
   - Magpie/HIPExceptions (from `../`)
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Valet
 
 EXTERNAL SOURCES:
   Magpie:
@@ -40,8 +45,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: ca8c0de6906873be89d6deec5c8de279e00bf872
-  Magpie: 8c965d4d9f2e70d7a142d093e36f879a468df22b
+  Magpie: 34d65a497227a176d44b04641e840384be859828
+  Valet: dcc4ff74f0d010be665239ab89c7a4a5cd39ee33
 
-PODFILE CHECKSUM: 4a5a0ba803e6808ee3a62e28e83e94b46b03daa5
+PODFILE CHECKSUM: b163fcef51f80394c07df99d6699f140af823c15
 
 COCOAPODS: 1.8.4

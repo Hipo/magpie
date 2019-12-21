@@ -63,6 +63,10 @@ class Endpoint {
         request.headers = headers
     }
 
+    func set(additionalHeaders: Headers) {
+        request.headers = request.headers + additionalHeaders
+    }
+
     func set(timeout: TimeInterval) {
         request.timeout = timeout
     }

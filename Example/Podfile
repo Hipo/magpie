@@ -4,6 +4,7 @@ platform :ios, '10.0'
 target 'Magpie_Example' do
   pod 'Magpie/Core', :path => '../'
   pod 'Magpie/Alamofire', :path => '../'
+  pod 'Magpie/HIPAuthorization', :path => '../'
   pod 'Magpie/HIPExceptions', :path => '../'
 
   target 'Magpie_Tests' do

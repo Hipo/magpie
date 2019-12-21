@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name                  = 'Magpie'
-  s.version               = '2.3.0'
+  s.version               = '2.4.0'
   s.license               = { :type => 'MIT', :file => 'LICENSE' }
   s.homepage              = 'https://github.com/Hipo/magpie'
   s.summary               = 'Standardized & Simplified API layer for iOS'
@@ -18,6 +18,11 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.14'
   s.swift_version         = '5.0'
   s.default_subspec       = 'Core'
+
+  s.subspec 'Alamofire' do |ss|
+    ss.source_files = 'Magpie/Classes/Alamofire/*.swift'
+    ss.dependency 'Alamofire', '~> 5.0.0-rc.3'
+  end
 
   s.subspec 'Core' do |ss|
     ss.subspec 'API' do |sss|
@@ -59,9 +64,9 @@ Pod::Spec.new do |s|
     end
   end
 
-  s.subspec 'Alamofire' do |ss|
-    ss.source_files = 'Magpie/Classes/Alamofire/*.swift'
-    ss.dependency 'Alamofire', '~> 5.0.0-rc.3'
+  s.subspec 'HIPAuthorization' do |ss|
+    ss.source_files = 'Magpie/Classes/HIPAuthorization/*.swift'
+    ss.dependency 'Valet', '~> 3.2'
   end
 
   s.subspec 'HIPExceptions' do |ss|

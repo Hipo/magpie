@@ -10,11 +10,11 @@ import Foundation
 open class API {
     public var base: String
 
-    public var interceptor: APIInterceptor?
+    open var interceptor: APIInterceptor?
 
-    public var notifiesListenersWhenEndpointsFailedFromUnavailableNetwork = false
-    public var notifiesListenersWhenEndpointsFailedFromDefectiveClient = false
-    public var notifiesListenersWhenEndpointsFailedFromUnresponsiveServer = false
+    open var notifiesListenersWhenEndpointsFailedFromUnavailableNetwork = false
+    open var notifiesListenersWhenEndpointsFailedFromDefectiveClient = false
+    open var notifiesListenersWhenEndpointsFailedFromUnresponsiveServer = false
 
     public let networking: Networking
     public let networkMonitor: NetworkMonitor?

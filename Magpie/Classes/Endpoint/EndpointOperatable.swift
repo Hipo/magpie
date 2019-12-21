@@ -10,7 +10,14 @@ import Foundation
 public protocol EndpointOperatable: Printable {
     var request: Request { get }
 
+    func set(additionalHeaders: Headers)
     func send()
     func retry()
     func cancel()
+}
+
+extension EndpointOperatable {
+    public func set(additionalHeader: Header) {
+        set(additionalHeaders: [additionalHeader])
+    }
 }
