@@ -9,6 +9,8 @@ import Alamofire
 import Foundation
 
 open class AlamofireNetworking: Networking {
+    public init() { }
+
     public func send(_ request: Request, validateResponse: Bool, onReceived handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
