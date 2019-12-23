@@ -46,7 +46,7 @@ extension Request {
             if let body = body {
                 let httpBody = try body.encoded()
                 urlRequest.httpBody = httpBody
-                urlRequest.setValue(String(httpBody.count), forHTTPHeaderField: HTTPHeader.contentType)
+                urlRequest.setValue(String(httpBody.count), forHTTPHeaderField: HTTPHeader.contentLength)
             }
             for header in headers {
                 urlRequest.setValue(header.value, forHTTPHeaderField: header.key)
