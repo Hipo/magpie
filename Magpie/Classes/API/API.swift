@@ -72,13 +72,13 @@ extension API {
 
 extension API {
     func send(_ endpoint: Endpoint) -> TaskConvertible? {
-        logger.log(endpoint.request)
-
         let responseHandler: Networking.ResponseHandler = { [weak self] response in
             self?.storage.delete(for: endpoint)
             self?.forward(response, for: endpoint)
             self?.logger.log(response)
         }
+
+        interceptor?.intercept(endpoint)
 
         if let task = forward(endpoint, onReversed: responseHandler) {
             storage.add(task, for: endpoint)
@@ -88,7 +88,7 @@ extension API {
     }
 
     private func forward(_ endpoint: Endpoint, onReversed responseHandler: @escaping Networking.ResponseHandler) -> TaskConvertible? {
-        interceptor?.intercept(endpoint)
+        logger.log(endpoint.request)
 
         switch endpoint.type {
         case .data:

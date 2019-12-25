@@ -30,6 +30,7 @@ open class HIPSession<Credentials: HIPSessionCredentialsConvertible, Authenticat
     }
 
     open func authorize(_ credentials: Credentials) {
+        self.credentials = credentials
         keychain.set(credentials, for: Keys.credentials)
     }
 
@@ -49,6 +50,7 @@ open class HIPSession<Credentials: HIPSessionCredentialsConvertible, Authenticat
     }
 
     open func authenticate(_ authenticatedUser: AuthenticatedUser) {
+        self.authenticatedUser = authenticatedUser
         cache.set(authenticatedUser, for: Keys.authenticatedUser)
     }
 
