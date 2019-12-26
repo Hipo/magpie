@@ -64,6 +64,9 @@ extension Response {
 }
 
 extension Response {
+    public typealias ModelResult<SomeModel: Model> = Result<SomeModel, NoModel>
+    public typealias ErrorModelResult<SomeErrorModel: Model> = Result<NoModel, SomeErrorModel>
+
     public enum RawResult {
         case success(Data?)
         case failure(APIError)

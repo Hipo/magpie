@@ -14,96 +14,142 @@ open class EndpointBuilder {
         self.endpoint = Endpoint(api: api)
     }
 
-    public func type(_ someType: EndpointType) {
+    @discardableResult
+    public func type(_ someType: EndpointType) -> Self {
         endpoint.type = someType
+        return self
     }
 
-    public func base(_ someBase: String) {
+    @discardableResult
+    public func base(_ someBase: String) -> Self {
         endpoint.set(base: someBase)
+        return self
     }
 
-    public func path(_ somePath: String) {
+    @discardableResult
+    public func path(_ somePath: String) -> Self {
         endpoint.set(path: somePath)
+        return self
     }
 
-    public func method(_ someMethod: Method) {
+    @discardableResult
+    public func method(_ someMethod: Method) -> Self {
         endpoint.set(method: someMethod)
+        return self
     }
 
-    public func query(_ someQuery: Query) {
+    @discardableResult
+    public func query(_ someQuery: Query) -> Self {
         endpoint.set(query: someQuery)
+        return self
     }
 
-    public func body(_ someBody: Body) {
+    @discardableResult
+    public func body(_ someBody: Body) -> Self {
         endpoint.set(body: someBody)
+        return self
     }
 
-    public func headers(_ someHeaders: Headers) {
+    @discardableResult
+    public func headers(_ someHeaders: Headers) -> Self {
         endpoint.set(headers: someHeaders)
+        return self
     }
 
-    public func timeout(_ someTimeout: TimeInterval) {
+    @discardableResult
+    public func timeout(_ someTimeout: TimeInterval) -> Self {
         endpoint.set(timeout: someTimeout)
+        return self
     }
 
-    public func cachePolicy(_ someCachePolicy: Request.CachePolicy) {
+    @discardableResult
+    public func cachePolicy(_ someCachePolicy: Request.CachePolicy) -> Self {
         endpoint.set(cachePolicy: someCachePolicy)
+        return self
     }
 
-    public func validateResponseBeforeEndpointCompleted(_ shouldValidate: Bool) {
+    @discardableResult
+    public func validateResponseBeforeEndpointCompleted(_ shouldValidate: Bool) -> Self {
         endpoint.validatesResponseBeforeCompletion = shouldValidate
+        return self
     }
 
-    public func ignoreResponseWhenEndpointCancelled(_ shouldIgnore: Bool) {
+    @discardableResult
+    public func ignoreResponseWhenEndpointCancelled(_ shouldIgnore: Bool) -> Self {
         endpoint.ignoresResponseOnCancelled = shouldIgnore
+        return self
     }
 
-    public func ignoreResponseWhenEndpointListenersNotified(_ shouldIgnore: Bool) {
+    @discardableResult
+    public func ignoreResponseWhenEndpointListenersNotified(_ shouldIgnore: Bool) -> Self {
         endpoint.ignoresResponseWhenListenersNotified = shouldIgnore
+        return self
     }
 
-    public func notifyListenersWhenEndpointFailedFromUnauthorizedRequest(_ shouldNotify: Bool) {
+    @discardableResult
+    public func notifyListenersWhenEndpointFailedFromUnauthorizedRequest(_ shouldNotify: Bool) -> Self {
         endpoint.notifiesListenersOnFailedFromUnauthorizedRequest = shouldNotify
+        return self
     }
 
-    public func notifyListenersWhenEndpointFailedFromUnavailableNetwork(_ shouldNotify: Bool) {
+    @discardableResult
+    public func notifyListenersWhenEndpointFailedFromUnavailableNetwork(_ shouldNotify: Bool) -> Self {
         endpoint.notifiesListenersOnFailedFromUnavailableNetwork = shouldNotify
+        return self
     }
 
-    public func notifyListenersWhenEndpointFailedFromDefectiveClient(_ shouldNotify: Bool) {
+    @discardableResult
+    public func notifyListenersWhenEndpointFailedFromDefectiveClient(_ shouldNotify: Bool) -> Self {
         endpoint.notifiesListenersOnFailedFromDefectiveClient = shouldNotify
+        return self
     }
 
-    public func notifyListenersWhenEndpointFailedFromUnresponsiveServer(_ shouldNotify: Bool) {
+    @discardableResult
+    public func notifyListenersWhenEndpointFailedFromUnresponsiveServer(_ shouldNotify: Bool) -> Self {
         endpoint.notifiesListenersOnFailedFromUnresponsiveServer = shouldNotify
+        return self
     }
 
-    public func completionHandler<SomeModel: Model, SomeErrorModel: Model>(_ someCompletionHandler: @escaping (Response.Result<SomeModel, SomeErrorModel>, Headers) -> Void) {
+    @discardableResult
+    public func completionHandler<SomeModel: Model, SomeErrorModel: Model>(_ someCompletionHandler: @escaping (Response.Result<SomeModel, SomeErrorModel>, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseResultResolver(someCompletionHandler)
+        return self
     }
 
-    public func completionHandler(_ someCompletionHandler: @escaping (Response.RawResult, Headers) -> Void) {
+    @discardableResult
+    public func completionHandler(_ someCompletionHandler: @escaping (Response.RawResult, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseRawResultResolver(someCompletionHandler)
+        return self
     }
 
-    public func completionHandler<SomeModel: Model>(_ someCompletionHandler: @escaping (Response.Result<SomeModel, NoModel>, Headers) -> Void) {
+    @discardableResult
+    public func completionHandler<SomeModel: Model>(_ someCompletionHandler: @escaping (Response.ModelResult<SomeModel>, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseModelResultResolver(someCompletionHandler)
+        return self
     }
 
-    public func completionHandler<SomeModel: Model>(_ someCompletionHandler: @escaping (SomeModel?, Headers) -> Void) {
+    @discardableResult
+    public func completionHandler<SomeModel: Model>(_ someCompletionHandler: @escaping (SomeModel?, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseModelResolver(someCompletionHandler)
+        return self
     }
 
-    public func completionHandler<SomeErrorModel: Model>(_ someCompletionHandler: @escaping (Response.Result<NoModel, SomeErrorModel>, Headers) -> Void) {
+    @discardableResult
+    public func completionHandler<SomeErrorModel: Model>(_ someCompletionHandler: @escaping (Response.ErrorModelResult<SomeErrorModel>, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseErrorResultResolver(someCompletionHandler)
+        return self
     }
 
-    public func completionHandler(_ someCompletionHandler: @escaping (APIError?, Headers) -> Void) {
+    @discardableResult
+    public func completionHandler(_ someCompletionHandler: @escaping (APIError?, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseErrorResolver(someCompletionHandler)
+        return self
     }
 
-    public func responseResolver(_ someResponseResolver: ResponseResolver) {
+    @discardableResult
+    public func responseResolver(_ someResponseResolver: ResponseResolver) -> Self {
         endpoint.responseResolver = someResponseResolver
+        return self
     }
 
     public func build() -> EndpointOperatable {

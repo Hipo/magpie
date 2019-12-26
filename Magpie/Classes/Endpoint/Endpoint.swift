@@ -83,9 +83,11 @@ extension Endpoint {
 }
 
 extension Endpoint: EndpointOperatable {
-    func send() {
+    @discardableResult
+    func send() -> EndpointOperatable {
         isSentOnce = true
         task = api?.send(self)
+        return self
     }
 
     func retry() {
