@@ -8,11 +8,17 @@
 import Foundation
 
 public protocol Model: Codable, Printable {
+    var isFault: Bool { get }
+
     var encodingStrategy: JSONEncodingStrategy { get }
     static var decodingStrategy: JSONDecodingStrategy { get }
 }
 
 extension Model {
+    public var isFault: Bool {
+        return false
+    }
+
     public var encodingStrategy: JSONEncodingStrategy {
         return JSONEncodingStrategy()
     }
