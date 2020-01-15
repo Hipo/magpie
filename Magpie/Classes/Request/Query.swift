@@ -43,8 +43,12 @@ extension Query {
     }
 }
 
+public protocol QueryKey {
+    var description: String { get }
+}
+
 public protocol QueryParamConvertible: Printable {
-    var key: String { get }
+    var key: QueryKey { get }
     var value: URLParamValueEncodable? { get }
 }
 
@@ -56,8 +60,16 @@ extension QueryParamConvertible {
 }
 
 public struct QueryParam: QueryParamConvertible {
-    public let key: String
+    public let key: QueryKey
     public let value: URLParamValueEncodable?
+
+    public init(
+        _ key: QueryKey,
+        _ value: URLParamValueEncodable?
+    ) {
+        self.key = key
+        self.value = value
+    }
 }
 
 private struct QueryEncoder {
@@ -68,9 +80,9 @@ private struct QueryEncoder {
 
         for param in params {
             do {
-                queryItems.append(URLQueryItem(name: param.key, value: try param.value?.urlEncoded(encodingStrategy)))
+                queryItems.append(URLQueryItem(name: param.key.description, value: try param.value?.urlEncoded(encodingStrategy)))
             } catch {
-                throw RequestEncodingError.Reason.invalidURLQueryEncoding(key: param.key)
+                throw RequestEncodingError.Reason.invalidURLQueryEncoding(key: param.key.description)
             }
         }
         return queryItems
