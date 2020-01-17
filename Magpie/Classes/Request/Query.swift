@@ -43,8 +43,14 @@ extension Query {
     }
 }
 
-public protocol QueryKey {
-    var description: String { get }
+public protocol QueryKey: Printable {
+    func encoded() -> String
+}
+
+extension QueryKey where Self: RawRepresentable, Self.RawValue == String {
+    public func encoded() -> String {
+        return rawValue
+    }
 }
 
 public protocol QueryParamConvertible: Printable {
@@ -55,7 +61,7 @@ public protocol QueryParamConvertible: Printable {
 extension QueryParamConvertible {
     /// <mark> CustomStringConvertible
     public var description: String {
-        return "\(key):\(value?.description ?? "<nil>")"
+        return "\(key.description):\(value?.description ?? "<nil>")"
     }
 }
 
@@ -80,9 +86,9 @@ private struct QueryEncoder {
 
         for param in params {
             do {
-                queryItems.append(URLQueryItem(name: param.key.description, value: try param.value?.urlEncoded(encodingStrategy)))
+                queryItems.append(URLQueryItem(name: param.key.encoded(), value: try param.value?.urlEncoded(encodingStrategy)))
             } catch {
-                throw RequestEncodingError.Reason.invalidURLQueryEncoding(key: param.key.description)
+                throw RequestEncodingError.Reason.invalidURLQueryEncoding(key: param.key.encoded())
             }
         }
         return queryItems
