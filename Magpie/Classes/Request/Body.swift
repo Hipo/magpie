@@ -49,7 +49,7 @@ extension JSONBody {
 }
 
 public protocol JSONArrayBody: JSONBody, JSONBodyParamConvertible {
-    var params: [JSONBodyParamConvertible] { get }
+    var bodyParams: [JSONBodyParamConvertible] { get }
 }
 
 extension JSONArrayBody {
@@ -57,7 +57,7 @@ extension JSONArrayBody {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.unkeyedContainer()
 
-        for param in params {
+        for param in bodyParams {
             try param.encoded(in: &container)
         }
     }
@@ -75,7 +75,7 @@ extension JSONArrayBody {
 public protocol JSONObjectBody: JSONBody, JSONBodyParamConvertible {
     associatedtype SomeJSONBodyKeyedParam : JSONBodyKeyedParamConvertible
 
-    var params: [SomeJSONBodyKeyedParam] { get }
+    var bodyParams: [SomeJSONBodyKeyedParam] { get }
 }
 
 extension JSONObjectBody {
@@ -83,7 +83,7 @@ extension JSONObjectBody {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: SomeJSONBodyKeyedParam.Key.self)
 
-        for param in params {
+        for param in bodyParams {
             try param.encoded(in: &container)
         }
     }
@@ -215,7 +215,7 @@ extension FormURLEncodedBodyParamConvertible {
 }
 
 public protocol FormURLEncodedBody: Body {
-    var params: [FormURLEncodedBodyParamConvertible] { get }
+    var urlEncodedParams: [FormURLEncodedBodyParamConvertible] { get }
     var encodingStrategy: URLEncodingStrategy { get }
 }
 
@@ -230,7 +230,7 @@ extension FormURLEncodedBody {
     public func encoded() throws -> Data {
         let encoder = FormURLEncodedBodyEncoder()
         encoder.encodingStrategy = encodingStrategy
-        return try encoder.encode(params)
+        return try encoder.encode(urlEncodedParams)
     }
 }
 
@@ -251,23 +251,23 @@ private class FormURLEncodedBodyEncoder {
         return allowed
     }()
 
-    func encode(_ params: [FormURLEncodedBodyParamConvertible]) throws -> Data {
-        var urlEncodedParams: [String] = []
+    func encode(_ urlEncodedParams: [FormURLEncodedBodyParamConvertible]) throws -> Data {
+        var encodedUrlEncodedParams: [String] = []
 
-        for param in params {
+        for param in urlEncodedParams {
             let escapedKey = escape(param.key)
 
             if let value = param.value {
-                urlEncodedParams.append("\(escapedKey)=\(escape(try value.urlEncoded(encodingStrategy)))")
+                encodedUrlEncodedParams.append("\(escapedKey)=\(escape(try value.urlEncoded(encodingStrategy)))")
             } else {
                 if let encodedNil = encodingStrategy.nullity.encoded() {
-                    urlEncodedParams.append("\(escapedKey)=\(encodedNil)")
+                    encodedUrlEncodedParams.append("\(escapedKey)=\(encodedNil)")
                 } else {
                     throw RequestEncodingError.Reason.invalidFormURLBodyEncoding(key: param.key)
                 }
             }
         }
-        return Data(urlEncodedParams.joined(separator: "&").utf8)
+        return Data(encodedUrlEncodedParams.joined(separator: "&").utf8)
     }
 }
 

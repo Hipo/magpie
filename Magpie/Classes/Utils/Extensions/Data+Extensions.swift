@@ -8,6 +8,12 @@
 import Foundation
 
 extension Data {
+    public static func anyJSON() -> Data {
+        return Data("{}".utf8)
+    }
+}
+
+extension Data {
     public var utf8Description: String {
         if count > 0 {
             return String(data: self, encoding: .utf8) ?? "<unavailable>"
@@ -16,14 +22,14 @@ extension Data {
     }
 }
 
-extension Optional where Wrapped == Data {
-    public var absoluteUtf8Description: String {
-        return self?.utf8Description ?? "<nil>"
-    }
-}
-
 extension Data: Body {
     public func encoded() throws -> Data {
         return self
+    }
+}
+
+extension Optional where Wrapped == Data {
+    public var absoluteUtf8Description: String {
+        return self?.utf8Description ?? "<nil>"
     }
 }

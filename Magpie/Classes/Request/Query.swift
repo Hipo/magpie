@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol Query: Printable {
-    var params: [QueryParamConvertible] { get }
+    var queryParams: [QueryParamConvertible] { get }
     var encodingStrategy: URLEncodingStrategy { get }
 
     func encoded() throws -> [URLQueryItem]
@@ -22,7 +22,7 @@ extension Query {
     public func encoded() throws -> [URLQueryItem] {
         var encoder = QueryEncoder()
         encoder.encodingStrategy = encodingStrategy
-        return try encoder.encode(params)
+        return try encoder.encode(queryParams)
     }
 
     func encodedString() throws -> String? {
@@ -81,10 +81,10 @@ public struct QueryParam: QueryParamConvertible {
 private struct QueryEncoder {
     var encodingStrategy: URLEncodingStrategy = URLEncodingStrategy()
 
-    func encode(_ params: [QueryParamConvertible]) throws -> [URLQueryItem] {
+    func encode(_ queryParams: [QueryParamConvertible]) throws -> [URLQueryItem] {
         var queryItems: [URLQueryItem] = []
 
-        for param in params {
+        for param in queryParams {
             do {
                 queryItems.append(URLQueryItem(name: param.key.encoded(), value: try param.value?.urlEncoded(encodingStrategy)))
             } catch {

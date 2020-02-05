@@ -44,21 +44,21 @@ extension Response {
     }
 
     public func decoded<SomeModel: Model, SomeErrorModel: Model>() -> Result<SomeModel, SomeErrorModel> {
-        if let error = error {
-            if let rawData = rawData {
-                return .failure(error, try? SomeErrorModel.decoded(rawData))
+        func formResult(_ error: APIError, _ data: Data?) -> Result<SomeModel, SomeErrorModel> {
+            if let data = data {
+                return .failure(error, try? SomeErrorModel.decoded(data))
             }
             return .failure(error)
         }
-        guard let rawData = rawData else {
-            error = ResponseSerializationError(responseData: nil, reason: .corruptedData)
-            return .failure(error!)
+
+        if let error = error {
+            return formResult(error, rawData)
         }
         do {
-            return .success(try SomeModel.decoded(rawData))
+            return .success(try SomeModel.decoded(rawData ?? .anyJSON()))
         } catch let err {
             error = ResponseSerializationError(responseData: rawData, reason: .jsonSerializationFailed(underlyingError: err))
-            return .failure(error!, try? SomeErrorModel.decoded(rawData))
+            return formResult(error!, rawData)
         }
     }
 }
