@@ -27,6 +27,20 @@ extension NetworkMonitor {
         }
         return false
     }
+    
+    public var isConnectedToInternet: Bool {
+        switch currentStatus {
+        case let .connected(connection):
+            switch connection {
+            case .wifi, .cellular:
+                return true
+            default:
+                return false
+            }
+        default:
+            return false
+        }
+    }
 }
 
 extension NetworkMonitor {
@@ -38,8 +52,10 @@ extension NetworkMonitor {
 public enum NetworkConnection: Equatable {
     case none
     case wifi
+    case wifiWithoutInternet
     case wiredEthernet
     case cellular
+    case cellularWithoutInternet
     case other
 }
 
@@ -50,10 +66,14 @@ extension NetworkConnection: CustomStringConvertible, CustomDebugStringConvertib
             return "no connection"
         case .wifi:
             return "wifi"
+        case .wifiWithoutInternet:
+            return "wifi with no internet connection"
         case .wiredEthernet:
             return "wired ethernet"
         case .cellular:
             return "cellular"
+        case .cellularWithoutInternet:
+            return "cellular with no internet connection"
         case .other:
             return "unknown connection"
         }
