@@ -23,8 +23,13 @@ open class Magpie {
             logger.filter = newValue
         }
     }
-
+    /// Returns valid internet connection
     public var isConnectedToInternet: Bool {
+        return networkMonitor?.isConnectedToInternet ?? true
+    }
+    
+    /// Returns valid network connection
+    public var isConnected: Bool {
         return networkMonitor?.isConnected ?? true
     }
 
