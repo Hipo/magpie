@@ -35,7 +35,7 @@ extension Request {
             components.host = baseUrl.host
             components.port = baseUrl.port
             components.path = baseUrl.path + path
-            components.queryItems = try query?.encoded()
+            components.percentEncodedQueryItems = try query?.encoded()
 
             guard let url = components.url else {
                 throw RequestEncodingError(reason: .emptyOrInvalidURL)

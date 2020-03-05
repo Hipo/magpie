@@ -86,11 +86,20 @@ private struct QueryEncoder {
 
         for param in queryParams {
             do {
-                queryItems.append(URLQueryItem(name: param.key.encoded(), value: try param.value?.urlEncoded(encodingStrategy)))
+                let value = try param.value.map { escape(try $0.urlEncoded(encodingStrategy)) }
+                queryItems.append(URLQueryItem(name: escape(param.key.encoded()), value: value))
             } catch {
                 throw RequestEncodingError.Reason.invalidURLQueryEncoding(key: param.key.encoded())
             }
         }
         return queryItems
+    }
+}
+
+extension QueryEncoder {
+    private func escape(_ string: String) -> String {
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.remove("+")
+        return string.addingPercentEncoding(withAllowedCharacters: allowed)!
     }
 }

@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.summary               = 'Standardized & Simplified API layer for iOS'
   s.source                = { :git => 'https://github.com/Hipo/magpie.git', :tag => s.version.to_s }
   s.author                = { 'Hipo' => 'hello@hipolabs.com' }
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '11.0'
   s.osx.deployment_target = '10.14'
   s.swift_version         = '5.0'
   s.default_subspec       = 'Core'
