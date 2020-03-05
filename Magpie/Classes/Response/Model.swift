@@ -10,8 +10,11 @@ import Foundation
 public protocol Model: Codable, Printable {
     var isFault: Bool { get }
 
-    var encodingStrategy: JSONEncodingStrategy { get }
+    static var encodingStrategy: JSONEncodingStrategy { get }
     static var decodingStrategy: JSONDecodingStrategy { get }
+
+    func encoded() throws -> Data
+    static func decoded(_ data: Data) throws -> Self
 }
 
 extension Model {
@@ -19,20 +22,18 @@ extension Model {
         return false
     }
 
-    public var encodingStrategy: JSONEncodingStrategy {
+    public static var encodingStrategy: JSONEncodingStrategy {
         return JSONEncodingStrategy()
     }
     public static var decodingStrategy: JSONDecodingStrategy {
         return JSONDecodingStrategy()
     }
-}
 
-extension Model {
-    func encoded() throws -> Data {
-        return try encoded(encodingStrategy)
+    public func encoded() throws -> Data {
+        return try encoded(Self.encodingStrategy)
     }
 
-    static func decoded(_ data: Data) throws -> Self {
+    public static func decoded(_ data: Data) throws -> Self {
         return try decoded(data, using: Self.decodingStrategy)
     }
 }
@@ -51,4 +52,12 @@ extension Model {
 
 public struct NoModel: Model { }
 
-extension Array: Model where Element: Model { }
+extension Array: Model where Element: Model {
+    public func encoded() throws -> Data {
+        return try encoded(Element.encodingStrategy)
+    }
+
+    public static func decoded(_ data: Data) throws -> Self {
+        return try decoded(data, using: Element.decodingStrategy)
+    }
+}
