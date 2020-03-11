@@ -8,11 +8,11 @@
 import Foundation
 
 public class Response {
-    public var isSucceed: Bool {
+    public var isSuccess: Bool {
         return error == nil
     }
 
-    public var isFailed: Bool {
+    public var isFailure: Bool {
         return error != nil
     }
 
@@ -92,6 +92,26 @@ extension Response: Printable {
     }
 }
 
+extension Response.RawResult {
+    public var isSuccess: Bool {
+        switch self {
+        case .success:
+            return true
+        case .failure:
+            return false
+        }
+    }
+
+    public var isFailure: Bool {
+        switch self {
+        case .success:
+            return false
+        case .failure:
+            return true
+        }
+    }
+}
+
 extension Response.RawResult: Printable {
     /// <mark> CustomStringConvertible
     public var description: String {
@@ -100,6 +120,26 @@ extension Response.RawResult: Printable {
             return "[SUCCESS]\n\(data.absoluteUtf8Description)"
         case .failure(let error):
             return "[FAILED]\n\(error.localizedDescription)"
+        }
+    }
+}
+
+extension Response.Result {
+    public var isSuccess: Bool {
+        switch self {
+        case .success:
+            return true
+        case .failure:
+            return false
+        }
+    }
+
+    public var isFailure: Bool {
+        switch self {
+        case .success:
+            return false
+        case .failure:
+            return true
         }
     }
 }
