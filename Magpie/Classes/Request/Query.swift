@@ -53,28 +53,43 @@ extension QueryKey where Self: RawRepresentable, Self.RawValue == String {
     }
 }
 
+extension String: QueryKey {
+    public func encoded() -> String {
+        return self
+    }
+}
+
 public protocol QueryParamConvertible: Printable {
     var key: QueryKey { get }
-    var value: URLParamValueEncodable? { get }
+    var encodingValue: URLParamValueEncodable? { get }
 }
 
 extension QueryParamConvertible {
     /// <mark> CustomStringConvertible
     public var description: String {
-        return "\(key.description):\(value?.description ?? "<nil>")"
+        return "\(key.description):\(encodingValue?.description ?? "<nil>")"
+    }
+}
+
+extension URLQueryItem: QueryParamConvertible {
+    public var key: QueryKey {
+        return name
+    }
+    public var encodingValue: URLParamValueEncodable? {
+        return value
     }
 }
 
 public struct QueryParam: QueryParamConvertible {
     public let key: QueryKey
-    public let value: URLParamValueEncodable?
+    public let encodingValue: URLParamValueEncodable?
 
     public init(
         _ key: QueryKey,
-        _ value: URLParamValueEncodable?
+        _ encodingValue: URLParamValueEncodable?
     ) {
         self.key = key
-        self.value = value
+        self.encodingValue = encodingValue
     }
 }
 
@@ -86,7 +101,7 @@ private struct QueryEncoder {
 
         for param in queryParams {
             do {
-                let value = try param.value.map { escape(try $0.urlEncoded(encodingStrategy)) }
+                let value = try param.encodingValue.map { escape(try $0.urlEncoded(encodingStrategy)) }
                 queryItems.append(URLQueryItem(name: escape(param.key.encoded()), value: value))
             } catch {
                 throw RequestEncodingError.Reason.invalidURLQueryEncoding(key: param.key.encoded())
