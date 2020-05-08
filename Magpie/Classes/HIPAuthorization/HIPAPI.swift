@@ -14,24 +14,24 @@ open class HIPAPI<Session: HIPSessionConvertible>: API {
         session: Session,
         base: String,
         networking: Networking,
-        networkMonitor: NetworkMonitor? = nil
+        networkMonitor: NetworkMonitor? = nil,
+        interceptor: APIInterceptor? = nil
     ) {
         self.session = session
-
         super.init(
             base: base,
             networking: networking,
-            networkMonitor: networkMonitor
+            networkMonitor: networkMonitor,
+            interceptor: interceptor ?? HIPAPIInterceptor(session: session)
         )
-
-        interceptor = HIPAPIInterceptor(session: session)
     }
 
     @available(*, unavailable)
     public required init(
         base: String,
         networking: Networking,
-        networkMonitor: NetworkMonitor? = nil
+        networkMonitor: NetworkMonitor? = nil,
+        interceptor: APIInterceptor? = nil
     ) {
         fatalError("init(base:networking:networkMonitor:) has not been implemented")
     }

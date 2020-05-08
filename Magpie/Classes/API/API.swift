@@ -28,11 +28,13 @@ open class API {
     public required init(
         base: String,
         networking: Networking,
-        networkMonitor: NetworkMonitor? = nil
+        networkMonitor: NetworkMonitor? = nil,
+        interceptor: APIInterceptor? = nil
     ) {
         self.base = base
         self.networking = networking
         self.networkMonitor = networkMonitor
+        self.interceptor = interceptor
 
         if networkMonitor != nil {
             allowNetworkMonitoring()
