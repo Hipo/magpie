@@ -10,13 +10,12 @@ import Foundation
 open class API {
     public var base: String
 
-    open var interceptor: APIInterceptor?
-
     open var notifiesListenersWhenEndpointsFailedFromUnavailableNetwork = false
     open var notifiesListenersWhenEndpointsFailedFromDefectiveClient = false
     open var notifiesListenersWhenEndpointsFailedFromUnresponsiveServer = false
 
     public let networking: Networking
+    public let interceptor: APIInterceptor?
     public let networkMonitor: NetworkMonitor?
 
     lazy var storage = TaskStorage()
@@ -28,13 +27,13 @@ open class API {
     public required init(
         base: String,
         networking: Networking,
-        networkMonitor: NetworkMonitor? = nil,
-        interceptor: APIInterceptor? = nil
+        interceptor: APIInterceptor? = nil,
+        networkMonitor: NetworkMonitor? = nil
     ) {
         self.base = base
         self.networking = networking
-        self.networkMonitor = networkMonitor
         self.interceptor = interceptor
+        self.networkMonitor = networkMonitor
 
         if networkMonitor != nil {
             allowNetworkMonitoring()

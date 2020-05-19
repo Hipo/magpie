@@ -14,15 +14,15 @@ open class HIPAPI<Session: HIPSessionConvertible>: API {
         session: Session,
         base: String,
         networking: Networking,
-        networkMonitor: NetworkMonitor? = nil,
-        interceptor: APIInterceptor? = nil
+        interceptor: APIInterceptor? = nil,
+        networkMonitor: NetworkMonitor? = nil
     ) {
         self.session = session
         super.init(
             base: base,
             networking: networking,
-            networkMonitor: networkMonitor,
-            interceptor: interceptor ?? HIPAPIInterceptor(session: session)
+            interceptor: interceptor ?? HIPAPIInterceptor(session: session),
+            networkMonitor: networkMonitor
         )
     }
 
@@ -30,10 +30,10 @@ open class HIPAPI<Session: HIPSessionConvertible>: API {
     public required init(
         base: String,
         networking: Networking,
-        networkMonitor: NetworkMonitor? = nil,
-        interceptor: APIInterceptor? = nil
+        interceptor: APIInterceptor? = nil,
+        networkMonitor: NetworkMonitor? = nil
     ) {
-        fatalError("init(base:networking:networkMonitor:) has not been implemented")
+        fatalError("init(base:networking:interceptor:networkMonitor:) has not been implemented")
     }
 
     open func authorize(_ credentials: Session.Credentials) {
