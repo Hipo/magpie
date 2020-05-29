@@ -7,16 +7,18 @@
 
 import Foundation
 
-open class HIPSession<Credentials: HIPSessionCredentialsConvertible, AuthenticatedUser: HIPSessionAuthenticatedUserConvertible>: HIPSessionConvertible {
+open class HIPSession<Credentials: SessionCredentials, AuthenticatedUser: SessionAuthenticatedUser>: Session, SessionUpdatesPublisher {
+    public var delegations: [ObjectIdentifier : SessionUpdatesDelegation] = [:]
+
     public private(set) var credentials: Credentials?
     public private(set) var authenticatedUser: AuthenticatedUser?
 
     public let keychain: HIPKeychainConvertible
-    public let cache: HIPCacheConvertible
+    public let cache: HIPCacheConvertible?
 
     public init(
         keychain: HIPKeychainConvertible,
-        cache: HIPCacheConvertible = HIPCache()
+        cache: HIPCacheConvertible? = HIPCache()
     ) {
         self.keychain = keychain
         self.cache = cache
@@ -31,6 +33,8 @@ open class HIPSession<Credentials: HIPSessionCredentialsConvertible, Authenticat
 
     open func authorize(_ credentials: Credentials) {
         self.credentials = credentials
+        notifyDelegates { $0.sessionDidAuthorize(self) }
+
         keychain.set(credentials, for: Keys.credentials)
     }
 
@@ -42,6 +46,8 @@ open class HIPSession<Credentials: HIPSessionCredentialsConvertible, Authenticat
         deauthenticate()
 
         credentials = nil
+        notifyDelegates { $0.sessionDidDeauthorize(self) }
+
         keychain.remove(for: Keys.credentials)
     }
 
@@ -51,16 +57,20 @@ open class HIPSession<Credentials: HIPSessionCredentialsConvertible, Authenticat
 
     open func authenticate(_ authenticatedUser: AuthenticatedUser) {
         self.authenticatedUser = authenticatedUser
-        cache.set(authenticatedUser, for: Keys.authenticatedUser)
+        notifyDelegates { $0.sessionDidAuthenticate(self) }
+
+        cache?.set(authenticatedUser, for: Keys.authenticatedUser)
     }
 
     open func autoAuthenticate() {
-        authenticatedUser = cache.getModel(for: Keys.authenticatedUser)
+        authenticatedUser = cache?.getModel(for: Keys.authenticatedUser)
     }
 
     open func deauthenticate() {
         authenticatedUser = nil
-        cache.remove(for: Keys.authenticatedUser)
+        notifyDelegates { $0.sessionDidDeauthenticate(self) }
+
+        cache?.remove(for: Keys.authenticatedUser)
     }
 }
 
@@ -78,27 +88,82 @@ extension HIPSession {
     }
 }
 
-open class HIPSessionCredentials: HIPSessionCredentialsConvertible {
+open class HIPSessionCredentials: SessionCredentials {
     public let token: String
 }
 
-public protocol HIPSessionConvertible: Printable {
-    associatedtype Credentials: HIPSessionCredentialsConvertible
-    associatedtype AuthenticatedUser: HIPSessionAuthenticatedUserConvertible
+public protocol Session: Printable {
+    associatedtype Credentials: SessionCredentials
+    associatedtype AuthenticatedUser: SessionAuthenticatedUser
 
     var credentials: Credentials? { get }
     var authenticatedUser: AuthenticatedUser? { get }
 
     func hasAuthorization() -> Bool
-    func authorize(_ credentials: Credentials)
+    func authorize(_ newCredentials: Credentials)
     func deauthorize()
     func hasAuthentication() -> Bool
     func authenticate(_ newAuthenticatedUser: AuthenticatedUser)
     func deauthenticate()
 }
 
-public protocol HIPSessionCredentialsConvertible: Model {
+public protocol SessionCredentials: Model {
     var token: String { get }
 }
 
-public protocol HIPSessionAuthenticatedUserConvertible: Model { }
+public protocol SessionAuthenticatedUser: Model { }
+
+public protocol SessionUpdatesPublisher: AnyObject {
+    var delegations: [ObjectIdentifier: SessionUpdatesDelegation] { get set }
+
+    func add(delegate: SessionUpdatesDelegate)
+    func remove(delegate: SessionUpdatesDelegate)
+}
+
+extension SessionUpdatesPublisher {
+    public func add(delegate: SessionUpdatesDelegate) {
+        let id = ObjectIdentifier(delegate)
+        delegations[id] = SessionUpdatesDelegation(delegate)
+    }
+
+    public func remove(delegate: SessionUpdatesDelegate) {
+        let id = ObjectIdentifier(delegate)
+        delegations[id] = nil
+    }
+
+    public func removeAllDelegates() {
+        delegations.removeAll()
+    }
+
+    public func notifyDelegates(_ notifier: (SessionUpdatesDelegate) -> Void) {
+        delegations.forEach {
+            if let delegate = $0.value.delegate {
+                notifier(delegate)
+            } else {
+                delegations[$0.key] = nil
+            }
+        }
+    }
+}
+
+public protocol SessionUpdatesDelegate: AnyObject {
+    func sessionDidAuthorize<T: Session>(_ session: T)
+    func sessionDidDeauthorize<T: Session>(_ session: T)
+    func sessionDidAuthenticate<T: Session>(_ session: T)
+    func sessionDidDeauthenticate<T: Session>(_ session: T)
+}
+
+extension SessionUpdatesDelegate {
+    public func sessionDidAuthorize<T: Session>(_ session: T) { }
+    public func sessionDidDeauthorize<T: Session>(_ session: T) { }
+    public func sessionDidAuthenticate<T: Session>(_ session: T) { }
+    public func sessionDidDeauthenticate<T: Session>(_ session: T) { }
+}
+
+public class SessionUpdatesDelegation {
+    weak var delegate: SessionUpdatesDelegate?
+
+    init(_ delegate: SessionUpdatesDelegate) {
+        self.delegate = delegate
+    }
+}

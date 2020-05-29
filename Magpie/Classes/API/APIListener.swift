@@ -26,7 +26,7 @@ extension APIListener {
     public func api(_ api: API, endpoint: EndpointOperatable, didFailFromUnresponsiveServer error: HTTPError) { }
     public func api(_ api: API, networkMonitor: NetworkMonitor, didConnectVia connection: NetworkConnection, from oldConnection: NetworkConnection) { }
     public func api(_ api: API, networkMonitor: NetworkMonitor, didDisconnectFrom oldConnection: NetworkConnection) { }
-    func api(_ api: API, networkMonitorDidEnterBackground networkMonitor: NetworkMonitor) { }
+    public func api(_ api: API, networkMonitorDidEnterBackground networkMonitor: NetworkMonitor) { }
 }
 
 extension APIListener {

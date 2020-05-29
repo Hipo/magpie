@@ -22,6 +22,7 @@ class Endpoint {
     var ignoresResponseWhenListenersNotified = false
 
     var notifiesListenersOnFailedFromUnauthorizedRequest = true
+    /// <todo> Add an option not to handle response if listeners notified from unauthorized  request.
 
     var notifiesListenersOnFailedFromUnavailableNetwork: Bool
     var notifiesListenersOnFailedFromDefectiveClient: Bool
