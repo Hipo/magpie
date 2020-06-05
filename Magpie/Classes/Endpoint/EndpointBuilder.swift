@@ -117,9 +117,19 @@ open class EndpointBuilder {
     }
 
     @discardableResult
+    public func completionHandler<SomeModel: Model, SomeErrorModel: Model>(_ someCompletionHandler: @escaping (Response.Result<SomeModel, SomeErrorModel>) -> Void) -> Self {
+        return completionHandler({ result, _ in someCompletionHandler(result) })
+    }
+
+    @discardableResult
     public func completionHandler(_ someCompletionHandler: @escaping (Response.RawResult, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseRawResultResolver(someCompletionHandler)
         return self
+    }
+
+    @discardableResult
+    public func completionHandler(_ someCompletionHandler: @escaping (Response.RawResult) -> Void) -> Self {
+        return completionHandler({ result, _ in someCompletionHandler(result) })
     }
 
     @discardableResult
@@ -129,9 +139,19 @@ open class EndpointBuilder {
     }
 
     @discardableResult
+    public func completionHandler<SomeModel: Model>(_ someCompletionHandler: @escaping (Response.ModelResult<SomeModel>) -> Void) -> Self {
+        return completionHandler({ result, _ in someCompletionHandler(result) })
+    }
+
+    @discardableResult
     public func completionHandler<SomeModel: Model>(_ someCompletionHandler: @escaping (SomeModel?, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseModelResolver(someCompletionHandler)
         return self
+    }
+
+    @discardableResult
+    public func completionHandler<SomeModel: Model>(_ someCompletionHandler: @escaping (SomeModel?) -> Void) -> Self {
+        return completionHandler({ result, _ in someCompletionHandler(result) })
     }
 
     @discardableResult
@@ -141,9 +161,19 @@ open class EndpointBuilder {
     }
 
     @discardableResult
+    public func completionHandler<SomeErrorModel: Model>(_ someCompletionHandler: @escaping (Response.ErrorModelResult<SomeErrorModel>) -> Void) -> Self {
+        return completionHandler({ result, _ in someCompletionHandler(result) })
+    }
+
+    @discardableResult
     public func completionHandler(_ someCompletionHandler: @escaping (APIError?, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseErrorResolver(someCompletionHandler)
         return self
+    }
+
+    @discardableResult
+    public func completionHandler(_ someCompletionHandler: @escaping (APIError?) -> Void) -> Self {
+        return completionHandler({ result, _ in someCompletionHandler(result) })
     }
 
     @discardableResult
