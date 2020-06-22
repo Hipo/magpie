@@ -16,7 +16,7 @@ open class HIPCache: HIPCacheConvertible {
         return userDefaults.object(forKey: key.cacheEncoded()) as? T
     }
 
-    public func set<T>(_ object: T, for key: HIPCacheKeyConvertible) {
+    public func set<T>(object: T, for key: HIPCacheKeyConvertible) {
         userDefaults.set(object, forKey: key.cacheEncoded())
         userDefaults.synchronize()
     }
@@ -28,9 +28,9 @@ open class HIPCache: HIPCacheConvertible {
         return nil
     }
 
-    public func set<T: Model>(_ model: T, for key: HIPCacheKeyConvertible) {
+    public func set<T: Model>(model: T, for key: HIPCacheKeyConvertible) {
         if let data = try? model.encoded() {
-            set(data, for: key)
+            set(object: data, for: key)
         }
     }
 
@@ -42,9 +42,9 @@ open class HIPCache: HIPCacheConvertible {
 
 public protocol HIPCacheConvertible {
     func getObject<T>(for key: HIPCacheKeyConvertible) -> T?
-    func set<T>(_ object: T, for key: HIPCacheKeyConvertible)
+    func set<T>(object: T, for key: HIPCacheKeyConvertible)
     func getModel<T: Model>(for key: HIPCacheKeyConvertible) -> T?
-    func set<T: Model>(_ model: T, for key: HIPCacheKeyConvertible)
+    func set<T: Model>(model: T, for key: HIPCacheKeyConvertible)
     func remove(for key: HIPCacheKeyConvertible)
 }
 

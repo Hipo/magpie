@@ -59,7 +59,7 @@ open class HIPSession<Credentials: SessionCredentials, AuthenticatedUser: Sessio
         self.authenticatedUser = authenticatedUser
         notifyDelegates { $0.sessionDidAuthenticate(self) }
 
-        cache?.set(authenticatedUser, for: Keys.authenticatedUser)
+        cache?.set(model: authenticatedUser, for: Keys.authenticatedUser)
     }
 
     open func autoAuthenticate() {
