@@ -21,6 +21,8 @@ open class NWNetworkMonitor: NetworkMonitor {
         }
         return .unavailable
     }
+    
+    public init() { }
 
     deinit {
         stop()
