@@ -63,7 +63,7 @@ open class EndpointBuilder {
     }
 
     @discardableResult
-    public func cachePolicy(_ someCachePolicy: Request.CachePolicy) -> Self {
+    public func cachePolicy(_ someCachePolicy: URLRequest.CachePolicy) -> Self {
         endpoint.set(cachePolicy: someCachePolicy)
         return self
     }

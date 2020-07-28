@@ -10,6 +10,14 @@ import Foundation
 open class API {
     public var base: String
 
+    open var cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData
+    open var timeout: TimeInterval = 60.0
+
+    open var ignoresResponseOnCancelled = true
+    open var ignoresResponseWhenListenersNotified = false
+    open var ignoresResponseWhenEndpointsFailedFromUnauthorizedRequest = true
+
+    open var notifiesListenersWhenEndpointsFailedFromUnauthorizedRequest = true
     open var notifiesListenersWhenEndpointsFailedFromUnavailableNetwork = false
     open var notifiesListenersWhenEndpointsFailedFromDefectiveClient = false
     open var notifiesListenersWhenEndpointsFailedFromUnresponsiveServer = false
@@ -119,7 +127,13 @@ extension API {
         switch error.reason {
         case .unauthorized:
             if endpoint.notifiesListenersOnFailedFromUnauthorizedRequest {
-                forward(response, for: endpoint) { $0.api(self, endpointDidFailFromUnauthorizedRequest: endpoint) }
+                let notifier: ListenerNotifier = { $0.api(self, endpointDidFailFromUnauthorizedRequest: endpoint) }
+
+                if endpoint.ignoresResponseOnFailedFromUnauthorizedRequest {
+                    notifyListeners(notifier)
+                } else {
+                    forward(response, for: endpoint, afterNotifyingListeners: notifier)
+                }
             } else {
                 endpoint.forward(response)
             }

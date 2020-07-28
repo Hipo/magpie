@@ -8,19 +8,23 @@
 import Foundation
 
 public class Request  {
-    public typealias CachePolicy = URLRequest.CachePolicy
-
     public var base: String
     public var path = ""
     public var method: Method = .get
     public var query: Query?
     public var body: Body?
     public var headers: Headers = []
-    public var cachePolicy: CachePolicy = .reloadIgnoringLocalCacheData
-    public var timeout: TimeInterval = 60.0
+    public var cachePolicy: URLRequest.CachePolicy
+    public var timeout: TimeInterval
 
-    public init(base: String) {
+    public init(
+        base: String,
+        cachePolicy: URLRequest.CachePolicy,
+        timeout: TimeInterval
+    ) {
         self.base = base
+        self.cachePolicy = cachePolicy
+        self.timeout = timeout
     }
 }
 

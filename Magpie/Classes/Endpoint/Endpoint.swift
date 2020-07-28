@@ -18,12 +18,12 @@ class Endpoint {
     /// <note> This variable is added considering the validation capability of Alamofire. It's not generally needed, but it may be useful for some cases.
     /// If you use your own Networking class, it can be used to determine if the response is succeeded or failed before complete the endpoint.
     var validatesResponseBeforeCompletion = true
-    var ignoresResponseOnCancelled = true
-    var ignoresResponseWhenListenersNotified = false
 
-    var notifiesListenersOnFailedFromUnauthorizedRequest = true
-    /// <todo> Add an option not to handle response if listeners notified from unauthorized  request.
+    var ignoresResponseOnCancelled: Bool
+    var ignoresResponseWhenListenersNotified: Bool
+    var ignoresResponseOnFailedFromUnauthorizedRequest: Bool
 
+    var notifiesListenersOnFailedFromUnauthorizedRequest: Bool
     var notifiesListenersOnFailedFromUnavailableNetwork: Bool
     var notifiesListenersOnFailedFromDefectiveClient: Bool
     var notifiesListenersOnFailedFromUnresponsiveServer: Bool
@@ -34,7 +34,11 @@ class Endpoint {
 
     init(api: API) {
         self.api = api
-        self.request = Request(base: api.base)
+        self.request = Request(base: api.base, cachePolicy: api.cachePolicy, timeout: api.timeout)
+        self.ignoresResponseOnCancelled = api.ignoresResponseOnCancelled
+        self.ignoresResponseWhenListenersNotified = api.ignoresResponseWhenListenersNotified
+        self.ignoresResponseOnFailedFromUnauthorizedRequest = api.ignoresResponseWhenEndpointsFailedFromUnauthorizedRequest
+        self.notifiesListenersOnFailedFromUnauthorizedRequest = api.notifiesListenersWhenEndpointsFailedFromUnauthorizedRequest
         self.notifiesListenersOnFailedFromUnavailableNetwork = api.notifiesListenersWhenEndpointsFailedFromUnavailableNetwork
         self.notifiesListenersOnFailedFromDefectiveClient = api.notifiesListenersWhenEndpointsFailedFromDefectiveClient
         self.notifiesListenersOnFailedFromUnresponsiveServer = api.notifiesListenersWhenEndpointsFailedFromUnresponsiveServer
@@ -72,7 +76,7 @@ class Endpoint {
         request.timeout = timeout
     }
 
-    func set(cachePolicy: Request.CachePolicy) {
+    func set(cachePolicy: URLRequest.CachePolicy) {
         request.cachePolicy = cachePolicy
     }
 }
