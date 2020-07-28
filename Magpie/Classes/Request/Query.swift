@@ -8,23 +8,10 @@
 import Foundation
 
 public protocol Query: Printable {
-    var queryParams: [QueryParamConvertible] { get }
-    var encodingStrategy: URLEncodingStrategy { get }
-
     func encoded() throws -> [URLQueryItem]
 }
 
 extension Query {
-    public var encodingStrategy: URLEncodingStrategy {
-        return URLEncodingStrategy()
-    }
-
-    public func encoded() throws -> [URLQueryItem] {
-        var encoder = QueryEncoder()
-        encoder.encodingStrategy = encodingStrategy
-        return try encoder.encode(queryParams)
-    }
-
     func encodedString() throws -> String? {
         var urlComponents = URLComponents()
         urlComponents.queryItems = try encoded()
@@ -43,49 +30,45 @@ extension Query {
     }
 }
 
-public protocol QueryKey: Printable {
-    func encoded() -> String
+public protocol ObjectQuery: Query {
+    associatedtype SomeObjectQueryKeyedParam: ObjectQueryKeyedParamConvertible
+
+    var queryParams: [SomeObjectQueryKeyedParam] { get }
+    var encodingStrategy: URLEncodingStrategy { get }
 }
 
-extension QueryKey where Self: RawRepresentable, Self.RawValue == String {
-    public func encoded() -> String {
-        return rawValue
+extension ObjectQuery {
+    public var encodingStrategy: URLEncodingStrategy {
+        return URLEncodingStrategy()
+    }
+
+    public func encoded() throws -> [URLQueryItem] {
+        var encoder = ObjectQueryEncoder<SomeObjectQueryKeyedParam>()
+        encoder.encodingStrategy = encodingStrategy
+        return try encoder.encode(queryParams)
     }
 }
 
-extension String: QueryKey {
-    public func encoded() -> String {
-        return self
-    }
-}
+public protocol ObjectQueryKeyedParamConvertible: Printable {
+    associatedtype Key: CodingKey
 
-public protocol QueryParamConvertible: Printable {
-    var key: QueryKey { get }
+    var key: Key { get }
     var encodingValue: URLParamValueEncodable? { get }
 }
 
-extension QueryParamConvertible {
+extension ObjectQueryKeyedParamConvertible {
     /// <mark> CustomStringConvertible
     public var description: String {
-        return "\(key.description):\(encodingValue?.description ?? "<nil>")"
+        return "\(key.stringValue):\(encodingValue?.description ?? "<nil>")"
     }
 }
 
-extension URLQueryItem: QueryParamConvertible {
-    public var key: QueryKey {
-        return name
-    }
-    public var encodingValue: URLParamValueEncodable? {
-        return value
-    }
-}
-
-public struct QueryParam: QueryParamConvertible {
-    public let key: QueryKey
+public struct ObjectQueryKeyedParam<Key: CodingKey>: ObjectQueryKeyedParamConvertible {
+    public let key: Key
     public let encodingValue: URLParamValueEncodable?
 
     public init(
-        _ key: QueryKey,
+        _ key: Key,
         _ encodingValue: URLParamValueEncodable?
     ) {
         self.key = key
@@ -93,25 +76,25 @@ public struct QueryParam: QueryParamConvertible {
     }
 }
 
-private struct QueryEncoder {
+private struct ObjectQueryEncoder<Param: ObjectQueryKeyedParamConvertible> {
     var encodingStrategy: URLEncodingStrategy = URLEncodingStrategy()
 
-    func encode(_ queryParams: [QueryParamConvertible]) throws -> [URLQueryItem] {
+    func encode(_ queryParams: [Param]) throws -> [URLQueryItem] {
         var queryItems: [URLQueryItem] = []
 
         for param in queryParams {
             do {
                 let value = try param.encodingValue.map { escape(try $0.urlEncoded(encodingStrategy)) }
-                queryItems.append(URLQueryItem(name: escape(param.key.encoded()), value: value))
+                queryItems.append(URLQueryItem(name: escape(param.key.stringValue), value: value))
             } catch {
-                throw RequestEncodingError.Reason.invalidURLQueryEncoding(key: param.key.encoded())
+                throw RequestEncodingError.Reason.invalidURLQueryEncoding(key: param.key.stringValue)
             }
         }
         return queryItems
     }
 }
 
-extension QueryEncoder {
+extension ObjectQueryEncoder {
     private func escape(_ string: String) -> String {
         var allowed = CharacterSet.urlQueryAllowed
         allowed.remove("+")
