@@ -18,6 +18,28 @@ extension APIError {
 }
 
 extension APIError {
+    public var isHttpUnauthorized: Bool {
+        return (self as? HTTPError)?.isUnauthorized ?? false
+    }
+    public var isHttpForbidden: Bool {
+        return (self as? HTTPError)?.isForbidden ?? false
+    }
+    public var isHttpNotFound: Bool {
+        return (self as? HTTPError)?.isNotFound ?? false
+    }
+    public var isNetwork: Bool {
+        return self is NetworkError
+    }
+    public var isServer: Bool {
+        return (self as? HTTPError)?.isServer ?? false
+    }
+
+    public func isHttp(_ statusCode: Int) -> Bool {
+        return (self as? HTTPError) == HTTPError(statusCode: statusCode, responseData: nil)
+    }
+}
+
+extension APIError {
     public var localizedDescription: String {
         return description
     }
@@ -113,7 +135,7 @@ extension ResponseSerializationError {
     }
 }
 
-public struct HTTPError: APIError {
+public struct HTTPError: APIError, ExpressibleByIntegerLiteral, Equatable {
     public let statusCode: Int
     public let responseData: Data?
     public let reason: Reason
@@ -147,6 +169,53 @@ public struct HTTPError: APIError {
             reason = .server(underlyingError: underlyingError)
         default:
             reason = .unknown(underlyingError: underlyingError)
+        }
+    }
+
+    /// <mark> ExpressibleByIntegerLiteral
+    public init(integerLiteral value: Int) {
+        self.init(statusCode: value, responseData: nil)
+    }
+
+    /// <mark> Equatable
+    public static func == (lhs: HTTPError, rhs: HTTPError) -> Bool {
+        return lhs.statusCode == rhs.statusCode
+    }
+}
+
+extension HTTPError {
+    public var isUnauthorized: Bool {
+        switch self.reason {
+        case .unauthorized:
+            return true
+        default:
+            return false
+        }
+    }
+    public var isForbidden: Bool {
+        switch self.reason {
+        case .forbidden:
+            return true
+        default:
+            return false
+        }
+    }
+    public var isNotFound: Bool {
+        switch self.reason {
+        case .notFound:
+            return true
+        default:
+            return false
+        }
+    }
+    public var isServer: Bool {
+        switch self.reason {
+        case .notImplemented,
+             .serviceUnavailable,
+             .server:
+            return true
+        default:
+            return false
         }
     }
 }

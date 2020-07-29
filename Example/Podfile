@@ -5,7 +5,7 @@ target 'Magpie_Example' do
   pod 'Magpie/Core', :path => '../'
   pod 'Magpie/Alamofire', :path => '../'
   pod 'Magpie/HIPAuthorization', :path => '../'
-  pod 'Magpie/HIPExceptions', :path => '../'
+  pod 'Magpie/HIPModels', :path => '../'
 
   target 'Magpie_Tests' do
     inherit! :search_paths

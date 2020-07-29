@@ -72,4 +72,9 @@ Pod::Spec.new do |s|
   s.subspec 'HIPExceptions' do |ss|
     ss.source_files = 'Magpie/Classes/HIPExceptions/*.swift'
   end
+
+  s.subspec 'HIPModels' do |ss|
+    ss.source_files = 'Magpie/Classes/HIPModels/*.swift'
+    ss.dependency 'Magpie/HIPExceptions'
+  end
 end
