@@ -18,6 +18,9 @@ extension APIError {
 }
 
 extension APIError {
+    public var isHttpBadRequest: Bool {
+        return (self as? HTTPError)?.isBadRequest ?? false
+    }
     public var isHttpUnauthorized: Bool {
         return (self as? HTTPError)?.isUnauthorized ?? false
     }
@@ -27,11 +30,14 @@ extension APIError {
     public var isHttpNotFound: Bool {
         return (self as? HTTPError)?.isNotFound ?? false
     }
-    public var isNetwork: Bool {
-        return self is NetworkError
+    public var isClient: Bool {
+        return (self as? HTTPError)?.isClient ?? false
     }
     public var isServer: Bool {
         return (self as? HTTPError)?.isServer ?? false
+    }
+    public var isNetwork: Bool {
+        return self is NetworkError
     }
 
     public func isHttp(_ statusCode: Int) -> Bool {
@@ -184,6 +190,14 @@ public struct HTTPError: APIError, ExpressibleByIntegerLiteral, Equatable {
 }
 
 extension HTTPError {
+    public var isBadRequest: Bool {
+        switch self.reason {
+        case .badRequest:
+            return true
+        default:
+            return false
+        }
+    }
     public var isUnauthorized: Bool {
         switch self.reason {
         case .unauthorized:
@@ -203,6 +217,18 @@ extension HTTPError {
     public var isNotFound: Bool {
         switch self.reason {
         case .notFound:
+            return true
+        default:
+            return false
+        }
+    }
+    public var isClient: Bool {
+        switch self.reason {
+        case .badRequest,
+             .unauthorized,
+             .forbidden,
+             .notFound,
+             .client:
             return true
         default:
             return false
