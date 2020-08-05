@@ -7,8 +7,8 @@
 
 import Foundation
 
-public enum HIPError<AppError: Error> {
-    case inapp(AppError)
+public enum HIPError: Error {
+    case inapp(Error)
     case client(HTTPError, HIPAPIError?)
     case server(HTTPError)
     case network(NetworkError)
@@ -35,5 +35,3 @@ public enum HIPError<AppError: Error> {
         self = .unexpected(apiError)
     }
 }
-
-public struct NoAppError: Error { }
