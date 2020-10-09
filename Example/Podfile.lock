@@ -1,7 +1,7 @@
 PODS:
-  - Alamofire (5.0.5)
+  - Alamofire (5.2.2)
   - Magpie/Alamofire (2.4.0):
-    - Alamofire (~> 5.0.0-rc.3)
+    - Alamofire (~> 5.2)
   - Magpie/Core (2.4.0):
     - Magpie/Core/API (= 2.4.0)
     - Magpie/Core/Endpoint (= 2.4.0)
@@ -24,11 +24,11 @@ PODS:
   - Magpie/Core/Utils/Objects (2.4.0)
   - Magpie/Core/Utils/Serializing (2.4.0)
   - Magpie/HIPAuthorization (2.4.0):
-    - Valet (~> 3.2)
+    - Valet (~> 4.1)
   - Magpie/HIPExceptions (2.4.0)
   - Magpie/HIPModels (2.4.0):
     - Magpie/HIPExceptions
-  - Valet (3.2.8)
+  - Valet (4.1.1)
 
 DEPENDENCIES:
   - Magpie/Alamofire (from `../`)
@@ -46,10 +46,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: df2f8f826963b08b9a870791ad48e07a10090b2e
-  Magpie: 634d04731b5221ece19f289da0905c4dc607b6c2
-  Valet: 16d0537d70db79d9ba953b9060b5da4fb8004e51
+  Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
+  Magpie: 31cb8749ca8b308fd17441bd5201146ea87b08e1
+  Valet: 11ab0e318b7284888a81392e36136563b4af5deb
 
-PODFILE CHECKSUM: 2479b3b9548d2510750c5852f97291302261db52
+PODFILE CHECKSUM: 5b3da4ff005462e5e0a3d9c64e9a184cf87b3d80
 
 COCOAPODS: 1.9.3

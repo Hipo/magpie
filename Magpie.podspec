@@ -8,20 +8,20 @@
 
 Pod::Spec.new do |s|
   s.name                  = 'Magpie'
-  s.version               = '2.4.0'
+  s.version               = '2.0.0'
   s.license               = { :type => 'MIT', :file => 'LICENSE' }
   s.homepage              = 'https://github.com/Hipo/magpie'
   s.summary               = 'Standardized & Simplified API layer for iOS'
   s.source                = { :git => 'https://github.com/Hipo/magpie.git', :tag => s.version.to_s }
   s.author                = { 'Hipo' => 'hello@hipolabs.com' }
-  s.ios.deployment_target = '11.0'
-  s.osx.deployment_target = '10.14'
+  s.ios.deployment_target = '12.0'
+  s.osx.deployment_target = '10.15'
   s.swift_version         = '5.0'
   s.default_subspec       = 'Core'
 
   s.subspec 'Alamofire' do |ss|
     ss.source_files = 'Magpie/Classes/Alamofire/*.swift'
-    ss.dependency 'Alamofire', '~> 5.0.0-rc.3'
+    ss.dependency 'Alamofire', '~> 5.2'
   end
 
   s.subspec 'Core' do |ss|
@@ -66,7 +66,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'HIPAuthorization' do |ss|
     ss.source_files = 'Magpie/Classes/HIPAuthorization/*.swift'
-    ss.dependency 'Valet', '~> 3.2'
+    ss.dependency 'Valet', '~> 4.1'
   end
 
   s.subspec 'HIPExceptions' do |ss|

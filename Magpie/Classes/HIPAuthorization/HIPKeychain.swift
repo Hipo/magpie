@@ -15,55 +15,54 @@ public class HIPKeychain: HIPKeychainConvertible {
         _keychain = Valet.valet(with: Identifier(nonEmpty: identifier)!, accessibility: .whenUnlocked)
     }
 
-    public func getString(for key: HIPKeychainKeyConvertible) -> String? {
-        return _keychain.string(forKey: key.keychainEncoded())
+    public func getString(for key: HIPKeychainKeyConvertible) throws -> String? {
+        return try _keychain.string(forKey: key.keychainEncoded())
     }
 
-    public func set(_ string: String, for key: HIPKeychainKeyConvertible) {
-        _keychain.set(string: string, forKey: key.keychainEncoded())
+    public func set(_ string: String, for key: HIPKeychainKeyConvertible) throws {
+        try _keychain.setString(string, forKey: key.keychainEncoded())
     }
 
-    public func getData(for key: HIPKeychainKeyConvertible) -> Data? {
-        return _keychain.object(forKey: key.keychainEncoded())
+    public func getData(for key: HIPKeychainKeyConvertible) throws -> Data? {
+        return try _keychain.object(forKey: key.keychainEncoded())
     }
 
-    public func set(_ data: Data, for key: HIPKeychainKeyConvertible) {
-        _keychain.set(object: data, forKey: key.keychainEncoded())
+    public func set(_ data: Data, for key: HIPKeychainKeyConvertible) throws {
+        try _keychain.setObject(data, forKey: key.keychainEncoded())
     }
 
-    public func getModel<T: Model>(for key: HIPKeychainKeyConvertible) -> T? {
-        if let data = getData(for: key) {
-            return try? T.decoded(data)
+    public func getModel<T: Model>(for key: HIPKeychainKeyConvertible) throws -> T? {
+        if let data = try getData(for: key) {
+            return try T.decoded(data)
         }
         return nil
     }
 
-    public func set<T>(_ model: T, for key: HIPKeychainKeyConvertible) where T : Model {
-        if let data = try? model.encoded() {
-            set(data, for: key)
-        }
+    public func set<T: Model>(_ model: T, for key: HIPKeychainKeyConvertible) throws {
+        let data = try model.encoded()
+        try set(data, for: key)
     }
 
-    public func remove(for key: HIPKeychainKeyConvertible) {
-        _keychain.removeObject(forKey: key.keychainEncoded())
+    public func remove(for key: HIPKeychainKeyConvertible) throws {
+        try _keychain.removeObject(forKey: key.keychainEncoded())
     }
 
-    public func removeAll() {
-        _keychain.removeAllObjects()
+    public func removeAll() throws {
+        try _keychain.removeAllObjects()
     }
 }
 
 public protocol HIPKeychainConvertible {
     init(identifier: String)
 
-    func getString(for key: HIPKeychainKeyConvertible) -> String?
-    func set(_ string: String, for key: HIPKeychainKeyConvertible)
-    func getData(for key: HIPKeychainKeyConvertible) -> Data?
-    func set(_ data: Data, for key: HIPKeychainKeyConvertible)
-    func getModel<T: Model>(for key: HIPKeychainKeyConvertible) -> T?
-    func set<T: Model>(_ model: T, for key: HIPKeychainKeyConvertible)
-    func remove(for key: HIPKeychainKeyConvertible)
-    func removeAll()
+    func getString(for key: HIPKeychainKeyConvertible) throws -> String?
+    func set(_ string: String, for key: HIPKeychainKeyConvertible) throws
+    func getData(for key: HIPKeychainKeyConvertible) throws -> Data?
+    func set(_ data: Data, for key: HIPKeychainKeyConvertible) throws
+    func getModel<T: Model>(for key: HIPKeychainKeyConvertible) throws -> T?
+    func set<T: Model>(_ model: T, for key: HIPKeychainKeyConvertible) throws
+    func remove(for key: HIPKeychainKeyConvertible) throws
+    func removeAll() throws
 }
 
 public protocol HIPKeychainKeyConvertible {

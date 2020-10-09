@@ -7,6 +7,12 @@
 
 import Foundation
 
+#if canImport(AppKit)
+import AppKit
+#else
+import UIKit
+#endif
+
 open class API {
     public var base: String
 
@@ -216,15 +222,26 @@ extension API {
     }
 
     func addNetworkMonitoringObservers() {
+        let startObserverNotificationName: Notification.Name
+        let stopObserverNotificationName: Notification.Name
+
+        #if canImport(AppKit)
+        startObserverNotificationName = NSApplication.didBecomeActiveNotification
+        stopObserverNotificationName = NSApplication.didResignActiveNotification
+        #else
+        startObserverNotificationName = UIApplication.willEnterForegroundNotification
+        stopObserverNotificationName = UIApplication.didEnterBackgroundNotification
+        #endif
+
         let startObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.willEnterForegroundNotification,
+            forName: startObserverNotificationName,
             object: nil,
             queue: OperationQueue.main
         ) { [weak self] _ in
             self?.startNetworkMonitoring()
         }
         let stopObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.didEnterBackgroundNotification,
+            forName: stopObserverNotificationName,
             object: nil,
             queue: OperationQueue.main
         ) { [weak self] _ in

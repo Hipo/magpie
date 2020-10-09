@@ -31,24 +31,24 @@ open class HIPSession<Credentials: SessionCredentials, AuthenticatedUser: Sessio
         return credentials != nil
     }
 
-    open func authorize(_ credentials: Credentials) {
+    open func authorize(_ credentials: Credentials) throws {
         self.credentials = credentials
         notifyDelegates { $0.sessionDidAuthorize(self) }
 
-        keychain.set(credentials, for: Keys.credentials)
+        try keychain.set(credentials, for: Keys.credentials)
     }
 
     open func autoAuthorize() {
-        credentials = keychain.getModel(for: Keys.credentials)
+        credentials = try? keychain.getModel(for: Keys.credentials)
     }
 
-    open func deauthorize() {
+    open func deauthorize() throws {
         deauthenticate()
 
         credentials = nil
         notifyDelegates { $0.sessionDidDeauthorize(self) }
 
-        keychain.remove(for: Keys.credentials)
+        try keychain.remove(for: Keys.credentials)
     }
 
     open func hasAuthentication() -> Bool {
@@ -100,8 +100,8 @@ public protocol Session: Printable {
     var authenticatedUser: AuthenticatedUser? { get }
 
     func hasAuthorization() -> Bool
-    func authorize(_ newCredentials: Credentials)
-    func deauthorize()
+    func authorize(_ newCredentials: Credentials) throws
+    func deauthorize() throws
     func hasAuthentication() -> Bool
     func authenticate(_ newAuthenticatedUser: AuthenticatedUser)
     func deauthenticate()

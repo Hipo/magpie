@@ -1,13 +1,27 @@
 use_frameworks!
-platform :ios, '11.0'
 
-target 'Magpie_Example' do
+def magpie_pods
   pod 'Magpie/Core', :path => '../'
   pod 'Magpie/Alamofire', :path => '../'
   pod 'Magpie/HIPAuthorization', :path => '../'
   pod 'Magpie/HIPModels', :path => '../'
+end
 
-  target 'Magpie_Tests' do
-    inherit! :search_paths
-  end
+target 'Magpie_Example' do
+  platform :ios, '12.4'
+
+  magpie_pods
+end
+
+target 'Magpie_Example (Mac)' do
+  platform :macos, '10.15'
+
+  magpie_pods
+end
+
+target 'Magpie_Tests' do
+  platform :ios, '12.4'
+  inherit! :search_paths
+
+  magpie_pods
 end

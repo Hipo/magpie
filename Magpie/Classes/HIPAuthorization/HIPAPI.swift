@@ -36,12 +36,12 @@ open class HIPAPI<SomeSession: Session>: API {
         fatalError("init(base:networking:interceptor:networkMonitor:) has not been implemented")
     }
 
-    open func authorize(_ credentials: SomeSession.Credentials) {
-        session.authorize(credentials)
+    open func authorize(_ credentials: SomeSession.Credentials) throws {
+        try session.authorize(credentials)
     }
 
-    open func deauthorize() {
-        session.deauthorize()
+    open func deauthorize() throws {
+        try session.deauthorize()
     }
 
     open func authenticate(_ authenticatedUser: SomeSession.AuthenticatedUser) {

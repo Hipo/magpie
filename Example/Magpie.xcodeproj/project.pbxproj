@@ -8,12 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		569620671145A13655CDC438 /* Pods_Magpie_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E1DCC0910E52CAB15DA4C21 /* Pods_Magpie_Tests.framework */; };
+		5B96425834B6FCDA23883776 /* Pods_Magpie_Example__Mac_.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238AC20FC3BF39AC59FCE643 /* Pods_Magpie_Example__Mac_.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		B122446B25FDE38BCFE09701 /* Pods_Magpie_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BB5375CE679764B775A3B3 /* Pods_Magpie_Example.framework */; };
+		CDF0ACD0252F4A4E009AB48E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF0ACCF252F4A4E009AB48E /* AppDelegate.swift */; };
+		CDF0ACD2252F4A4E009AB48E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF0ACD1252F4A4E009AB48E /* ContentView.swift */; };
+		CDF0ACD4252F4A4F009AB48E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDF0ACD3252F4A4F009AB48E /* Assets.xcassets */; };
+		CDF0ACD7252F4A4F009AB48E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDF0ACD6252F4A4F009AB48E /* Preview Assets.xcassets */; };
+		CDF0ACDA252F4A4F009AB48E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDF0ACD8252F4A4F009AB48E /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +35,9 @@
 /* Begin PBXFileReference section */
 		0066BC2D7948741D41044353 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		0E1DCC0910E52CAB15DA4C21 /* Pods_Magpie_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Magpie_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		238AC20FC3BF39AC59FCE643 /* Pods_Magpie_Example__Mac_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Magpie_Example__Mac_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B385DA91751A559D8F12746 /* Pods-Magpie_Example (Mac).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Example (Mac).release.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Example (Mac)/Pods-Magpie_Example (Mac).release.xcconfig"; sourceTree = "<group>"; };
+		45AB7DA50F9EBA3DD22F5F3F /* Pods-Magpie_Example (Mac).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Example (Mac).debug.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Example (Mac)/Pods-Magpie_Example (Mac).debug.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Magpie_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Magpie_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -44,6 +53,14 @@
 		B87AEE5B6C065787CCAEB2FB /* Pods-Magpie_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Tests/Pods-Magpie_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		C1D2CF8E73EC2C1580A761C2 /* Magpie.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Magpie.podspec; path = ../Magpie.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		C7BB5375CE679764B775A3B3 /* Pods_Magpie_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Magpie_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDF0ACCD252F4A4E009AB48E /* Magpie_Example (Mac).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Magpie_Example (Mac).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDF0ACCF252F4A4E009AB48E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CDF0ACD1252F4A4E009AB48E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CDF0ACD3252F4A4F009AB48E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CDF0ACD6252F4A4F009AB48E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CDF0ACD9252F4A4F009AB48E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CDF0ACDB252F4A4F009AB48E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDF0ACDC252F4A4F009AB48E /* Magpie_Example__Mac_.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Magpie_Example__Mac_.entitlements; sourceTree = "<group>"; };
 		D927D811A8DD93430482D3EC /* Pods-Magpie_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Magpie_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Magpie_Example/Pods-Magpie_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -64,6 +81,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CDF0ACCA252F4A4E009AB48E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B96425834B6FCDA23883776 /* Pods_Magpie_Example__Mac_.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -72,6 +97,7 @@
 			children = (
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACD21AFB9204008FA782 /* Example for Magpie */,
+				CDF0ACCE252F4A4E009AB48E /* Example for Magpie (Mac) */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
 				62A6A817CE13CF7E1DE63E09 /* Pods */,
@@ -84,6 +110,7 @@
 			children = (
 				607FACD01AFB9204008FA782 /* Magpie_Example.app */,
 				607FACE51AFB9204008FA782 /* Magpie_Tests.xctest */,
+				CDF0ACCD252F4A4E009AB48E /* Magpie_Example (Mac).app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -143,6 +170,8 @@
 				D927D811A8DD93430482D3EC /* Pods-Magpie_Example.release.xcconfig */,
 				B87AEE5B6C065787CCAEB2FB /* Pods-Magpie_Tests.debug.xcconfig */,
 				A98ABE0882CD93919D756F78 /* Pods-Magpie_Tests.release.xcconfig */,
+				45AB7DA50F9EBA3DD22F5F3F /* Pods-Magpie_Example (Mac).debug.xcconfig */,
+				3B385DA91751A559D8F12746 /* Pods-Magpie_Example (Mac).release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -152,8 +181,31 @@
 			children = (
 				C7BB5375CE679764B775A3B3 /* Pods_Magpie_Example.framework */,
 				0E1DCC0910E52CAB15DA4C21 /* Pods_Magpie_Tests.framework */,
+				238AC20FC3BF39AC59FCE643 /* Pods_Magpie_Example__Mac_.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CDF0ACCE252F4A4E009AB48E /* Example for Magpie (Mac) */ = {
+			isa = PBXGroup;
+			children = (
+				CDF0ACCF252F4A4E009AB48E /* AppDelegate.swift */,
+				CDF0ACD1252F4A4E009AB48E /* ContentView.swift */,
+				CDF0ACD3252F4A4F009AB48E /* Assets.xcassets */,
+				CDF0ACD8252F4A4F009AB48E /* Main.storyboard */,
+				CDF0ACDB252F4A4F009AB48E /* Info.plist */,
+				CDF0ACDC252F4A4F009AB48E /* Magpie_Example__Mac_.entitlements */,
+				CDF0ACD5252F4A4F009AB48E /* Preview Content */,
+			);
+			path = "Example for Magpie (Mac)";
+			sourceTree = "<group>";
+		};
+		CDF0ACD5252F4A4F009AB48E /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				CDF0ACD6252F4A4F009AB48E /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,6 +238,7 @@
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
+				28AAAEEF45767C79BE12E73A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -197,28 +250,52 @@
 			productReference = 607FACE51AFB9204008FA782 /* Magpie_Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		CDF0ACCC252F4A4E009AB48E /* Magpie_Example (Mac) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDF0ACDD252F4A4F009AB48E /* Build configuration list for PBXNativeTarget "Magpie_Example (Mac)" */;
+			buildPhases = (
+				D8047D1451B77781005BB929 /* [CP] Check Pods Manifest.lock */,
+				CDF0ACC9252F4A4E009AB48E /* Sources */,
+				CDF0ACCA252F4A4E009AB48E /* Frameworks */,
+				CDF0ACCB252F4A4E009AB48E /* Resources */,
+				CFD95C4A763F24CD0E534027 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Magpie_Example (Mac)";
+			productName = "Magpie_Example (Mac)";
+			productReference = CDF0ACCD252F4A4E009AB48E /* Magpie_Example (Mac).app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		607FACC81AFB9204008FA782 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 1020;
+				LastSwiftUpdateCheck = 1200;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = CocoaPods;
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
 						LastSwiftMigration = 1020;
+						ProvisioningStyle = Manual;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
 						LastSwiftMigration = 1020;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
+					CDF0ACCC252F4A4E009AB48E = {
+						CreatedOnToolsVersion = 12.0;
+						ProvisioningStyle = Manual;
+					};
 				};
 			};
-			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "magpie" */;
+			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "Magpie" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -232,6 +309,7 @@
 			projectRoot = "";
 			targets = (
 				607FACCF1AFB9204008FA782 /* Magpie_Example */,
+				CDF0ACCC252F4A4E009AB48E /* Magpie_Example (Mac) */,
 				607FACE41AFB9204008FA782 /* Magpie_Tests */,
 			);
 		};
@@ -254,9 +332,41 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CDF0ACCB252F4A4E009AB48E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDF0ACDA252F4A4F009AB48E /* Main.storyboard in Resources */,
+				CDF0ACD7252F4A4F009AB48E /* Preview Assets.xcassets in Resources */,
+				CDF0ACD4252F4A4F009AB48E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		28AAAEEF45767C79BE12E73A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Magpie_Tests/Pods-Magpie_Tests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Magpie-iOS/Magpie.framework",
+				"${BUILT_PRODUCTS_DIR}/Valet-iOS/Valet.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Magpie.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Valet.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Magpie_Tests/Pods-Magpie_Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		2C46D1066F0F3661F254F85E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -282,9 +392,9 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Magpie_Example/Pods-Magpie_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/Magpie/Magpie.framework",
-				"${BUILT_PRODUCTS_DIR}/Valet/Valet.framework",
+				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Magpie-iOS/Magpie.framework",
+				"${BUILT_PRODUCTS_DIR}/Valet-iOS/Valet.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -315,6 +425,50 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		CFD95C4A763F24CD0E534027 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Magpie_Example (Mac)/Pods-Magpie_Example (Mac)-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire-macOS/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Magpie-macOS/Magpie.framework",
+				"${BUILT_PRODUCTS_DIR}/Valet-macOS/Valet.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Magpie.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Valet.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Magpie_Example (Mac)/Pods-Magpie_Example (Mac)-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D8047D1451B77781005BB929 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Magpie_Example (Mac)-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -335,6 +489,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CDF0ACC9252F4A4E009AB48E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDF0ACD2252F4A4E009AB48E /* ContentView.swift in Sources */,
+				CDF0ACD0252F4A4E009AB48E /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -352,6 +515,14 @@
 				607FACDF1AFB9204008FA782 /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		CDF0ACD8252F4A4F009AB48E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDF0ACD9252F4A4F009AB48E /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -380,6 +551,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -405,7 +577,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -436,6 +608,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -454,7 +627,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -467,12 +640,15 @@
 			baseConfigurationReference = 6E47A207BF1643B458BF2664 /* Pods-Magpie_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Magpie/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hipolabs.magpie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -482,12 +658,15 @@
 			baseConfigurationReference = D927D811A8DD93430482D3EC /* Pods-Magpie_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Magpie/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hipolabs.magpie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -502,7 +681,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -517,7 +696,7 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -526,10 +705,79 @@
 			};
 			name = Release;
 		};
+		CDF0ACDE252F4A4F009AB48E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45AB7DA50F9EBA3DD22F5F3F /* Pods-Magpie_Example (Mac).debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "Example for Magpie (Mac)/Magpie_Example__Mac_.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_ASSET_PATHS = "\"Example for Magpie (Mac)/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Example for Magpie (Mac)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hipolabs.magpie;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CDF0ACDF252F4A4F009AB48E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3B385DA91751A559D8F12746 /* Pods-Magpie_Example (Mac).release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "Example for Magpie (Mac)/Magpie_Example__Mac_.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"Example for Magpie (Mac)/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Example for Magpie (Mac)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hipolabs.magpie;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "magpie" */ = {
+		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "Magpie" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACED1AFB9204008FA782 /* Debug */,
@@ -552,6 +800,15 @@
 			buildConfigurations = (
 				607FACF31AFB9204008FA782 /* Debug */,
 				607FACF41AFB9204008FA782 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CDF0ACDD252F4A4F009AB48E /* Build configuration list for PBXNativeTarget "Magpie_Example (Mac)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDF0ACDE252F4A4F009AB48E /* Debug */,
+				CDF0ACDF252F4A4F009AB48E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
