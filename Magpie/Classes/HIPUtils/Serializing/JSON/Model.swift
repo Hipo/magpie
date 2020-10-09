@@ -48,6 +48,16 @@ extension Model {
             return "<invalid>"
         }
     }
+
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        do {
+            let data = try encoded()
+            return "[\(type(of: self))] \(data.utf8Description)"
+        } catch {
+            return "<invalid>"
+        }
+    }
 }
 
 public struct NoModel: Model { }

@@ -19,6 +19,12 @@ extension Body {
     }
 }
 
+extension Data: Body {
+    public func encoded() throws -> Data {
+        return self
+    }
+}
+
 /// <mark> application/json
 public protocol JSONBodyParamConvertible: Printable {
     func encoded(in container: inout UnkeyedEncodingContainer) throws

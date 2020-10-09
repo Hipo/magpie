@@ -1,10 +1,7 @@
 use_frameworks!
 
 def magpie_pods
-  pod 'Magpie/Core', :path => '../'
-  pod 'Magpie/Alamofire', :path => '../'
-  pod 'Magpie/HIPAuthorization', :path => '../'
-  pod 'Magpie/HIPModels', :path => '../'
+  pod 'Magpie/HIPAPI', :path => '../'
 end
 
 target 'Magpie_Example' do

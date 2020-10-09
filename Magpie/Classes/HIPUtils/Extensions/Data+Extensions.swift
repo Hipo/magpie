@@ -22,12 +22,6 @@ extension Data {
     }
 }
 
-extension Data: Body {
-    public func encoded() throws -> Data {
-        return self
-    }
-}
-
 extension Optional where Wrapped == Data {
     public var absoluteUtf8Description: String {
         return self?.utf8Description ?? "<nil>"

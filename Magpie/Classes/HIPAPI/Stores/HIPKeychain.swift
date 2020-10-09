@@ -51,26 +51,3 @@ public class HIPKeychain: HIPKeychainConvertible {
         try _keychain.removeAllObjects()
     }
 }
-
-public protocol HIPKeychainConvertible {
-    init(identifier: String)
-
-    func getString(for key: HIPKeychainKeyConvertible) throws -> String?
-    func set(_ string: String, for key: HIPKeychainKeyConvertible) throws
-    func getData(for key: HIPKeychainKeyConvertible) throws -> Data?
-    func set(_ data: Data, for key: HIPKeychainKeyConvertible) throws
-    func getModel<T: Model>(for key: HIPKeychainKeyConvertible) throws -> T?
-    func set<T: Model>(_ model: T, for key: HIPKeychainKeyConvertible) throws
-    func remove(for key: HIPKeychainKeyConvertible) throws
-    func removeAll() throws
-}
-
-public protocol HIPKeychainKeyConvertible {
-    func keychainEncoded() -> String
-}
-
-extension HIPKeychainKeyConvertible where Self: RawRepresentable, Self.RawValue == String {
-    public func keychainEncoded() -> String {
-        return rawValue
-    }
-}

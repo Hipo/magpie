@@ -21,60 +21,32 @@ Pod::Spec.new do |s|
 
   s.subspec 'Alamofire' do |ss|
     ss.source_files = 'Magpie/Classes/Alamofire/*.swift'
+
+    ss.dependency 'Magpie/Core'
     ss.dependency 'Alamofire', '~> 5.2'
   end
 
   s.subspec 'Core' do |ss|
-    ss.subspec 'API' do |sss|
-      sss.source_files = 'Magpie/Classes/API/*.swift'
-    end
+    ss.source_files = 'Magpie/Classes/Core/**/*.swift'
 
-    ss.subspec 'Endpoint' do |sss|
-      sss.source_files = 'Magpie/Classes/Endpoint/*.swift'
-    end
-
-    ss.subspec 'NetworkMonitoring' do |sss|
-      sss.source_files = 'Magpie/Classes/NetworkMonitoring/*.swift'
-    end
-
-    ss.subspec 'Request' do |sss|
-      sss.source_files = 'Magpie/Classes/Request/*.swift'
-    end
-
-    ss.subspec 'Response' do |sss|
-      sss.source_files = 'Magpie/Classes/Response/*.swift'
-    end
-
-    ss.subspec 'Utils' do |sss|
-      sss.subspec 'Extensions' do |ssss|
-        ssss.source_files = 'Magpie/Classes/Utils/Extensions/*.swift'
-      end
-
-      sss.subspec 'Logging' do |ssss|
-        ssss.source_files = 'Magpie/Classes/Utils/Logging/*.swift'
-      end
-
-      sss.subspec 'Objects' do |ssss|
-        ssss.source_files = 'Magpie/Classes/Utils/Objects/*.swift'
-      end
-
-      sss.subspec 'Serializing' do |ssss|
-        ssss.source_files = 'Magpie/Classes/Utils/Serializing/*.swift'
-      end
-    end
+    ss.dependency 'Magpie/HIPUtils'
   end
 
-  s.subspec 'HIPAuthorization' do |ss|
-    ss.source_files = 'Magpie/Classes/HIPAuthorization/*.swift'
+  s.subspec 'HIPAPI' do |ss|
+    ss.source_files = 'Magpie/Classes/HIPAPI/**/*.swift'
+
+    ss.dependency 'Magpie/Alamofire'
+    ss.dependency 'Magpie/HIPExceptions'
     ss.dependency 'Valet', '~> 4.1'
   end
 
   s.subspec 'HIPExceptions' do |ss|
     ss.source_files = 'Magpie/Classes/HIPExceptions/*.swift'
+
+    ss.dependency 'Magpie/HIPUtils'
   end
 
-  s.subspec 'HIPModels' do |ss|
-    ss.source_files = 'Magpie/Classes/HIPModels/*.swift'
-    ss.dependency 'Magpie/HIPExceptions'
+  s.subspec 'HIPUtils' do |ss|
+    ss.source_files = 'Magpie/Classes/HIPUtils/**/*.swift'
   end
 end

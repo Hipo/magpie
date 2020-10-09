@@ -7,10 +7,10 @@
 
 import Foundation
 
-open class HIPAPIInterceptor<SomeSession: Session>: HIPAPISessionInterceptor {
-    public let session: SomeSession
+open class HIPAPIInterceptor<Session: HIPSessionConvertible>: HIPAPISessionInterceptor {
+    public let session: Session
 
-    public required init(session: SomeSession) {
+    public required init(session: Session) {
         self.session = session
     }
 
@@ -33,7 +33,7 @@ extension HIPAPIInterceptor {
 }
 
 public protocol HIPAPISessionInterceptor: APIInterceptor {
-    associatedtype SomeSession: Session
+    associatedtype Session: HIPSessionConvertible
 
-    var session: SomeSession { get }
+    var session: Session { get }
 }

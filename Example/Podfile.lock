@@ -1,40 +1,21 @@
 PODS:
   - Alamofire (5.2.2)
-  - Magpie/Alamofire (2.4.0):
+  - Magpie/Alamofire (2.0.0):
     - Alamofire (~> 5.2)
-  - Magpie/Core (2.4.0):
-    - Magpie/Core/API (= 2.4.0)
-    - Magpie/Core/Endpoint (= 2.4.0)
-    - Magpie/Core/NetworkMonitoring (= 2.4.0)
-    - Magpie/Core/Request (= 2.4.0)
-    - Magpie/Core/Response (= 2.4.0)
-    - Magpie/Core/Utils (= 2.4.0)
-  - Magpie/Core/API (2.4.0)
-  - Magpie/Core/Endpoint (2.4.0)
-  - Magpie/Core/NetworkMonitoring (2.4.0)
-  - Magpie/Core/Request (2.4.0)
-  - Magpie/Core/Response (2.4.0)
-  - Magpie/Core/Utils (2.4.0):
-    - Magpie/Core/Utils/Extensions (= 2.4.0)
-    - Magpie/Core/Utils/Logging (= 2.4.0)
-    - Magpie/Core/Utils/Objects (= 2.4.0)
-    - Magpie/Core/Utils/Serializing (= 2.4.0)
-  - Magpie/Core/Utils/Extensions (2.4.0)
-  - Magpie/Core/Utils/Logging (2.4.0)
-  - Magpie/Core/Utils/Objects (2.4.0)
-  - Magpie/Core/Utils/Serializing (2.4.0)
-  - Magpie/HIPAuthorization (2.4.0):
-    - Valet (~> 4.1)
-  - Magpie/HIPExceptions (2.4.0)
-  - Magpie/HIPModels (2.4.0):
+    - Magpie/Core
+  - Magpie/Core (2.0.0):
+    - Magpie/HIPUtils
+  - Magpie/HIPAPI (2.0.0):
+    - Magpie/Alamofire
     - Magpie/HIPExceptions
+    - Valet (~> 4.1)
+  - Magpie/HIPExceptions (2.0.0):
+    - Magpie/HIPUtils
+  - Magpie/HIPUtils (2.0.0)
   - Valet (4.1.1)
 
 DEPENDENCIES:
-  - Magpie/Alamofire (from `../`)
-  - Magpie/Core (from `../`)
-  - Magpie/HIPAuthorization (from `../`)
-  - Magpie/HIPModels (from `../`)
+  - Magpie/HIPAPI (from `../`)
 
 SPEC REPOS:
   trunk:
@@ -47,9 +28,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
-  Magpie: 31cb8749ca8b308fd17441bd5201146ea87b08e1
+  Magpie: c1af485d7ecd5098840cf7afb098e4793b09ebcf
   Valet: 11ab0e318b7284888a81392e36136563b4af5deb
 
-PODFILE CHECKSUM: 5b3da4ff005462e5e0a3d9c64e9a184cf87b3d80
+PODFILE CHECKSUM: 7292922e86498813983cda27a5d419e96464d9d4
 
 COCOAPODS: 1.9.3

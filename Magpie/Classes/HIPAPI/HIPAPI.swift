@@ -7,11 +7,11 @@
 
 import Foundation
 
-open class HIPAPI<SomeSession: Session>: API {
-    public let session: SomeSession
+open class HIPAPI<Session: HIPSessionConvertible>: API {
+    public let session: Session
 
     public required init(
-        session: SomeSession,
+        session: Session,
         base: String,
         networking: Networking = AlamofireNetworking(),
         interceptor: APIInterceptor? = nil,
@@ -36,7 +36,7 @@ open class HIPAPI<SomeSession: Session>: API {
         fatalError("init(base:networking:interceptor:networkMonitor:) has not been implemented")
     }
 
-    open func authorize(_ credentials: SomeSession.Credentials) throws {
+    open func authorize(_ credentials: Session.Credentials) throws {
         try session.authorize(credentials)
     }
 
@@ -44,7 +44,7 @@ open class HIPAPI<SomeSession: Session>: API {
         try session.deauthorize()
     }
 
-    open func authenticate(_ authenticatedUser: SomeSession.AuthenticatedUser) {
+    open func authenticate(_ authenticatedUser: Session.AuthenticatedUser) {
         session.authenticate(authenticatedUser)
     }
 

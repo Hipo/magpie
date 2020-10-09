@@ -33,7 +33,7 @@ open class API {
     public let networkMonitor: NetworkMonitor?
 
     lazy var storage = TaskStorage()
-    lazy var logger = Logger()
+    lazy var logger = Logger<APILogCategory>(subsystem: "com.hipo.magpie")
 
     var listens: [ObjectIdentifier: APIListen] = [:]
     var networkMonitoringObservers: [NSObjectProtocol] = []
@@ -61,13 +61,20 @@ open class API {
 }
 
 extension API {
-    /// <note> This method always overrides the logs to be shown in console.
-    public func showLogsInConsole(_ logs: [Logs]) {
-        logger.logs = logs
+    public func filterLogsInConsole(by categories: [APILogCategory]) {
+        logger.allowedCategories = categories
     }
 
-    public func hideLogsInConsole() {
-        logger.logs = []
+    public func filterLogsInConsole(by levels: [LogLevel]) {
+        logger.allowedLevels = levels
+    }
+
+    public func enableLogsInConsole() {
+        logger.isEnabled = true
+    }
+
+    public func disableLogsInConsole() {
+        logger.isEnabled = false
     }
 }
 
@@ -90,7 +97,7 @@ extension API {
         let responseHandler: Networking.ResponseHandler = { [weak self] response in
             self?.storage.delete(for: endpoint)
             self?.forward(response, for: endpoint)
-            self?.logger.log(response)
+            self?.logger.log(response, response.isSuccess ? .info : .error)
         }
 
         interceptor?.intercept(endpoint)
@@ -103,7 +110,7 @@ extension API {
     }
 
     private func forward(_ endpoint: Endpoint, onReversed responseHandler: @escaping Networking.ResponseHandler) -> TaskConvertible? {
-        logger.log(endpoint.request)
+        logger.log(endpoint.request, .info)
 
         switch endpoint.type {
         case .data:
@@ -199,7 +206,7 @@ extension API {
         } else {
             removeNetworkMonitoringObservers()
 
-            logger.log("Network monitoring is disabled", .networkMonitoring)
+            logger.log(Log(message: "Network monitoring is disabled", category: .networkMonitoring, level: .info))
         }
     }
 
@@ -309,7 +316,7 @@ extension API: NetworkListener {
                     listener.api(self, networkMonitorDidEnterBackground: networkMonitor)
                 }
             }
-            self.logger.log(networkMonitor)
+            self.logger.log(networkMonitor, .info)
         }
     }
 }
