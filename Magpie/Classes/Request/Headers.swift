@@ -222,6 +222,11 @@ public struct ContentTypeHeader: Header {
 public struct CustomHeader: Header {
     public let key: String
     public let value: String?
+    
+    public init(key: String, value: String?) {
+        self.key = key
+        self.value = value
+    }
 }
 
 public enum HTTPHeader {
