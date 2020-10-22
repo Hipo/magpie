@@ -5,7 +5,7 @@ def magpie_pods
 end
 
 target 'Magpie_Example' do
-  platform :ios, '12.4'
+  platform :ios, '11.0'
 
   magpie_pods
 end
@@ -17,7 +17,7 @@ target 'Magpie_Example (Mac)' do
 end
 
 target 'Magpie_Tests' do
-  platform :ios, '12.4'
+  platform :ios, '11.0'
   inherit! :search_paths
 
   magpie_pods

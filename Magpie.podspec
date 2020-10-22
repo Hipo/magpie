@@ -8,13 +8,13 @@
 
 Pod::Spec.new do |s|
   s.name                  = 'Magpie'
-  s.version               = '2.0.2'
+  s.version               = '2.0.3'
   s.license               = { :type => 'MIT', :file => 'LICENSE' }
   s.homepage              = 'https://github.com/Hipo/magpie'
   s.summary               = 'Standardized & Simplified API layer for iOS'
   s.source                = { :git => 'https://github.com/Hipo/magpie.git', :tag => s.version.to_s }
   s.author                = { 'Hipo' => 'hello@hipolabs.com' }
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '11.0'
   s.osx.deployment_target = '10.15'
   s.swift_version         = '5.0'
   s.default_subspec       = 'Core'
