@@ -26,16 +26,6 @@ open class HIPAPI<Session: HIPSessionConvertible>: API {
         )
     }
 
-    @available(*, unavailable)
-    public required init(
-        base: String,
-        networking: Networking,
-        interceptor: APIInterceptor? = nil,
-        networkMonitor: NetworkMonitor? = nil
-    ) {
-        fatalError("init(base:networking:interceptor:networkMonitor:) has not been implemented")
-    }
-
     open func authorize(_ credentials: Session.Credentials) throws {
         try session.authorize(credentials)
     }

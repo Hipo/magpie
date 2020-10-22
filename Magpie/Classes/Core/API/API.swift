@@ -38,7 +38,7 @@ open class API {
     var listens: [ObjectIdentifier: APIListen] = [:]
     var networkMonitoringObservers: [NSObjectProtocol] = []
 
-    public required init(
+    public init(
         base: String,
         networking: Networking,
         interceptor: APIInterceptor? = nil,

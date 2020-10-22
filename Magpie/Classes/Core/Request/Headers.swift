@@ -187,6 +187,11 @@ public struct AuthorizationHeader: Header {
         let bearerValue = value.map { "Bearer \($0)" }
         return Self(bearerValue)
     }
+
+    public static func basic(_ value: String?) -> Self {
+        let basicValue = value.map { "Basic \($0)" }
+        return Self(basicValue)
+    }
 }
 
 public struct ContentLengthHeader: Header {
@@ -222,6 +227,14 @@ public struct ContentTypeHeader: Header {
 public struct CustomHeader: Header {
     public let key: String
     public let value: String?
+
+    public init(
+        key: String,
+        value: String?
+    ) {
+        self.key = key
+        self.value = value
+    }
 }
 
 public enum HTTPHeader {

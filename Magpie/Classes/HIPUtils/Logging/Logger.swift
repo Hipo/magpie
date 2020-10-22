@@ -9,7 +9,7 @@ import Foundation
 import os.log
 
 public struct Logger<Category: LogCategory> {
-    public var isEnabled = true
+    public var isEnabled = false
 
     public var allowedCategories = Category.allCases
     public var allowedLevels = LogLevel.allCases

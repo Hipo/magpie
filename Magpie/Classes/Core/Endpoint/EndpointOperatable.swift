@@ -11,6 +11,7 @@ public protocol EndpointOperatable: Printable {
     var request: Request { get }
 
     func set(additionalHeaders: Headers)
+
     @discardableResult
     func send() -> EndpointOperatable
     func retry()
