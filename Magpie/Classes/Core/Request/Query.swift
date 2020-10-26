@@ -87,7 +87,7 @@ private struct ObjectQueryEncoder<Param: ObjectQueryKeyedParamConvertible> {
                 let value = try param.encodingValue.map { escape(try $0.urlEncoded(encodingStrategy)) }
                 queryItems.append(URLQueryItem(name: escape(param.key.stringValue), value: value))
             } catch {
-                throw RequestEncodingError.Reason.invalidURLQueryEncoding(key: param.key.stringValue)
+                throw RequestEncodingError(reason: .invalidURLQueryEncoding(key: param.key.stringValue))
             }
         }
         return queryItems

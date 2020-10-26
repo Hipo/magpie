@@ -67,6 +67,8 @@ extension RequestEncodingError {
             return "Invalid URL"
         case .invalidURLQueryEncoding(let key):
             return "Invalid query item for \(key)"
+        case .invalidJSONBodyEncoding(let underlyingError):
+            return "Invalid json body encoding:\n\(underlyingError.localizedDescription)"
         case .invalidFormURLBodyEncoding(let key):
             return "Invalid form-url-encoded body param for \(key)"
         }
@@ -77,6 +79,7 @@ extension RequestEncodingError {
     public enum Reason: Error {
         case emptyOrInvalidURL
         case invalidURLQueryEncoding(key: String)
+        case invalidJSONBodyEncoding(underlyingError: Error)
         case invalidFormURLBodyEncoding(key: String)
     }
 }

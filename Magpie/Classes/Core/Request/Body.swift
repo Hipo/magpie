@@ -50,7 +50,11 @@ extension JSONBody {
 
     /// <mark> Body
     public func encoded() throws -> Data {
-        return try encoded(encodingStrategy)
+        do {
+            return try encoded(encodingStrategy)
+        } catch let error {
+            throw RequestEncodingError(reason: .invalidJSONBodyEncoding(underlyingError: error))
+        }
     }
 }
 
@@ -269,7 +273,7 @@ private class FormURLEncodedBodyEncoder {
                 if let encodedNil = encodingStrategy.nullity.encoded() {
                     encodedUrlEncodedParams.append("\(escapedKey)=\(encodedNil)")
                 } else {
-                    throw RequestEncodingError.Reason.invalidFormURLBodyEncoding(key: param.key)
+                    throw RequestEncodingError(reason: .invalidFormURLBodyEncoding(key: param.key))
                 }
             }
         }

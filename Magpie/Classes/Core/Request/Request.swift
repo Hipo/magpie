@@ -19,8 +19,8 @@ public class Request  {
 
     public init(
         base: String,
-        cachePolicy: URLRequest.CachePolicy,
-        timeout: TimeInterval
+        cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
+        timeout: TimeInterval = 60
     ) {
         self.base = base
         self.cachePolicy = cachePolicy
@@ -29,38 +29,39 @@ public class Request  {
 }
 
 extension Request {
-    public func asUrlRequest() throws -> URLRequest {
+    public func asUrl() throws -> URL {
         guard let baseUrl = URL(string: base) else {
             throw RequestEncodingError(reason: .emptyOrInvalidURL)
         }
-        do {
-            var components = URLComponents()
-            components.scheme = baseUrl.scheme
-            components.host = baseUrl.host
-            components.port = baseUrl.port
-            components.path = baseUrl.path + path
-            components.percentEncodedQueryItems = try query?.encoded()
 
-            guard let url = components.url else {
-                throw RequestEncodingError(reason: .emptyOrInvalidURL)
-            }
-            var urlRequest = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
-            urlRequest.httpMethod = method.rawValue
+        var components = URLComponents()
+        components.scheme = baseUrl.scheme
+        components.host = baseUrl.host
+        components.port = baseUrl.port
+        components.path = baseUrl.path + path
+        components.percentEncodedQueryItems = try query?.encoded()
 
-            if let body = body {
-                let httpBody = try body.encoded()
-                urlRequest.httpBody = httpBody
-                urlRequest.setValue(String(httpBody.count), forHTTPHeaderField: HTTPHeader.contentLength)
-            }
-            for header in headers {
-                urlRequest.setValue(header.value, forHTTPHeaderField: header.key)
-            }
-            return urlRequest
-        } catch let error as RequestEncodingError.Reason {
-            throw RequestEncodingError(reason: error)
-        } catch let error {
-            throw UnexpectedError(responseData: nil, underlyingError: error)
+        guard let url = components.url else {
+            throw RequestEncodingError(reason: .emptyOrInvalidURL)
         }
+        return url
+    }
+
+    public func asUrlRequest() throws -> URLRequest {
+        let url = try asUrl()
+
+        var urlRequest = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
+        urlRequest.httpMethod = method.rawValue
+
+        if let body = body {
+            let httpBody = try body.encoded()
+            urlRequest.httpBody = httpBody
+            urlRequest.setValue(String(httpBody.count), forHTTPHeaderField: HTTPHeader.contentLength)
+        }
+        for header in headers {
+            urlRequest.setValue(header.value, forHTTPHeaderField: header.key)
+        }
+        return urlRequest
     }
 }
 
