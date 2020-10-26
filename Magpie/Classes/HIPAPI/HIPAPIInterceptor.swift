@@ -23,6 +23,10 @@ open class HIPAPIInterceptor<Session: HIPSessionConvertible>: HIPAPISessionInter
             endpoint.set(additionalHeader: AuthorizationHeader.token(credentials.token))
         }
     }
+
+    open func intercept(_ response: Response, for endpoint: EndpointOperatable) -> Bool {
+        return false
+    }
 }
 
 extension HIPAPIInterceptor {

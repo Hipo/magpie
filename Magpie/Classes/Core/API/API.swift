@@ -95,21 +95,26 @@ extension API {
 extension API {
     func send(_ endpoint: Endpoint) -> TaskConvertible? {
         let responseHandler: Networking.ResponseHandler = { [weak self] response in
-            self?.storage.delete(for: endpoint)
-            self?.forward(response, for: endpoint)
-            self?.logger.log(response, response.isSuccess ? .info : .error)
+            guard let self = self else { return }
+
+            self.logger.log(response, response.isSuccess ? .info : .error)
+            self.storage.delete(for: endpoint)
+
+            if let interceptor = self.interceptor, interceptor.intercept(response, for: endpoint) { return }
+
+            self.forward(response, for: endpoint)
         }
 
         interceptor?.intercept(endpoint)
 
-        if let task = forward(endpoint, onReversed: responseHandler) {
+        if let task = forward(endpoint, onReceived: responseHandler) {
             storage.add(task, for: endpoint)
             return task
         }
         return nil
     }
 
-    private func forward(_ endpoint: Endpoint, onReversed responseHandler: @escaping Networking.ResponseHandler) -> TaskConvertible? {
+    private func forward(_ endpoint: Endpoint, onReceived responseHandler: @escaping Networking.ResponseHandler) -> TaskConvertible? {
         logger.log(endpoint.request, .info)
 
         switch endpoint.type {

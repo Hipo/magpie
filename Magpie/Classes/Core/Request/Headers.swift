@@ -15,9 +15,8 @@ public struct Headers {
     init() { }
 
     init(_ rawHeaders: [AnyHashable: Any]?) {
-        guard let someRawHeaders = rawHeaders else {
-            return
-        }
+        guard let someRawHeaders = rawHeaders else { return }
+
         for rawHeader in someRawHeaders {
             if let key = rawHeader.key as? String {
                 let value = rawHeader.value as? String
