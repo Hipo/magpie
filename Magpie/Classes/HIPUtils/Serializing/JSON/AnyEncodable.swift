@@ -28,8 +28,8 @@ public struct AnyEncodable: Encodable {
 }
 
 extension AnyEncodable: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return _describe()
     }
 }

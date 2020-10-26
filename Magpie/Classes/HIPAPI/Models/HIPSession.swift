@@ -82,9 +82,12 @@ extension HIPSession {
 }
 
 extension HIPSession {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        return "\(credentials?.description ?? "<no credentials>\n\(authenticatedUser?.description ?? "<no authenticated user>")")"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return """
+        \(credentials?.debugDescription ?? "<no credentials>")
+        \(authenticatedUser?.debugDescription ?? "<no authenticated user>")
+        """
     }
 }
 

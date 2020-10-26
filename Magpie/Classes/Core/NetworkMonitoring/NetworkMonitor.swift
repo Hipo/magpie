@@ -26,9 +26,9 @@ extension NetworkMonitor {
 }
 
 extension NetworkMonitor {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        return "Currently \(currentStatus.description) with \(listener == nil ? "no listener" : "a listener") attached"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return "Currently \(currentStatus.debugDescription) with \(listener == nil ? "no listener" : "a listener") attached"
     }
 }
 
@@ -72,17 +72,17 @@ extension NetworkStatus {
 }
 
 extension NetworkStatus: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         switch self {
         case .unavailable:
             return "<unavailable>"
         case .undetermined:
             return "<undetermined>"
         case .connected(let connection):
-            return "connected via \(connection.description)"
+            return "connected via \(connection.debugDescription)"
         case .disconnected(let connection):
-            return "disconnected from \(connection.description)"
+            return "disconnected from \(connection.debugDescription)"
         case .suspended:
             return "suspended on background"
         }
@@ -98,8 +98,8 @@ public enum NetworkConnection: Equatable {
 }
 
 extension NetworkConnection: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         switch self {
         case .none:
             return "no connection"

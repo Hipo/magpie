@@ -12,8 +12,8 @@ public protocol Body: Printable {
 }
 
 extension Body {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         let data = try? encoded()
         return data?.utf8Description ?? "<invalid>"
     }
@@ -161,9 +161,9 @@ public struct JSONBodyParam: JSONBodyParamConvertible {
 }
 
 extension JSONBodyParam {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        return "\(value?.description ?? "<nil>")(\(encodingPolicy.description))"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return "\(value?.debugDescription ?? "<nil>")(\(encodingPolicy.debugDescription))"
     }
 }
 
@@ -196,9 +196,9 @@ public struct JSONBodyKeyedParam<Key: CodingKey>: JSONBodyKeyedParamConvertible 
 }
 
 extension JSONBodyKeyedParam {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        return "\(key.description):\(param.description)"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return "\(key.debugDescription):\(param.debugDescription)"
     }
 }
 
@@ -214,9 +214,9 @@ public protocol FormURLEncodedBodyParamConvertible: Printable {
 }
 
 extension FormURLEncodedBodyParamConvertible {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        return "\(key):\(value?.description ?? "<nil>")"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return "\(key):\(value?.debugDescription ?? "<nil>")"
     }
 }
 

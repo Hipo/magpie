@@ -26,9 +26,9 @@ open class HIPAPIInterceptor<Session: HIPSessionConvertible>: HIPAPISessionInter
 }
 
 extension HIPAPIInterceptor {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        return session.credentials?.description ?? "no interception occured"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return session.credentials?.debugDescription ?? "no interception occured"
     }
 }
 

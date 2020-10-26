@@ -322,15 +322,15 @@ extension API: NetworkListener {
 }
 
 extension API: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return """
         \(base)
-        \(interceptor?.description ?? "no interceptor")
+        \(interceptor?.debugDescription ?? "no interceptor")
         ongoing tasks
-        \(storage.description)
+        \(storage.debugDescription)
         listeners
-        [\(listens.map({ $0.value.description }).joined(separator: ","))]
+        [\(listens.map({ $0.value.debugDescription }).joined(separator: ","))]
         """
     }
 }

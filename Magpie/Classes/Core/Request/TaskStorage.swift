@@ -146,7 +146,7 @@ extension TaskStorage: Printable {
         return """
         {
           \(tableWrapper.getValue()
-            .map({ "\($0.key):[\n    \($0.value.map({ $0.debugDescription }).joined(separator: ",\n    "))]" })
+            .map({ "\($0.key):[\n\t\($0.value.map({ $0.debugDescription }).joined(separator: ",\n\t"))]" })
             .joined(separator: "\n  ")
           )
         }

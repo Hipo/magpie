@@ -30,12 +30,12 @@ public struct Logger<Category: LogCategory> {
 }
 
 extension Logger: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return """
         Subsystem: \(subsystem)
-        Categories: \(allowedCategories.map(\.description).joined(separator: ","))
-        Levels: \(allowedLevels.map(\.description).joined(separator: ","))
+        Categories: \(allowedCategories.map(\.debugDescription).joined(separator: ","))
+        Levels: \(allowedLevels.map(\.debugDescription).joined(separator: ","))
         """
     }
 }
@@ -63,14 +63,13 @@ extension Log: ExpressibleByStringLiteral {
 }
 
 extension Log: Printable {
-    public var description: String {
-        return "[\(category.description)][\(level.description)]\(message)"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return "[\(category.debugDescription)][\(level.debugDescription)]\(message)"
     }
 }
 
-public protocol LogCategory: CaseIterable, Equatable {
-    var description: String { get }
-
+public protocol LogCategory: CaseIterable, Equatable, Printable {
     static var `default`: Self { get }
 }
 
@@ -97,7 +96,8 @@ extension LogLevel {
 }
 
 extension LogLevel: Printable {
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         switch self {
             case .info:
                 return "Info"

@@ -39,16 +39,6 @@ extension Model {
 }
 
 extension Model {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        do {
-            let data = try encoded()
-            return "[\(type(of: self))] \(data.utf8Description)"
-        } catch {
-            return "<invalid>"
-        }
-    }
-
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         do {

@@ -30,8 +30,8 @@ extension APIListener {
 }
 
 extension APIListener {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return "Listener of \(type(of: self))"
     }
 }
@@ -45,8 +45,8 @@ class APIListen {
 }
 
 extension APIListen: Printable {
-    /// <mark> CustomStringConvertible
-    var description: String {
+    /// <mark> CustomDebugStringConvertible
+    var debugDescription: String {
         if let listener = listener {
             return "\(type(of: listener))"
         }

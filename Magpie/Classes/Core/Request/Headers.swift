@@ -100,10 +100,11 @@ extension Headers: ExpressibleByArrayLiteral {
 }
 
 extension Headers: Printable {
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return """
         {
-          \(table.map({ $0.value.description }).joined(separator: ",\n  "))
+          \(table.map({ $0.value.debugDescription }).joined(separator: ",\n  "))
         }
         """
         }
@@ -125,9 +126,9 @@ public protocol Header: Printable {
 }
 
 extension Header {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        return "\(key):\(value?.description ?? "<nil>")"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return "\(key):\(value?.debugDescription ?? "<nil>")"
     }
 }
 

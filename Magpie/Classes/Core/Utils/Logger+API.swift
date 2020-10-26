@@ -24,7 +24,7 @@ extension Logger where Category == APILogCategory {
     }
 }
 
-public enum APILogCategory: String, LogCategory {
+public enum APILogCategory: String, LogCategory, Printable {
     case request
     case response
     case networkMonitoring

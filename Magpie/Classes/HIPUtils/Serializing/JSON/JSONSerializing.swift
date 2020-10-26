@@ -48,8 +48,8 @@ public struct JSONEncodingStrategy {
 }
 
 extension JSONEncodingStrategy: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return "[JSON Encoding] keys:\(keys) date:\(date) data:\(data)"
     }
 }
@@ -75,8 +75,8 @@ public struct JSONDecodingStrategy {
 }
 
 extension JSONDecodingStrategy: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return "[JSON Decoding] keys:\(keys) date:\(date) data:\(data)"
     }
 }

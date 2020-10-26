@@ -23,6 +23,13 @@ extension Alamofire.DataRequest: TaskConvertible {
 }
 
 extension Alamofire.DataRequest {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return description
+    }
+}
+
+extension Alamofire.DataRequest {
     func magpie_responseData(completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self {
         return response(responseSerializer: DataResponseSerializer(emptyResponseCodes: Set(200..<300)), completionHandler: completionHandler)
     }
