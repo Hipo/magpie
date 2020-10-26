@@ -117,7 +117,7 @@ extension Endpoint {
     /// <mark> CustomDebugStringConvertible
     var debugDescription: String {
         return """
-        request(\(type.description))
+        request(\(type.debugDescription))
         \(request.debugDescription)
         \(task.map { "task with id(\($0.taskIdentifier))" } ?? "no task") attached
         \(validatesResponseBeforeCompletion ? "validate" : "not validate") response before completion

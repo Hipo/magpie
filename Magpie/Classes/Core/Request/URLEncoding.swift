@@ -37,9 +37,9 @@ extension URLEncodingStrategy {
 }
 
 extension URLEncodingStrategy: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        return "[URL Encoding] nullity:\(nullity.description) boolean:\(boolean.description)"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return "[URL Encoding] nullity:\(nullity.debugDescription) boolean:\(boolean.debugDescription)"
     }
 }
 
@@ -61,15 +61,15 @@ extension URLEncodingStrategy.NullityEncodingStrategy {
 }
 
 extension URLEncodingStrategy.NullityEncodingStrategy: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return "\(encoded() ?? "<nil>")"
     }
 }
 
 extension URLEncodingStrategy.BooleanEncodingStrategy: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDeubugStringConvertible
+    public var debugDescription: String {
         switch self {
         case .default:
             return "true/false"
@@ -86,8 +86,8 @@ public protocol URLParamValueEncodable: Printable {
 }
 
 extension URLParamValueEncodable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return "\(self)"
     }
 }

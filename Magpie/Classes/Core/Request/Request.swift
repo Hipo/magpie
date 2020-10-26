@@ -45,7 +45,7 @@ extension Request {
                 throw RequestEncodingError(reason: .emptyOrInvalidURL)
             }
             var urlRequest = URLRequest(url: url, cachePolicy: cachePolicy, timeoutInterval: timeout)
-            urlRequest.httpMethod = method.description
+            urlRequest.httpMethod = method.rawValue
 
             if let body = body {
                 let httpBody = try body.encoded()

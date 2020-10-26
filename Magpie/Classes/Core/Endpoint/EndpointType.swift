@@ -20,15 +20,6 @@ extension EndpointType {
 }
 
 extension EndpointType: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        switch self {
-        case .data:
-            return "data"
-        case .upload(let src):
-            return "upload \(src.description)"
-        }
-    }
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         switch self {
@@ -41,15 +32,6 @@ extension EndpointType: Printable {
 }
 
 extension EndpointType.Source: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        switch self {
-        case .data:
-            return "data"
-        case .file:
-            return "file"
-        }
-    }
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         switch self {

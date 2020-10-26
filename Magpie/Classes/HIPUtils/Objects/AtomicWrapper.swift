@@ -32,8 +32,8 @@ public final class AtomicWrapper<Value> {
 }
 
 extension AtomicWrapper: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         return "\(wrapped)"
     }
 }

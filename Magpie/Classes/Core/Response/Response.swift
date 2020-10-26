@@ -79,9 +79,10 @@ extension Response {
 }
 
 extension Response: Printable {
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         let result: RawResult = decoded()
-        let aDescription = "\(request.description)\n\(result.description)"
+        let aDescription = "\(request.debugDescription)\n\(result.debugDescription)"
 
         switch result {
         case .success:
@@ -113,8 +114,8 @@ extension Response.RawResult {
 }
 
 extension Response.RawResult: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         switch self {
         case .success(let data):
             return "[SUCCESS]\n\(data.absoluteUtf8Description)"
@@ -145,16 +146,16 @@ extension Response.Result {
 }
 
 extension Response.Result: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         switch self {
         case .success(let model):
-            return "[SUCCESS]\n\(model.description)"
+            return "[SUCCESS]\n\(model.debugDescription)"
         case .failure(let error, let errorModel):
             return """
             [FAILED]
             \(error.localizedDescription)
-            \(errorModel?.description ?? "<nil>")
+            \(errorModel?.debugDescription ?? "<nil>")
             """
         }
     }

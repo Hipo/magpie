@@ -20,8 +20,8 @@ extension Query {
 }
 
 extension Query {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         do {
             return try encodedString() ?? "<nil>"
         } catch {
@@ -57,9 +57,9 @@ public protocol ObjectQueryKeyedParamConvertible: Printable {
 }
 
 extension ObjectQueryKeyedParamConvertible {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        return "\(key.stringValue):\(encodingValue?.description ?? "<nil>")"
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return "\(key.stringValue):\(encodingValue?.debugDescription ?? "<nil>")"
     }
 }
 

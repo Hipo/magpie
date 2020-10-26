@@ -60,8 +60,8 @@ public struct RequestEncodingError: APIError {
 }
 
 extension RequestEncodingError {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         switch reason {
         case .emptyOrInvalidURL:
             return "Invalid URL"
@@ -90,8 +90,8 @@ public struct EndpointOperationError: APIError {
 }
 
 extension EndpointOperationError {
-    /// <mark> CustomStringConvertible
-    public var description: String {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
         switch reason {
         case .retryBeforeSent:
             return "'retry()' operation can be available after calling 'send()'"
