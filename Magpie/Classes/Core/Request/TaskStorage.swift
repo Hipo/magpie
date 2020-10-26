@@ -21,9 +21,8 @@ extension TaskStorage {
 
     func add(_ task: TaskConvertible, for path: String) {
         tableWrapper.setValue { table in
-            if !task.inProgress {
-                return
-            }
+            if !task.inProgress { return }
+
             if var currentTasks = table[path] {
                 currentTasks.append(task)
                 table[path] = currentTasks
@@ -86,9 +85,8 @@ extension TaskStorage {
             task.cancelNow()
         }
         tableWrapper.setValue { table in
-            guard var currentTasks = table[path] else {
-                return
-            }
+            guard var currentTasks = table[path] else { return }
+
             currentTasks.removeAll { $0.taskIdentifier == task.taskIdentifier }
 
             if currentTasks.isEmpty {
