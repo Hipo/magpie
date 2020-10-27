@@ -15,6 +15,12 @@ public protocol HIPCacheConvertible {
     func remove(for key: HIPCacheKeyConvertible)
 }
 
+extension HIPCacheConvertible {
+    public func removeAll<T: Sequence>(_ keys: T) where T.Element == HIPCacheKeyConvertible {
+        keys.forEach(remove)
+    }
+}
+
 public protocol HIPCacheKeyConvertible {
     func cacheEncoded() -> String
 }
@@ -22,5 +28,11 @@ public protocol HIPCacheKeyConvertible {
 extension HIPCacheKeyConvertible where Self: RawRepresentable, Self.RawValue == String {
     public func cacheEncoded() -> String {
         return rawValue
+    }
+}
+
+extension String: HIPCacheKeyConvertible {
+    public func cacheEncoded() -> String {
+        return self
     }
 }

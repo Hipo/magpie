@@ -20,6 +20,12 @@ public protocol HIPKeychainConvertible {
     func removeAll() throws
 }
 
+extension HIPKeychainConvertible {
+    public func removeAll<T: Sequence>(_ keys: T) throws where T.Element == HIPKeychainKeyConvertible {
+        try keys.forEach(remove)
+    }
+}
+
 public protocol HIPKeychainKeyConvertible {
     func keychainEncoded() -> String
 }
@@ -27,5 +33,11 @@ public protocol HIPKeychainKeyConvertible {
 extension HIPKeychainKeyConvertible where Self: RawRepresentable, Self.RawValue == String {
     public func keychainEncoded() -> String {
         return rawValue
+    }
+}
+
+extension String: HIPKeychainKeyConvertible {
+    public func keychainEncoded() -> String {
+        return self
     }
 }
