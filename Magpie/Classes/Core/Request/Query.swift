@@ -30,6 +30,18 @@ extension Query {
     }
 }
 
+extension Dictionary: Query where Key == String, Value == URLParamValueEncodable? {
+    public func encoded() throws -> [URLQueryItem] {
+        return try encoded(URLEncodingStrategy())
+    }
+
+    public func encoded(_ encodingStrategy: URLEncodingStrategy) throws -> [URLQueryItem] {
+        var encoder = QueryEncoder()
+        encoder.encodingStrategy = encodingStrategy
+        return try encoder.encode(self)
+    }
+}
+
 public protocol ObjectQuery: Query {
     associatedtype SomeObjectQueryKeyedParam: ObjectQueryKeyedParamConvertible
 
@@ -43,7 +55,7 @@ extension ObjectQuery {
     }
 
     public func encoded() throws -> [URLQueryItem] {
-        var encoder = ObjectQueryEncoder<SomeObjectQueryKeyedParam>()
+        var encoder = QueryEncoder()
         encoder.encodingStrategy = encodingStrategy
         return try encoder.encode(queryParams)
     }
@@ -76,10 +88,10 @@ public struct ObjectQueryKeyedParam<Key: CodingKey>: ObjectQueryKeyedParamConver
     }
 }
 
-private struct ObjectQueryEncoder<Param: ObjectQueryKeyedParamConvertible> {
+private struct QueryEncoder {
     var encodingStrategy: URLEncodingStrategy = URLEncodingStrategy()
 
-    func encode(_ queryParams: [Param]) throws -> [URLQueryItem] {
+    func encode<Param: ObjectQueryKeyedParamConvertible>(_ queryParams: [Param]) throws -> [URLQueryItem] {
         var queryItems: [URLQueryItem] = []
 
         for param in queryParams {
@@ -92,9 +104,23 @@ private struct ObjectQueryEncoder<Param: ObjectQueryKeyedParamConvertible> {
         }
         return queryItems
     }
+
+    func encode(_ queryParams: [String: URLParamValueEncodable?]) throws -> [URLQueryItem] {
+        var queryItems: [URLQueryItem] = []
+
+        for param in queryParams {
+            do {
+                let value = try param.value.map { escape(try $0.urlEncoded(encodingStrategy)) }
+                queryItems.append(URLQueryItem(name: escape(param.key), value: value))
+            } catch {
+                throw RequestEncodingError(reason: .invalidURLQueryEncoding(key: param.key))
+            }
+        }
+        return queryItems
+    }
 }
 
-extension ObjectQueryEncoder {
+extension QueryEncoder {
     private func escape(_ string: String) -> String {
         var allowed = CharacterSet.urlQueryAllowed
         allowed.remove("+")
