@@ -142,3 +142,14 @@ extension Dictionary: URLParamValueEncodable where Key == String, Value: URLPara
         return "{\(encodedElements.joined(separator: ","))}"
     }
 }
+
+extension Optional where Wrapped == URLParamValueEncodable {
+    public func urlEncoded(_ encodingStrategy: URLEncodingStrategy) throws -> String? {
+        switch self {
+        case .some(let value):
+            return try value.urlEncoded(encodingStrategy)
+        case .none:
+            return encodingStrategy.nullity.encoded()
+        }
+    }
+}
