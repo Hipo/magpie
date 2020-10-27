@@ -66,26 +66,35 @@ public protocol ObjectQueryKeyedParamConvertible: Printable {
 
     var key: Key { get }
     var encodingValue: URLParamValueEncodable? { get }
-}
-
-extension ObjectQueryKeyedParamConvertible {
-    /// <mark> CustomDebugStringConvertible
-    public var debugDescription: String {
-        return "\(key.stringValue):\(encodingValue?.debugDescription ?? "<nil>")"
-    }
+    var encodingPolicy: ObjectQueryEncodingPolicy { get }
 }
 
 public struct ObjectQueryKeyedParam<Key: CodingKey>: ObjectQueryKeyedParamConvertible {
     public let key: Key
     public let encodingValue: URLParamValueEncodable?
+    public let encodingPolicy: ObjectQueryEncodingPolicy
 
     public init(
         _ key: Key,
-        _ encodingValue: URLParamValueEncodable?
+        _ encodingValue: URLParamValueEncodable?,
+        _ encodingPolicy: ObjectQueryEncodingPolicy = .setAlways
     ) {
         self.key = key
         self.encodingValue = encodingValue
+        self.encodingPolicy = encodingPolicy
     }
+}
+
+extension ObjectQueryKeyedParam {
+    /// <mark> CustomDebugStringConvertible
+    public var debugDescription: String {
+        return "\(key.stringValue):\(encodingValue?.debugDescription ?? "<nil>")(\(encodingPolicy.debugDescription)"
+    }
+}
+
+public enum ObjectQueryEncodingPolicy: String, Printable {
+    case setAlways = "always" /// <note> Set null if the value is nil.
+    case setIfPresent = "ifPresent" /// <note> Ignore if the value is nil.
 }
 
 private struct QueryEncoder {
@@ -96,8 +105,14 @@ private struct QueryEncoder {
 
         for param in queryParams {
             do {
-                let value = try param.encodingValue.map { escape(try $0.urlEncoded(encodingStrategy)) }
-                queryItems.append(URLQueryItem(name: escape(param.key.stringValue), value: value))
+                switch param.encodingPolicy {
+                case .setAlways:
+                    queryItems.append(try encode(param))
+                case .setIfPresent:
+                    if param.encodingValue != nil {
+                        queryItems.append(try encode(param))
+                    }
+                }
             } catch {
                 throw RequestEncodingError(reason: .invalidURLQueryEncoding(key: param.key.stringValue))
             }
@@ -117,6 +132,14 @@ private struct QueryEncoder {
             }
         }
         return queryItems
+    }
+}
+
+extension QueryEncoder {
+    private func encode<Param: ObjectQueryKeyedParamConvertible>(_ param: Param) throws -> URLQueryItem {
+        let key = escape(param.key.stringValue)
+        let value = try param.encodingValue.urlEncoded(encodingStrategy)
+        return URLQueryItem(name: key, value: value.map { escape($0) })
     }
 }
 
