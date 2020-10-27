@@ -36,8 +36,11 @@ extension APIError {
     public var isServer: Bool {
         return (self as? HTTPError)?.isServer ?? false
     }
-    public var isNetwork: Bool {
-        return self is NetworkError
+    public var isNotConnectedToInternet: Bool {
+        return (self as? NetworkError)?.isNotConnectedToInternet ?? false
+    }
+    public var isCancelled: Bool {
+        return (self as? NetworkError)?.isCancelled ?? false
     }
 
     public func isHttp(_ statusCode: Int) -> Bool {
@@ -329,6 +332,25 @@ public struct NetworkError: APIError {
             reason = .cancelled
         default:
             reason = .unexpected(urlError.code)
+        }
+    }
+}
+
+extension NetworkError {
+    public var isNotConnectedToInternet: Bool {
+        switch reason {
+        case .notConnectedToInternet:
+            return true
+        default:
+            return false
+        }
+    }
+    public var isCancelled: Bool {
+        switch reason {
+        case .cancelled:
+            return true
+        default:
+            return false
         }
     }
 }
