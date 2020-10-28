@@ -8,16 +8,28 @@
 import Foundation
 
 public struct HIPAPIError: Model {
+    public static var localFallbackMessage = "Something went wrong!"
+
     public let type: String?
     public let detail: HIPAPIErrorDetail?
     public let fallbackMessage: String
+
+    public init(
+        type: String? = nil,
+        detail: HIPAPIErrorDetail? = nil,
+        fallbackMessage: String? = nil
+    ) {
+        self.type = type
+        self.detail = detail
+        self.fallbackMessage = fallbackMessage ?? HIPAPIError.localFallbackMessage
+    }
 
     /// <mark> Decodable
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         type = try container.decodeIfPresent(String.self, forKey: .type)
         detail = try container.decodeIfPresent(HIPAPIErrorDetail.self, forKey: .detail)
-        fallbackMessage = try container.decodeIfPresent(String.self, forKey: .fallbackMessage) ?? "Something went wrong!"
+        fallbackMessage = try container.decodeIfPresent(String.self, forKey: .fallbackMessage) ?? HIPAPIError.localFallbackMessage
     }
 
     /// <mark> Encodable
@@ -75,6 +87,14 @@ public struct HIPAPIErrorDetail: Model {
     public var nonFieldMessages: [String]?
     public let fields: [HIPAPIErrorField]?
 
+    public init(
+        nonFieldMessages: [String]? = nil,
+        fields: [HIPAPIErrorField]? = nil
+    ) {
+        self.nonFieldMessages = nonFieldMessages
+        self.fields = fields
+    }
+
     /// <mark> Decodable
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: HIPAPIErrorMessagesCodingKey.self)
@@ -118,12 +138,68 @@ extension HIPAPIErrorDetail {
 public struct HIPAPIErrorField: Model {
     public let name: String
     public let detail: Detail?
+
+    public init(
+        name: String,
+        detail: Detail? = nil
+    ) {
+        self.name = name
+        self.detail = detail
+    }
+}
+
+extension HIPAPIErrorField {
+    public static func ~> (base: Self, subs: [Self]) -> Self {
+        return HIPAPIErrorField(name: base.name, detail: .subfields(subs))
+    }
 }
 
 extension HIPAPIErrorField {
     public enum Detail: Model {
         case messages([String])
         case subfields([HIPAPIErrorField])
+
+        /// <mark> Decodable
+        public init(from decoder: Decoder) throws {
+            do {
+                var container = try decoder.unkeyedContainer()
+                var messages: [String] = []
+
+                while !container.isAtEnd {
+                    if let message = try container.decodeIfPresent(String.self) {
+                        messages.append(message)
+                    }
+                }
+                self = .messages(messages)
+            } catch DecodingError.typeMismatch {
+                let container = try decoder.container(keyedBy: HIPAPIErrorMessagesCodingKey.self)
+                var subfields: [HIPAPIErrorField] = []
+
+                for key in container.allKeys {
+                    let detail = try container.decodeIfPresent(HIPAPIErrorField.Detail.self, forKey: key)
+                    subfields.append(HIPAPIErrorField(name: key.stringValue, detail: detail))
+                }
+                self = .subfields(subfields)
+            }
+        }
+
+        /// <mark> Encodable
+        public func encode(to encoder: Encoder) throws {
+            switch self {
+                case .messages(let messages):
+                    var container = encoder.unkeyedContainer()
+
+                    for message in messages {
+                        try container.encode(message)
+                    }
+                case .subfields(let subfields):
+                    var container = encoder.container(keyedBy: HIPAPIErrorMessagesCodingKey.self)
+
+                    for subfield in subfields {
+                        try container.encodeIfPresent(subfield.detail, forKey: HIPAPIErrorMessagesCodingKey(stringValue: subfield.name)!)
+                    }
+            }
+        }
     }
 }
 
@@ -139,50 +215,6 @@ extension HIPAPIErrorField.Detail {
             return someSubfields
         }
         return nil
-    }
-}
-
-extension HIPAPIErrorField.Detail {
-    /// <mark> Decodable
-    public init(from decoder: Decoder) throws {
-        do {
-            var container = try decoder.unkeyedContainer()
-            var messages: [String] = []
-
-            while !container.isAtEnd {
-                if let message = try container.decodeIfPresent(String.self) {
-                    messages.append(message)
-                }
-            }
-            self = .messages(messages)
-        } catch DecodingError.typeMismatch {
-            let container = try decoder.container(keyedBy: HIPAPIErrorMessagesCodingKey.self)
-            var subfields: [HIPAPIErrorField] = []
-
-            for key in container.allKeys {
-                let detail = try container.decodeIfPresent(HIPAPIErrorField.Detail.self, forKey: key)
-                subfields.append(HIPAPIErrorField(name: key.stringValue, detail: detail))
-            }
-            self = .subfields(subfields)
-        }
-    }
-
-    /// <mark> Encodable
-    public func encode(to encoder: Encoder) throws {
-        switch self {
-        case .messages(let messages):
-            var container = encoder.unkeyedContainer()
-
-            for message in messages {
-                try container.encode(message)
-            }
-        case .subfields(let subfields):
-            var container = encoder.container(keyedBy: HIPAPIErrorMessagesCodingKey.self)
-
-            for subfield in subfields {
-                try container.encodeIfPresent(subfield.detail, forKey: HIPAPIErrorMessagesCodingKey(stringValue: subfield.name)!)
-            }
-        }
     }
 }
 
