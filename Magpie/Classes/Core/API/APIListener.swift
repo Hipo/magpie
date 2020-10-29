@@ -11,7 +11,7 @@ import Foundation
 
 public protocol APIListener: AnyObject, Printable {
     func api(_ api: API, endpointDidFailFromUnauthorizedRequest endpoint: EndpointOperatable) /// <note> Called for 401
-    func api(_ api: API, endpoint: EndpointOperatable, didFailFromUnavailableNetwork error: NetworkError)
+    func api(_ api: API, endpoint: EndpointOperatable, didFailFromUnavailableNetwork error: ConnectionError)
     func api(_ api: API, endpoint: EndpointOperatable, didFailFromDefectiveClient error: HTTPError) /// <note> Called for all 4xx excluding 401
     func api(_ api: API, endpoint: EndpointOperatable, didFailFromUnresponsiveServer error: HTTPError) /// <note> Called for all 5xx
     func api(_ api: API, networkMonitor: NetworkMonitor, didConnectVia connection: NetworkConnection, from oldConnection: NetworkConnection)
@@ -21,7 +21,7 @@ public protocol APIListener: AnyObject, Printable {
 
 extension APIListener {
     public func api(_ api: API, endpointDidFailFromUnauthorizedRequest endpoint: EndpointOperatable) { }
-    public func api(_ api: API, endpoint: EndpointOperatable, didFailFromUnavailableNetwork error: NetworkError) { }
+    public func api(_ api: API, endpoint: EndpointOperatable, didFailFromUnavailableNetwork error: ConnectionError) { }
     public func api(_ api: API, endpoint: EndpointOperatable, didFailFromDefectiveClient error: HTTPError) { }
     public func api(_ api: API, endpoint: EndpointOperatable, didFailFromUnresponsiveServer error: HTTPError) { }
     public func api(_ api: API, networkMonitor: NetworkMonitor, didConnectVia connection: NetworkConnection, from oldConnection: NetworkConnection) { }

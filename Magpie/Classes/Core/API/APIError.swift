@@ -37,10 +37,10 @@ extension APIError {
         return (self as? HTTPError)?.isServer ?? false
     }
     public var isNotConnectedToInternet: Bool {
-        return (self as? NetworkError)?.isNotConnectedToInternet ?? false
+        return (self as? ConnectionError)?.isNotConnectedToInternet ?? false
     }
     public var isCancelled: Bool {
-        return (self as? NetworkError)?.isCancelled ?? false
+        return (self as? ConnectionError)?.isCancelled ?? false
     }
 
     public func isHttp(_ statusCode: Int) -> Bool {
@@ -154,7 +154,7 @@ public struct HTTPError: APIError, ExpressibleByIntegerLiteral, Equatable {
 
     public init(
         statusCode: Int,
-        responseData: Data?,
+        responseData: Data? = nil,
         underlyingError: Error? = nil
     ) {
         self.statusCode = statusCode
@@ -257,19 +257,19 @@ extension HTTPError {
     public var description: String {
         switch reason {
         case .badRequest:
-            return "Bad Request"
+            return "400 Bad Request"
         case .unauthorized:
-            return "Unauthorized"
+            return "401 Unauthorized"
         case .forbidden:
-            return "Forbidden"
+            return "403 Forbidden"
         case .notFound:
-            return "Not found"
+            return "404 Not found"
         case .notImplemented:
-            return "Not implemented"
+            return "501 Not implemented"
         case .serviceUnavailable:
-            return "Service unavailable"
+            return "503 Service unavailable"
         default:
-            return "Status \(statusCode)"
+            return "Status: \(statusCode)"
         }
     }
     /// <mark> CustomDebugStringConvertible
@@ -305,7 +305,7 @@ extension HTTPError {
     }
 }
 
-public struct NetworkError: APIError {
+public struct ConnectionError: APIError {
     public let reason: Reason
     public let underlyingError: URLError?
 
@@ -336,7 +336,7 @@ public struct NetworkError: APIError {
     }
 }
 
-extension NetworkError {
+extension ConnectionError {
     public var isNotConnectedToInternet: Bool {
         switch reason {
         case .notConnectedToInternet:
@@ -355,7 +355,7 @@ extension NetworkError {
     }
 }
 
-extension NetworkError {
+extension ConnectionError {
     /// <mark> CustomStringConvertible
     public var description: String {
         switch reason {
@@ -376,7 +376,7 @@ extension NetworkError {
     }
 }
 
-extension NetworkError {
+extension ConnectionError {
     public enum Reason {
         case notConnectedToInternet(URLError.Code)
         case cancelled

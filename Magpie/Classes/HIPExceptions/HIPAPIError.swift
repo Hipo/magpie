@@ -84,7 +84,7 @@ extension HIPAPIError {
 }
 
 public struct HIPAPIErrorDetail: Model {
-    public var nonFieldMessages: [String]?
+    public let nonFieldMessages: [String]?
     public let fields: [HIPAPIErrorField]?
 
     public init(
@@ -99,11 +99,12 @@ public struct HIPAPIErrorDetail: Model {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: HIPAPIErrorMessagesCodingKey.self)
 
+        var nonFieldMessages: [String]?
         var fields: [HIPAPIErrorField]?
 
         for key in container.allKeys {
             if key == HIPAPIErrorMessagesCodingKey.nonFieldMessages() {
-                nonFieldMessages = try container.decodeIfPresent([String].self, forKey: key) ?? []
+                nonFieldMessages = try container.decodeIfPresent([String].self, forKey: key)
             } else {
                 let fieldDetail = try container.decodeIfPresent(HIPAPIErrorField.Detail.self, forKey: key)
                 let field = HIPAPIErrorField(name: key.stringValue, detail: fieldDetail)
@@ -115,6 +116,7 @@ public struct HIPAPIErrorDetail: Model {
                 }
             }
         }
+        self.nonFieldMessages = nonFieldMessages
         self.fields = fields
     }
 
