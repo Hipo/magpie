@@ -72,7 +72,7 @@ extension AlamofireNetworking {
     private func populateError(_ afError: AFError, with data: Data?) -> APIError {
         switch afError {
         case .explicitlyCancelled:
-            return NetworkError(reason: .cancelled)
+            return ConnectionError(reason: .cancelled)
         case .responseValidationFailed(let reason):
             if case .unacceptableStatusCode(let code) = reason {
                 return HTTPError(statusCode: code, responseData: data, underlyingError: afError)
@@ -81,7 +81,7 @@ extension AlamofireNetworking {
             }
         case .sessionTaskFailed(let error):
             if let urlError = error as? URLError {
-                return NetworkError(urlError: urlError)
+                return ConnectionError(urlError: urlError)
             } else {
                 return UnexpectedError(responseData: data, underlyingError: error)
             }

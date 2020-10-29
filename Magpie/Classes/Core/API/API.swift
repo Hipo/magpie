@@ -134,8 +134,8 @@ extension API {
             forward(response, for: endpoint, onFailedFrom: httpError)
             return
         }
-        if let networkError = error as? NetworkError {
-            forward(response, for: endpoint, onFailedFrom: networkError)
+        if let connectionError = error as? ConnectionError {
+            forward(response, for: endpoint, onFailedFrom: connectionError)
             return
         }
         endpoint.forward(response)
@@ -177,7 +177,7 @@ extension API {
         }
     }
 
-    private func forward(_ response: Response, for endpoint: Endpoint, onFailedFrom error: NetworkError) {
+    private func forward(_ response: Response, for endpoint: Endpoint, onFailedFrom error: ConnectionError) {
         switch error.reason {
         case .notConnectedToInternet:
             if endpoint.notifiesListenersOnFailedFromUnavailableNetwork {
