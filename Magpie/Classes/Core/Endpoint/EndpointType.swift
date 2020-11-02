@@ -10,6 +10,7 @@ import Foundation
 public enum EndpointType {
     case data
     case upload(Source)
+    case multipart(MultipartForm)
 }
 
 extension EndpointType {
@@ -27,6 +28,8 @@ extension EndpointType: Printable {
             return "data"
         case .upload(let src):
             return "upload \(src.debugDescription)"
+        case .multipart(let form):
+            return "multipart\n\(form.debugDescription)"
         }
     }
 }

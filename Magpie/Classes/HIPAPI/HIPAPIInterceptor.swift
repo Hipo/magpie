@@ -15,12 +15,12 @@ open class HIPAPIInterceptor<Session: HIPSessionConvertible>: HIPAPISessionInter
     }
 
     open func intercept(_ endpoint: EndpointOperatable) {
-        endpoint.set(additionalHeader: AcceptHeader.json())
-        endpoint.set(additionalHeader: AcceptEncodingHeader.gzip())
-        endpoint.set(additionalHeader: ContentTypeHeader.json())
+        endpoint.setAdditionalHeader(AcceptHeader.json(), .setIfNotExists)
+        endpoint.setAdditionalHeader(AcceptEncodingHeader.gzip(), .setIfNotExists)
+        endpoint.setAdditionalHeader(ContentTypeHeader.json(), .setIfNotExists)
 
         if let credentials = session.credentials {
-            endpoint.set(additionalHeader: AuthorizationHeader.token(credentials.token))
+            endpoint.setAdditionalHeader(AuthorizationHeader.token(credentials.token), .alwaysOverride)
         }
     }
 

@@ -11,7 +11,7 @@ import Foundation
 open class AlamofireNetworking: Networking {
     public init() { }
 
-    public func send(_ request: Request, validateResponse: Bool, onReceived handler: @escaping ResponseHandler) -> TaskConvertible? {
+    open func send(_ request: Request, validateResponse: Bool, onReceived handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
             let dataRequest = AF.request(urlRequest)
@@ -30,7 +30,7 @@ open class AlamofireNetworking: Networking {
         }
     }
 
-    public func upload(_ source: EndpointType.Source, with request: Request, validateResponse: Bool, onCompleted handler: @escaping ResponseHandler) -> TaskConvertible? {
+    open func upload(_ source: EndpointType.Source, with request: Request, validateResponse: Bool, onCompleted handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
 
@@ -42,6 +42,30 @@ open class AlamofireNetworking: Networking {
             case .file(let url):
                 uploadRequest = AF.upload(url, with: urlRequest)
             }
+
+            if validateResponse {
+                uploadRequest.validate()
+            }
+            return uploadRequest.magpie_responseData { [weak self] dataResponse in
+                if let self = self {
+                    handler(self.populateResponse(dataResponse, for: request))
+                }
+            }
+        } catch let error {
+            handler(populateResponse(error, for: request))
+            return nil
+        }
+    }
+
+    open func upload(_ form: MultipartForm, with request: Request, validateResponse: Bool, onCompleted handler: @escaping ResponseHandler) -> TaskConvertible? {
+        do {
+            let urlRequest = try request.asUrlRequest()
+            let uploadRequest = AF.upload(
+                multipartFormData: { multipartFormData in
+                    form.append(into: multipartFormData)
+                },
+                with: urlRequest
+            )
 
             if validateResponse {
                 uploadRequest.validate()
