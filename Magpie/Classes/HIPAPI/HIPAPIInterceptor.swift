@@ -8,6 +8,9 @@
 import Foundation
 
 open class HIPAPIInterceptor<Session: HIPSessionConvertible>: HIPAPISessionInterceptor {
+    public lazy var application = HIPApplication()
+    public lazy var device = HIPDevice()
+
     public let session: Session
 
     public required init(session: Session) {
@@ -15,10 +18,20 @@ open class HIPAPIInterceptor<Session: HIPSessionConvertible>: HIPAPISessionInter
     }
 
     open func intercept(_ endpoint: EndpointOperatable) {
+        /// <note> HTTP
         endpoint.setAdditionalHeader(AcceptHeader.json(), .setIfNotExists)
         endpoint.setAdditionalHeader(AcceptEncodingHeader.gzip(), .setIfNotExists)
         endpoint.setAdditionalHeader(ContentTypeHeader.json(), .setIfNotExists)
 
+        /// <note> Hipo
+        endpoint.setAdditionalHeader(AppNameHeader(application), .alwaysOverride)
+        endpoint.setAdditionalHeader(AppPackageNameHeader(application), .alwaysOverride)
+        endpoint.setAdditionalHeader(AppVersionHeader(application), .alwaysOverride)
+        endpoint.setAdditionalHeader(ClientTypeHeader(device), .alwaysOverride)
+        endpoint.setAdditionalHeader(DeviceOSVersionHeader(device), .alwaysOverride)
+        endpoint.setAdditionalHeader(DeviceModelHeader(device), .alwaysOverride)
+
+        /// <note> Authorization
         if let credentials = session.credentials {
             endpoint.setAdditionalHeader(AuthorizationHeader.token(credentials.token), .alwaysOverride)
         }
