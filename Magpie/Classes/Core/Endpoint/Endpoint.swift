@@ -68,10 +68,6 @@ class Endpoint {
         request.headers = headers
     }
 
-    func set(additionalHeaders: Headers) {
-        request.headers = request.headers + additionalHeaders
-    }
-
     func set(timeout: TimeInterval) {
         request.timeout = timeout
     }
@@ -88,6 +84,15 @@ extension Endpoint {
 }
 
 extension Endpoint: EndpointOperatable {
+    func setAdditionalHeader(_ header: Header, _ policy: AdditionalHeaderPolicy) {
+        switch policy {
+            case .alwaysOverride:
+                request.headers = request.headers << [header]
+            case .setIfNotExists:
+                request.headers = request.headers >> [header]
+        }
+    }
+
     @discardableResult
     func send() -> EndpointOperatable {
         isSentOnce = true

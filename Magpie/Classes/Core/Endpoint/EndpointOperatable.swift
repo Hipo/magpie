@@ -10,7 +10,7 @@ import Foundation
 public protocol EndpointOperatable: Printable {
     var request: Request { get }
 
-    func set(additionalHeaders: Headers)
+    func setAdditionalHeader(_ header: Header, _ policy: AdditionalHeaderPolicy)
 
     @discardableResult
     func send() -> EndpointOperatable
@@ -18,8 +18,7 @@ public protocol EndpointOperatable: Printable {
     func cancel()
 }
 
-extension EndpointOperatable {
-    public func set(additionalHeader: Header) {
-        set(additionalHeaders: [additionalHeader])
-    }
+public enum AdditionalHeaderPolicy {
+    case alwaysOverride
+    case setIfNotExists
 }

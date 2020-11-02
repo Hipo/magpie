@@ -12,4 +12,5 @@ public protocol Networking {
 
     func send(_ request: Request, validateResponse: Bool, onReceived handler: @escaping ResponseHandler) -> TaskConvertible?
     func upload(_ source: EndpointType.Source, with request: Request, validateResponse: Bool, onCompleted handler: @escaping ResponseHandler) -> TaskConvertible?
+    func upload(_ form: MultipartForm, with request: Request, validateResponse: Bool, onCompleted handler: @escaping ResponseHandler) -> TaskConvertible?
 }

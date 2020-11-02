@@ -122,6 +122,8 @@ extension API {
             return networking.send(endpoint.request, validateResponse: endpoint.validatesResponseBeforeCompletion, onReceived: responseHandler)
         case .upload(let src):
             return networking.upload(src, with: endpoint.request, validateResponse: endpoint.validatesResponseBeforeCompletion, onCompleted: responseHandler)
+        case .multipart(let form):
+            return networking.upload(form, with: endpoint.request, validateResponse: endpoint.validatesResponseBeforeCompletion, onCompleted: responseHandler)
         }
     }
 

@@ -59,10 +59,18 @@ extension Headers {
 
 extension Headers {
     /// <note>
-    /// The right-side headers will override the left-side headers if they have fields in common.
-    public static func + (lhs: Headers, rhs: Headers) -> Headers {
+    /// The left-side headers will override the right-side headers if they have fields in common.
+    public static func >> (lhs: Headers, rhs: Headers) -> Headers {
         var newHeaders = Headers()
-        newHeaders.table = lhs.table.merging(rhs.table) { return $1 }
+        newHeaders.table = lhs.table.merging(rhs.table) { lhsValue, _ in return lhsValue }
+        return newHeaders
+    }
+
+    /// <note>
+    /// The right-side headers will override the left-side headers if they have fields in common.
+    public static func << (lhs: Headers, rhs: Headers) -> Headers {
+        var newHeaders = Headers()
+        newHeaders.table = lhs.table.merging(rhs.table) { _, rhsValue in return rhsValue }
         return newHeaders
     }
 }
