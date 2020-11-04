@@ -13,32 +13,46 @@ open class HIPDevice {
     public let model: String
 
     public init() {
-        let rawDevice = UIDevice.current
+        let processInfo = ProcessInfo.processInfo
 
-        #if os(macOS)
-        os = .macOS
-        #elseif os(watchOS)
-        os = .watchOS
-        #elseif os(tvOS)
-        os = .tvOS
-        #else
-        os = .iOS
-        #endif
+        os = .current
 
-        osVersion = rawDevice.systemVersion
+        let operatingSystem = processInfo.operatingSystemVersion
+        osVersion = "\(operatingSystem.majorVersion).\(operatingSystem.minorVersion).\(operatingSystem.patchVersion)"
 
         #if targetEnvironment(simulator)
-        model = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] ?? "simulator"
+        model = processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] ?? "simulator"
         #else
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let machineMirror = Mirror(reflecting: systemInfo.machine)
-        model = machineMirror.children.reduce("") { aModel, elem in
-            guard let value = elem.value as? Int8, value != 0 else {
-                return aModel
+        /// <ref> https://github.com/mattgallagher/CwlUtils/blob/master/Sources/CwlUtils/CwlSysctl.swift
+        let keys: [Int32]
+
+        #if os(macOS)
+        keys = [CTL_HW, HW_MODEL]
+        #else
+        keys = [CTL_HW, HW_MACHINE]
+        #endif
+
+        let modelData = keys.withUnsafeBufferPointer { keysPointer -> [Int8]? in
+            var requiredSize = 0
+            let preFlightResult = Darwin.sysctl(UnsafeMutablePointer<Int32>(mutating: keysPointer.baseAddress), UInt32(keys.count), nil, &requiredSize, nil, 0)
+
+            if preFlightResult != 0 {
+                return nil
             }
-            return aModel + String(UnicodeScalar(UInt8(value)))
+
+            let data = Array<Int8>(repeating: 0, count: requiredSize)
+            let result = try? data.withUnsafeBufferPointer() { dataBuffer throws -> Int32 in
+                return Darwin.sysctl(UnsafeMutablePointer<Int32>(mutating: keysPointer.baseAddress), UInt32(keys.count), UnsafeMutableRawPointer(mutating: dataBuffer.baseAddress), &requiredSize, nil, 0)
+            }
+
+            if result != 0 {
+                return nil
+            }
+            return data
         }
+        model = modelData?.withUnsafeBufferPointer { dataPointer -> String? in
+            dataPointer.baseAddress.flatMap { String(validatingUTF8: $0) }
+        } ?? "Unknown"
         #endif
     }
 }
@@ -49,6 +63,18 @@ extension HIPDevice {
         case macOS = "macOS"
         case watchOS = "watchOS"
         case tvOS = "tvOS"
+
+        public static var current: Self {
+            #if os(macOS)
+            return .macOS
+            #elseif os(watchOS)
+            return .watchOS
+            #elseif os(tvOS)
+            return .tvOS
+            #else
+            return .iOS
+            #endif
+        }
     }
 }
 
