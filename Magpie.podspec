@@ -32,8 +32,8 @@ Pod::Spec.new do |s|
     ss.dependency 'Magpie/HIPUtils'
   end
 
-  s.subspec 'HIPAPI' do |ss|
-    ss.source_files = 'Magpie/Classes/HIPAPI/**/*.swift'
+  s.subspec 'HIPCore' do |ss|
+    ss.source_files = 'Magpie/Classes/HIPCore/**/*.swift'
 
     ss.dependency 'Magpie/Alamofire'
     ss.dependency 'Magpie/HIPExceptions'

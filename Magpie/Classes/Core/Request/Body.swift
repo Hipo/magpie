@@ -79,15 +79,15 @@ public protocol JSONBodyParamConvertible: Printable {
 }
 
 public protocol JSONObjectBody: JSONBody, JSONBodyParamConvertible {
-    associatedtype SomeJSONBodyKeyedParam : JSONBodyKeyedParamConvertible
+    associatedtype Key : CodingKey
 
-    var bodyParams: [SomeJSONBodyKeyedParam] { get }
+    var bodyParams: [JSONObjectBodyParam<Key>] { get }
 }
 
 extension JSONObjectBody {
     /// <mark> Encodable
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: SomeJSONBodyKeyedParam.Key.self)
+        var container = encoder.container(keyedBy: Key.self)
 
         for param in bodyParams {
             try param.encoded(in: &container)
@@ -104,17 +104,17 @@ extension JSONObjectBody {
     }
 }
 
-public protocol JSONBodyKeyedParamConvertible: Printable {
-    associatedtype Key: CodingKey
-
-    var key: Key { get }
-
-    func encoded(in container: inout KeyedEncodingContainer<Key>) throws
-}
-
-public struct JSONBodyKeyedParam<Key: CodingKey>: JSONBodyKeyedParamConvertible {
+public struct JSONObjectBodyParam<Key: CodingKey>: Printable {
     public let key: Key
-    public let param: JSONBodyParam
+    public let value: JSONBodyParamConvertible
+
+    public init(
+        _ key: Key,
+        _ value: JSONBodyParamConvertible
+    ) {
+        self.key = key
+        self.value = value
+    }
 
     public init(
         _ key: Key,
@@ -122,7 +122,7 @@ public struct JSONBodyKeyedParam<Key: CodingKey>: JSONBodyKeyedParamConvertible 
         _ encodingPolicy: JSONBodyEncodingPolicy = .setAlways
     ) {
         self.key = key
-        self.param = JSONBodyParam(value, encodingPolicy)
+        self.value = JSONBodyValue(value, encodingPolicy)
     }
 
     public init<T: Encodable>(
@@ -131,23 +131,23 @@ public struct JSONBodyKeyedParam<Key: CodingKey>: JSONBodyKeyedParamConvertible 
         _ encodingPolicy: JSONBodyEncodingPolicy = .setAlways
     ) {
         self.key = key
-        self.param = JSONBodyParam(value, encodingPolicy)
+        self.value = JSONBodyValue(value, encodingPolicy)
     }
 
     /// <mark> JSONBodyKeyedValueConvertible
     public func encoded(in container: inout KeyedEncodingContainer<Key>) throws {
-        try param.encoded(for: key, in: &container)
+        try value.encoded(for: key, in: &container)
     }
 }
 
-extension JSONBodyKeyedParam {
+extension JSONObjectBodyParam {
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
-        return "\(key.debugDescription):\(param.debugDescription)"
+        return "\(key.debugDescription):\(value.debugDescription)"
     }
 }
 
-public struct JSONBodyParam: JSONBodyParamConvertible {
+public struct JSONBodyValue: JSONBodyParamConvertible {
     public let value: AnyEncodable?
     public let encodingPolicy: JSONBodyEncodingPolicy
 
@@ -203,7 +203,7 @@ public struct JSONBodyParam: JSONBodyParamConvertible {
     }
 }
 
-extension JSONBodyParam {
+extension JSONBodyValue {
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         return "\(value?.debugDescription ?? "<nil>")(\(encodingPolicy.debugDescription))"

@@ -185,5 +185,9 @@ open class EndpointBuilder {
     public func build() -> EndpointOperatable {
         return endpoint
     }
+
+    public func execute() -> EndpointOperatable {
+        return build().send()
+    }
 }
 

@@ -30,7 +30,7 @@ extension Query {
     }
 }
 
-extension Dictionary: Query where Key == String, Value == URLParamValueEncodable? {
+extension Dictionary: Query where Key: CodingKey, Value == URLParamValueEncodable? {
     public func encoded() throws -> [URLQueryItem] {
         return try encoded(URLEncodingStrategy())
     }
@@ -43,9 +43,9 @@ extension Dictionary: Query where Key == String, Value == URLParamValueEncodable
 }
 
 public protocol ObjectQuery: Query {
-    associatedtype SomeObjectQueryKeyedParam: ObjectQueryKeyedParamConvertible
+    associatedtype Key: CodingKey
 
-    var queryParams: [SomeObjectQueryKeyedParam] { get }
+    var queryParams: [ObjectQueryParam<Key>] { get }
     var encodingStrategy: URLEncodingStrategy { get }
 }
 
@@ -61,15 +61,7 @@ extension ObjectQuery {
     }
 }
 
-public protocol ObjectQueryKeyedParamConvertible: Printable {
-    associatedtype Key: CodingKey
-
-    var key: Key { get }
-    var encodingValue: URLParamValueEncodable? { get }
-    var encodingPolicy: ObjectQueryEncodingPolicy { get }
-}
-
-public struct ObjectQueryKeyedParam<Key: CodingKey>: ObjectQueryKeyedParamConvertible {
+public struct ObjectQueryParam<Key: CodingKey>: Printable {
     public let key: Key
     public let encodingValue: URLParamValueEncodable?
     public let encodingPolicy: ObjectQueryEncodingPolicy
@@ -85,7 +77,7 @@ public struct ObjectQueryKeyedParam<Key: CodingKey>: ObjectQueryKeyedParamConver
     }
 }
 
-extension ObjectQueryKeyedParam {
+extension ObjectQueryParam {
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         return "\(key.stringValue):\(encodingValue?.debugDescription ?? "<nil>")(\(encodingPolicy.debugDescription)"
@@ -100,7 +92,7 @@ public enum ObjectQueryEncodingPolicy: String, Printable {
 private struct QueryEncoder {
     var encodingStrategy: URLEncodingStrategy = URLEncodingStrategy()
 
-    func encode<Param: ObjectQueryKeyedParamConvertible>(_ queryParams: [Param]) throws -> [URLQueryItem] {
+    func encode<Key: CodingKey>(_ queryParams: [ObjectQueryParam<Key>]) throws -> [URLQueryItem] {
         var queryItems: [URLQueryItem] = []
 
         for param in queryParams {
@@ -120,15 +112,15 @@ private struct QueryEncoder {
         return queryItems
     }
 
-    func encode(_ queryParams: [String: URLParamValueEncodable?]) throws -> [URLQueryItem] {
+    func encode<Key: CodingKey>(_ queryParams: [Key: URLParamValueEncodable?]) throws -> [URLQueryItem] {
         var queryItems: [URLQueryItem] = []
 
         for param in queryParams {
             do {
                 let value = try param.value.map { escape(try $0.urlEncoded(encodingStrategy)) }
-                queryItems.append(URLQueryItem(name: escape(param.key), value: value))
+                queryItems.append(URLQueryItem(name: escape(param.key.stringValue), value: value))
             } catch {
-                throw RequestEncodingError(reason: .invalidURLQueryEncoding(key: param.key))
+                throw RequestEncodingError(reason: .invalidURLQueryEncoding(key: param.key.stringValue))
             }
         }
         return queryItems
@@ -136,7 +128,7 @@ private struct QueryEncoder {
 }
 
 extension QueryEncoder {
-    private func encode<Param: ObjectQueryKeyedParamConvertible>(_ param: Param) throws -> URLQueryItem {
+    private func encode<Key: CodingKey>(_ param: ObjectQueryParam<Key>) throws -> URLQueryItem {
         let key = escape(param.key.stringValue)
         let value = try param.encodingValue.urlEncoded(encodingStrategy)
         return URLQueryItem(name: key, value: value.map { escape($0) })

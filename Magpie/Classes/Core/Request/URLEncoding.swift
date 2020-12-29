@@ -10,13 +10,16 @@ import Foundation
 public struct URLEncodingStrategy {
     public let nullity: NullityEncodingStrategy
     public let boolean: BooleanEncodingStrategy
+    public let array: ArrayEncodingStrategy
 
     public init(
         nullity: NullityEncodingStrategy = .default,
-        boolean: BooleanEncodingStrategy = .default
+        boolean: BooleanEncodingStrategy = .default,
+        array: ArrayEncodingStrategy = .default
     ) {
         self.nullity = nullity
         self.boolean = boolean
+        self.array = array
     }
 }
 
@@ -33,6 +36,11 @@ extension URLEncodingStrategy {
         case `default` /// <sample> "true" or "false"
         case number /// <sample> "1" or "0"
         case other(forTrue: String, forFalse: String) /// <sample> "{string}"
+    }
+
+    public enum ArrayEncodingStrategy {
+        case `default` /// <sample> 1,2,3
+        case enclosing(start: String = "[", end: String = "]") /// <sample> [1,2,3]
     }
 }
 
@@ -132,7 +140,14 @@ extension Bool: URLParamValueEncodable {
 extension Array: URLParamValueEncodable where Element: URLParamValueEncodable {
     public func urlEncoded(_ encodingStrategy: URLEncodingStrategy = URLEncodingStrategy()) throws -> String {
         let encodedElements = try map { try $0.urlEncoded(encodingStrategy) }
-        return "[\(encodedElements.joined(separator: ","))]"
+        let encodedElementsString = encodedElements.joined(separator: ",")
+
+        switch encodingStrategy.array {
+        case .default:
+            return encodedElementsString
+        case .enclosing(let start, let end):
+            return "\(start)\(encodedElementsString)\(end)"
+        }
     }
 }
 

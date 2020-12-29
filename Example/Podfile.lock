@@ -1,21 +1,21 @@
 PODS:
-  - Alamofire (5.3.0)
-  - Magpie/Alamofire (2.0.3):
+  - Alamofire (5.4.1)
+  - Magpie/Alamofire (2.0.5):
     - Alamofire (~> 5.2)
     - Magpie/Core
-  - Magpie/Core (2.0.3):
+  - Magpie/Core (2.0.5):
     - Magpie/HIPUtils
-  - Magpie/HIPAPI (2.0.3):
+  - Magpie/HIPCore (2.0.5):
     - Magpie/Alamofire
     - Magpie/HIPExceptions
     - Valet (~> 4.1)
-  - Magpie/HIPExceptions (2.0.3):
+  - Magpie/HIPExceptions (2.0.5):
     - Magpie/HIPUtils
-  - Magpie/HIPUtils (2.0.3)
+  - Magpie/HIPUtils (2.0.5)
   - Valet (4.1.1)
 
 DEPENDENCIES:
-  - Magpie/HIPAPI (from `../`)
+  - Magpie/HIPCore (from `../`)
 
 SPEC REPOS:
   trunk:
@@ -27,10 +27,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: 2c792affbdc2f18016e08fdbcacd60aebe1ba593
-  Magpie: fbc77130170b58fb86236016d050bf5906d10bc4
+  Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
+  Magpie: c52241b5a65047c5cf93516826978d8ead154705
   Valet: 11ab0e318b7284888a81392e36136563b4af5deb
 
-PODFILE CHECKSUM: 21d8a43f9c8836e553e2145e4efe6bd62a660ace
+PODFILE CHECKSUM: e8772fb943f68482cc389c432738338f3e8b029c
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0

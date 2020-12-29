@@ -20,6 +20,18 @@ open class HIPList<Item: Model>: Model {
         return Item.decodingStrategy
     }
 
+    public init(
+        count: Int,
+        next: URL?,
+        previous: URL?,
+        results: [Item]
+    ) {
+        self.count = count
+        self.next = next
+        self.previous = previous
+        self.results = results
+    }
+
     /// <mark> Decodable
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -36,6 +48,22 @@ open class HIPList<Item: Model>: Model {
         try container.encodeIfPresent(next, forKey: .next)
         try container.encodeIfPresent(previous, forKey: .previous)
         try container.encode(results, forKey: .results)
+    }
+}
+
+extension HIPList {
+    /// <warning> The right-side list overrides the left one.
+    public static func + (lhs: HIPList<Item>, rhs: HIPList<Item>) -> HIPList<Item> {
+        return HIPList(
+            count: rhs.count,
+            next: rhs.next,
+            previous: rhs.previous,
+            results: lhs.results + rhs.results
+        )
+    }
+
+    public static func += (lhs: inout HIPList<Item>, rhs: HIPList<Item>) {
+        lhs = lhs + rhs
     }
 }
 

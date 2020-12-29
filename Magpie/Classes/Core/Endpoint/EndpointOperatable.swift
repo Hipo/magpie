@@ -8,6 +8,7 @@
 import Foundation
 
 public protocol EndpointOperatable: Printable {
+    var type: EndpointType { get }
     var request: Request { get }
 
     func setAdditionalHeader(_ header: Header, _ policy: AdditionalHeaderPolicy)

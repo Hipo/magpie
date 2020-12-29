@@ -7,34 +7,36 @@
 
 import Foundation
 
-open class HIPCache: HIPCacheConvertible {
-    private let userDefaults = UserDefaults.standard
+open class HIPUserDefaults<Key: CacheKey>: Cache {
+    public let userDefaults: UserDefaults
 
-    public init() { }
+    public init(userDefaults: UserDefaults = UserDefaults.standard) {
+        self.userDefaults = userDefaults
+    }
 
-    public func getObject<T>(for key: HIPCacheKeyConvertible) -> T? {
+    public func getObject<T>(for key: Key) -> T? {
         return userDefaults.object(forKey: key.cacheEncoded()) as? T
     }
 
-    public func set<T>(object: T, for key: HIPCacheKeyConvertible) {
+    public func set<T>(object: T, for key: Key) {
         userDefaults.set(object, forKey: key.cacheEncoded())
         userDefaults.synchronize()
     }
 
-    public func getModel<T: Model>(for key: HIPCacheKeyConvertible) -> T? {
+    public func getModel<T: Model>(for key: Key) -> T? {
         if let data: Data = getObject(for: key) {
             return try? T.decoded(data)
         }
         return nil
     }
 
-    public func set<T: Model>(model: T, for key: HIPCacheKeyConvertible) {
+    public func set<T: Model>(model: T, for key: Key) {
         if let data = try? model.encoded() {
             set(object: data, for: key)
         }
     }
 
-    public func remove(for key: HIPCacheKeyConvertible) {
+    public func remove(for key: Key) {
         userDefaults.removeObject(forKey: key.cacheEncoded())
         userDefaults.synchronize()
     }
