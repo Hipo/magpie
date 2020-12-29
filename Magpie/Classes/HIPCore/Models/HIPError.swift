@@ -36,6 +36,19 @@ public enum HIPNetworkError: Error {
 }
 
 extension HIPNetworkError: Printable {
+    /// <mark> CustomStringConvertible
+    public var description: String {
+        switch self {
+        case .client(let httpError, let apiErrorDetail):
+            return apiErrorDetail?.message() ?? httpError.description
+        case .server(let httpError):
+            return httpError.description
+        case .connection(let connectionError):
+            return connectionError.description
+        case .unexpected(let apiError):
+            return apiError.description
+        }
+    }
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         switch self {
@@ -67,6 +80,10 @@ extension HIPNetworkError: Printable {
 public enum HIPError<InAppError: Error>: Error {
     case inapp(InAppError)
     case network(HIPNetworkError)
+
+    public init(inappError: InAppError) {
+        self = .inapp(inappError)
+    }
 
     public init(
         apiError: APIError,

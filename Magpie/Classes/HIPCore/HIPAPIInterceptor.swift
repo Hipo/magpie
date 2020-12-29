@@ -7,21 +7,24 @@
 
 import Foundation
 
-open class HIPAPIInterceptor<Session: HIPSessionConvertible>: HIPAPISessionInterceptor {
+open class HIPAPIInterceptor<SomeSession: Session>: APIInterceptor {
     public lazy var application = HIPApplication()
     public lazy var device = HIPDevice()
 
-    public let session: Session
+    public let session: SomeSession
 
-    public required init(session: Session) {
+    public required init(session: SomeSession) {
         self.session = session
     }
 
     open func intercept(_ endpoint: EndpointOperatable) {
         /// <note> HTTP
-        endpoint.setAdditionalHeader(AcceptHeader.json(), .setIfNotExists)
         endpoint.setAdditionalHeader(AcceptEncodingHeader.gzip(), .setIfNotExists)
-        endpoint.setAdditionalHeader(ContentTypeHeader.json(), .setIfNotExists)
+        endpoint.setAdditionalHeader(AcceptHeader.json(), .setIfNotExists)
+
+        if !endpoint.type.isMultipart {
+            endpoint.setAdditionalHeader(ContentTypeHeader.json(), .setIfNotExists)
+        }
 
         /// <note> Hipo
         endpoint.setAdditionalHeader(AppNameHeader(application), .alwaysOverride)
@@ -31,10 +34,8 @@ open class HIPAPIInterceptor<Session: HIPSessionConvertible>: HIPAPISessionInter
         endpoint.setAdditionalHeader(DeviceOSVersionHeader(device), .alwaysOverride)
         endpoint.setAdditionalHeader(DeviceModelHeader(device), .alwaysOverride)
 
-        /// <note> Authorization
-        if let credentials = session.credentials {
-            endpoint.setAdditionalHeader(AuthorizationHeader.token(credentials.token), .alwaysOverride)
-        }
+        /// <note> Client
+        session.verify(endpoint: endpoint)
     }
 
     open func intercept(_ response: Response, for endpoint: EndpointOperatable) -> Bool {
@@ -45,12 +46,9 @@ open class HIPAPIInterceptor<Session: HIPSessionConvertible>: HIPAPISessionInter
 extension HIPAPIInterceptor {
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
-        return session.credentials?.debugDescription ?? "no interception occured"
+        return """
+        Intercepting API for session:
+        \(session.description)
+        """
     }
-}
-
-public protocol HIPAPISessionInterceptor: APIInterceptor {
-    associatedtype Session: HIPSessionConvertible
-
-    var session: Session { get }
 }

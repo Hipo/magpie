@@ -14,6 +14,33 @@ public enum EndpointType {
 }
 
 extension EndpointType {
+    public var isData: Bool {
+        switch self {
+        case .data:
+            return true
+        default:
+            return false
+        }
+    }
+    public var isUpload: Bool {
+        switch self {
+        case .upload:
+            return true
+        default:
+            return false
+        }
+    }
+    public var isMultipart: Bool {
+        switch self {
+        case .multipart:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+extension EndpointType {
     public enum Source {
         case data(Data)
         case file(URL)

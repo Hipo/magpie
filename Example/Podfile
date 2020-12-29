@@ -1,7 +1,7 @@
 use_frameworks!
 
 def magpie_pods
-  pod 'Magpie/HIPAPI', :path => '../'
+  pod 'Magpie/HIPCore', :path => '../'
 end
 
 target 'Magpie_Example' do

@@ -147,7 +147,7 @@ extension API {
         switch error.reason {
         case .unauthorized:
             if endpoint.notifiesListenersOnFailedFromUnauthorizedRequest {
-                let notifier: ListenerNotifier = { $0.api(self, endpointDidFailFromUnauthorizedRequest: endpoint) }
+                let notifier: ListenerNotifier = { $0.endpointDidFailFromUnauthorizedRequest(endpoint) }
 
                 if endpoint.ignoresResponseOnFailedFromUnauthorizedRequest {
                     notifyListeners(notifier)
@@ -162,7 +162,7 @@ extension API {
              .forbidden,
              .client:
             if endpoint.notifiesListenersOnFailedFromDefectiveClient {
-                forward(response, for: endpoint) { $0.api(self, endpoint: endpoint, didFailFromDefectiveClient: error) }
+                forward(response, for: endpoint) { $0.endpoint(endpoint, didFailFromDefectiveClient: error) }
             } else {
                 endpoint.forward(response)
             }
@@ -170,7 +170,7 @@ extension API {
              .serviceUnavailable,
              .server:
             if endpoint.notifiesListenersOnFailedFromUnresponsiveServer {
-                forward(response, for: endpoint) { $0.api(self, endpoint: endpoint, didFailFromUnresponsiveServer: error) }
+                forward(response, for: endpoint) { $0.endpoint(endpoint, didFailFromUnresponsiveServer: error) }
             } else {
                 endpoint.forward(response)
             }
@@ -183,7 +183,7 @@ extension API {
         switch error.reason {
         case .notConnectedToInternet:
             if endpoint.notifiesListenersOnFailedFromUnavailableNetwork {
-                forward(response, for: endpoint) { $0.api(self, endpoint: endpoint, didFailFromUnavailableNetwork: error) }
+                forward(response, for: endpoint) { $0.endpoint(endpoint, didFailFromUnavailableNetwork: error) }
             } else {
                 endpoint.forward(response)
             }
@@ -315,12 +315,12 @@ extension API: NetworkListener {
                 case .unavailable:
                     break
                 case .connected(let connection):
-                    listener.api(self, networkMonitor: networkMonitor, didConnectVia: connection, from: change.old.connection)
+                    listener.networkDidConnect(via: connection, from: change.old.connection)
                 case .undetermined,
                      .disconnected:
-                    listener.api(self, networkMonitor: networkMonitor, didDisconnectFrom: change.old.connection)
+                    listener.networkDidDisconnect(from: change.old.connection)
                 case .suspended:
-                    listener.api(self, networkMonitorDidEnterBackground: networkMonitor)
+                    listener.networkDidSuspendOnBackground()
                 }
             }
             self.logger.log(networkMonitor, .info)
