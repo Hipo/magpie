@@ -130,8 +130,11 @@ extension ResponseSerializationError {
         switch reason {
         case .corruptedData:
             return "Corrupted data"
-        case .jsonSerializationFailed:
-            return "JSON serialization failed"
+        case .jsonSerializationFailed(let underlyingError):
+            return """
+            JSON serialization failed.
+            \(underlyingError.localizedDescription)
+            """
         }
     }
     /// <mark> CustomDebugStringConvertible

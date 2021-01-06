@@ -19,8 +19,12 @@ open class HIPUserDefaults<Key: CacheKey>: Cache {
     }
 
     public func set<T>(object: T, for key: Key) {
-        userDefaults.set(object, forKey: key.cacheEncoded())
-        userDefaults.synchronize()
+        if object == nil {
+            remove(for: key)
+        } else {
+            userDefaults.set(object, forKey: key.cacheEncoded())
+            userDefaults.synchronize()
+        }
     }
 
     public func getModel<T: Model>(for key: Key) -> T? {
@@ -33,6 +37,8 @@ open class HIPUserDefaults<Key: CacheKey>: Cache {
     public func set<T: Model>(model: T, for key: Key) {
         if let data = try? model.encoded() {
             set(object: data, for: key)
+        } else {
+            remove(for: key)
         }
     }
 

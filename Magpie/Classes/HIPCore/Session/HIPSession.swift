@@ -22,8 +22,6 @@ where
     public let secureCache: SomeSecureCache
     public let cache: SomeCache
 
-    private var listenerBoxes: [ObjectIdentifier : HIPSessionListenerBox] = [:]
-
     public init(
         secureCache: SomeSecureCache,
         cache: SomeCache
@@ -40,8 +38,6 @@ where
 
     open func authorize(_ newAuthCredential: SomeAuthCredential) throws {
         authCredential = newAuthCredential
-        notifyListeners { $0.sessionDidAuthorize() }
-
         try secureCache.set(newAuthCredential, for: .authCredential)
     }
 
@@ -49,8 +45,6 @@ where
         deauthenticate()
 
         authCredential = nil
-        notifyListeners { $0.sessionDidDeauthorize() }
-
         try secureCache.remove(for: .authCredential)
     }
 
@@ -60,15 +54,11 @@ where
 
     open func authenticate(_ newAuthUser: SomeAuthUser) {
         authUser = newAuthUser
-        notifyListeners { $0.sessionDidAuthenticate() }
-
         cache.set(model: newAuthUser, for: .authUser)
     }
 
     open func deauthenticate() {
         authUser = SomeAuthUser.asAnonymous()
-        notifyListeners { $0.sessionDidDeauthenticate() }
-
         cache.remove(for: .authUser)
     }
 
@@ -79,32 +69,6 @@ where
                 AuthorizationHeader.token(authCredential.token),
                 .alwaysOverride
             )
-        }
-    }
-}
-
-extension HIPSession {
-    public func add(listener: HIPSessionAuthListener) {
-        let id = ObjectIdentifier(listener)
-        listenerBoxes[id] = HIPSessionListenerBox(listener)
-    }
-
-    public func remove(listener: HIPSessionAuthListener) {
-        let id = ObjectIdentifier(listener)
-        listenerBoxes[id] = nil
-    }
-
-    public func removeAllListeners() {
-        listenerBoxes.removeAll()
-    }
-
-    public func notifyListeners(_ notifier: (HIPSessionAuthListener) -> Void) {
-        listenerBoxes.forEach {
-            if let listener = $0.value.listener {
-                notifier(listener)
-            } else {
-                listenerBoxes[$0.key] = nil
-            }
         }
     }
 }
@@ -135,26 +99,4 @@ public protocol HIPSessionSecureCacheKey: SecureCacheKey {
 
 public protocol HIPSessionCacheKey: CacheKey {
     static var authUser: Self { get }
-}
-
-public protocol HIPSessionAuthListener: AnyObject {
-    func sessionDidAuthorize()
-    func sessionDidDeauthorize()
-    func sessionDidAuthenticate()
-    func sessionDidDeauthenticate()
-}
-
-extension HIPSessionAuthListener {
-    public func sessionDidAuthorize() { }
-    public func sessionDidDeauthorize() { }
-    public func sessionDidAuthenticate() { }
-    public func sessionDidDeauthenticate() { }
-}
-
-public class HIPSessionListenerBox {
-    weak var listener: HIPSessionAuthListener?
-
-    init(_ listener: HIPSessionAuthListener) {
-        self.listener = listener
-    }
 }

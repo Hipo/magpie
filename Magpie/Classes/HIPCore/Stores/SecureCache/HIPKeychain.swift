@@ -8,7 +8,7 @@
 import Foundation
 import Valet
 
-public class HIPKeychain<Key: SecureCacheKey>: SecureCache {
+open class HIPKeychain<Key: SecureCacheKey>: SecureCache {
     private let _keychain: Valet
 
     public init(
