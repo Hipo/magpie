@@ -19,12 +19,8 @@ open class HIPUserDefaults<Key: CacheKey>: Cache {
     }
 
     public func set<T>(object: T, for key: Key) {
-        if object == nil {
-            remove(for: key)
-        } else {
-            userDefaults.set(object, forKey: key.cacheEncoded())
-            userDefaults.synchronize()
-        }
+        userDefaults.set(object, forKey: key.cacheEncoded())
+        userDefaults.synchronize()
     }
 
     public func getModel<T: Model>(for key: Key) -> T? {
