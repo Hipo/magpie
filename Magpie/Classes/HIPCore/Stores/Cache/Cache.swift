@@ -11,9 +11,9 @@ public protocol Cache {
     associatedtype Key: CacheKey
 
     func getObject<T>(for key: Key) -> T?
-    func set<T>(object: T, for key: Key)
+    func set<T>(object: T?, for key: Key)
     func getModel<T: Model>(for key: Key) -> T?
-    func set<T: Model>(model: T, for key: Key)
+    func set<T: Model>(model: T?, for key: Key)
     func remove(for key: Key)
 }
 
