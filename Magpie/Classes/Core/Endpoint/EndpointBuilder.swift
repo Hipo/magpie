@@ -81,6 +81,12 @@ open class EndpointBuilder {
     }
 
     @discardableResult
+    public func ignoreResponseWhenEndpointDidFailFromUnauthorizedRequest(_ shouldIgnore: Bool) -> Self {
+        endpoint.ignoresResponseOnFailedFromUnauthorizedRequest = shouldIgnore
+        return self
+    }
+
+    @discardableResult
     public func ignoreResponseWhenEndpointListenersNotified(_ shouldIgnore: Bool) -> Self {
         endpoint.ignoresResponseWhenListenersNotified = shouldIgnore
         return self

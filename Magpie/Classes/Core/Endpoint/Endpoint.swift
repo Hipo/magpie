@@ -20,8 +20,8 @@ class Endpoint {
     var validatesResponseBeforeCompletion = true
 
     var ignoresResponseOnCancelled: Bool
-    var ignoresResponseWhenListenersNotified: Bool
     var ignoresResponseOnFailedFromUnauthorizedRequest: Bool
+    var ignoresResponseWhenListenersNotified: Bool
 
     var notifiesListenersOnFailedFromUnauthorizedRequest: Bool
     var notifiesListenersOnFailedFromUnavailableNetwork: Bool
@@ -36,8 +36,8 @@ class Endpoint {
         self.api = api
         self.request = Request(base: api.base, cachePolicy: api.cachePolicy, timeout: api.timeout)
         self.ignoresResponseOnCancelled = api.ignoresResponseOnCancelled
-        self.ignoresResponseWhenListenersNotified = api.ignoresResponseWhenListenersNotified
         self.ignoresResponseOnFailedFromUnauthorizedRequest = api.ignoresResponseWhenEndpointsFailedFromUnauthorizedRequest
+        self.ignoresResponseWhenListenersNotified = api.ignoresResponseWhenListenersNotified
         self.notifiesListenersOnFailedFromUnauthorizedRequest = api.notifiesListenersWhenEndpointsFailedFromUnauthorizedRequest
         self.notifiesListenersOnFailedFromUnavailableNetwork = api.notifiesListenersWhenEndpointsFailedFromUnavailableNetwork
         self.notifiesListenersOnFailedFromDefectiveClient = api.notifiesListenersWhenEndpointsFailedFromDefectiveClient
