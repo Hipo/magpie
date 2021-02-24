@@ -27,6 +27,12 @@ open class EndpointBuilder {
     }
 
     @discardableResult
+    public func port(_ somePort: Int?) -> Self {
+        endpoint.set(port: somePort)
+        return self
+    }
+
+    @discardableResult
     public func path(_ somePath: String) -> Self {
         endpoint.set(path: somePath)
         return self

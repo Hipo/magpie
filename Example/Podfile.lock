@@ -1,17 +1,17 @@
 PODS:
   - Alamofire (5.4.1)
-  - Magpie/Alamofire (3.1.2):
+  - Magpie/Alamofire (3.2.0):
     - Alamofire (~> 5.2)
     - Magpie/Core
-  - Magpie/Core (3.1.2):
+  - Magpie/Core (3.2.0):
     - Magpie/HIPUtils
-  - Magpie/HIPCore (3.1.2):
+  - Magpie/HIPCore (3.2.0):
     - Magpie/Alamofire
     - Magpie/HIPExceptions
     - Valet (~> 4.1)
-  - Magpie/HIPExceptions (3.1.2):
+  - Magpie/HIPExceptions (3.2.0):
     - Magpie/HIPUtils
-  - Magpie/HIPUtils (3.1.2)
+  - Magpie/HIPUtils (3.2.0)
   - Valet (4.1.1)
 
 DEPENDENCIES:
@@ -28,7 +28,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
-  Magpie: 20efdb94f26099589d7306bd8880e8f064783491
+  Magpie: 0497249812012bb911a513a8082e96dcc4b56742
   Valet: 11ab0e318b7284888a81392e36136563b4af5deb
 
 PODFILE CHECKSUM: e8772fb943f68482cc389c432738338f3e8b029c

@@ -43,6 +43,15 @@ public struct ClientTypeHeader: Header {
     }
 }
 
+public struct DeviceLocaleHeader: Header {
+    public let key = "Device-Version"
+    public let value: String?
+
+    public init(_ device: HIPDevice) {
+        self.value = device.locale.identifier
+    }
+}
+
 public struct DeviceOSVersionHeader: Header {
     public let key = "Device-OS-Version"
     public let value: String?

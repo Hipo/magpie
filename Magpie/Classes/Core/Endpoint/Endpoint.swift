@@ -48,6 +48,10 @@ class Endpoint {
         request.base = base
     }
 
+    func set(port: Int?) {
+        request.port = port
+    }
+
     func set(path: String) {
         request.path = path
     }

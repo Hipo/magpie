@@ -7,22 +7,19 @@
 
 import Foundation
 
-public protocol SecureCache {
+public protocol SecureCache: AnyObject {
     associatedtype Key: SecureCacheKey
 
-    func getString(for key: Key) throws -> String?
-    func set(_ string: String, for key: Key) throws
-    func getData(for key: Key) throws -> Data?
-    func set(_ data: Data, for key: Key) throws
-    func getModel<T: Model>(for key: Key) throws -> T?
-    func set<T: Model>(_ model: T, for key: Key) throws
-    func remove(for key: Key) throws
-    func removeAll() throws
+    subscript(string key: Key) -> String? { get set }
+    subscript(data key: Key) -> Data? { get set }
+    subscript<T: Model>(model key: Key) -> T? { get set }
+
+    func remove(for key: Key)
 }
 
 extension SecureCache {
-    public func removeAll<T: Sequence>(_ keys: T) throws where T.Element == Key {
-        try keys.forEach(remove)
+    public func removeAll<T: Sequence>(_ keys: T) where T.Element == Key {
+        keys.forEach(remove)
     }
 }
 

@@ -31,11 +31,12 @@ open class HIPAPIInterceptor<SomeSession: Session>: APIInterceptor {
         endpoint.setAdditionalHeader(AppPackageNameHeader(application), .alwaysOverride)
         endpoint.setAdditionalHeader(AppVersionHeader(application), .alwaysOverride)
         endpoint.setAdditionalHeader(ClientTypeHeader(device), .alwaysOverride)
+        endpoint.setAdditionalHeader(DeviceLocaleHeader(device), .alwaysOverride)
         endpoint.setAdditionalHeader(DeviceOSVersionHeader(device), .alwaysOverride)
         endpoint.setAdditionalHeader(DeviceModelHeader(device), .alwaysOverride)
 
         /// <note> Client
-        session.verify(endpoint: endpoint)
+        session.verify(endpoint)
     }
 
     open func intercept(_ response: Response, for endpoint: EndpointOperatable) -> Bool {

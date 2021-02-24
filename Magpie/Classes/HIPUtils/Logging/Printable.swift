@@ -7,7 +7,8 @@
 
 import Foundation
 
-public typealias Printable = CustomStringConvertible & CustomDebugStringConvertible
+public typealias DebugPrintable = CustomDebugStringConvertible
+public typealias Printable = CustomStringConvertible & DebugPrintable
 
 extension CustomDebugStringConvertible where Self: RawRepresentable, Self.RawValue == String {
     public var debugDescription: String {

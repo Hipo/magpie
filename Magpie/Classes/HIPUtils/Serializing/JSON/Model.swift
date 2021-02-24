@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol Model: Codable, Printable {
+public protocol Model: Codable, DebugPrintable {
     var isFault: Bool { get }
 
     static var encodingStrategy: JSONEncodingStrategy { get }
@@ -39,6 +39,31 @@ extension Model {
 }
 
 extension Model {
+    public static func decoded(
+        fromResource name: String,
+        withExtension ext: String = "json"
+    ) throws -> Self {
+        guard let resourceUrl =
+                Bundle.main.url(
+                    forResource: name,
+                    withExtension: ext
+                )
+        else {
+            throw ResponseSerializationError(responseData: nil, reason: .corruptedData)
+        }
+        do {
+            let data = try Data(contentsOf: resourceUrl, options: Data.ReadingOptions.uncached)
+            return try decoded(
+                data,
+                using: Self.decodingStrategy
+            )
+        } catch let err {
+            throw err
+        }
+    }
+}
+
+extension Model {
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         do {
@@ -50,8 +75,6 @@ extension Model {
     }
 }
 
-public struct NoModel: Model { }
-
 extension Array: Model where Element: Model {
     public func encoded() throws -> Data {
         return try encoded(Element.encodingStrategy)
@@ -61,3 +84,5 @@ extension Array: Model where Element: Model {
         return try decoded(data, using: Element.decodingStrategy)
     }
 }
+
+public struct NoModel: Model { }

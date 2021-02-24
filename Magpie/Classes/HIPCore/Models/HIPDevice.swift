@@ -7,15 +7,26 @@
 
 import Foundation
 
+#if canImport(AppKit)
+import AppKit
+#else
+import UIKit
+#endif
+
 open class HIPDevice {
     public let os: OS
     public let osVersion: String
+    public let family: Family
     public let model: String
+    public let locale: Locale
+    public let vendorIdentifier: String
+    public let hasNotch: Bool
 
     public init() {
         let processInfo = ProcessInfo.processInfo
 
         os = .current
+        family = .current
 
         let operatingSystem = processInfo.operatingSystemVersion
         osVersion = "\(operatingSystem.majorVersion).\(operatingSystem.minorVersion).\(operatingSystem.patchVersion)"
@@ -54,6 +65,44 @@ open class HIPDevice {
             dataPointer.baseAddress.flatMap { String(validatingUTF8: $0) }
         } ?? "Unknown"
         #endif
+
+        locale = Locale.preferred
+
+        if let systemIdentiifer = UIDevice.current.identifierForVendor?.uuidString {
+            vendorIdentifier = systemIdentiifer
+        } else {
+            /// <note>
+            /// Normally, it shouldn't be enter this block but it is just a precaution to handle
+            /// a null value for a minor possibility.
+            let userDefaults = UserDefaults.standard
+            let application = HIPApplication()
+            let cacheIdentifierKey = "\(application.packageName).vendorIdentifier"
+
+            if let cacheIdentifier =
+                userDefaults.string(
+                    forKey: cacheIdentifierKey
+                ) {
+                vendorIdentifier = cacheIdentifier
+            } else {
+                vendorIdentifier = UUID().uuidString
+
+                userDefaults.setValue(
+                    vendorIdentifier,
+                    forKey: cacheIdentifierKey
+                )
+                userDefaults.synchronize()
+            }
+        }
+
+        #if canImport(UIKit)
+        if let window = UIApplication.shared.windows.last {
+            hasNotch = window.safeAreaInsets.bottom > 0
+        } else {
+            hasNotch = false
+        }
+        #else
+        hasNotch = false
+        #endif
     }
 }
 
@@ -73,6 +122,37 @@ extension HIPDevice {
             return .tvOS
             #else
             return .iOS
+            #endif
+        }
+    }
+
+    public enum Family: String, Printable {
+        case iPhone
+        case iPad
+        case mac
+        case watch
+        case tv
+
+        public static var current: Self {
+            #if os(iOS)
+            switch UIScreen.main.traitCollection.userInterfaceIdiom {
+            case .unspecified:
+                return .iPhone
+            case .phone:
+                return .iPhone
+            case .pad:
+                return .iPad
+            default:
+                return .iPhone
+            }
+            #elseif os(macOS)
+            return .mac
+            #elseif os(watchOS)
+            return .watch
+            #elseif os(tvOS)
+            return .tv
+            #else
+            return .iPhone
             #endif
         }
     }

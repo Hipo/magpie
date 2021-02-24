@@ -24,7 +24,7 @@ extension APIListener {
     public func endpoint(_ endpoint: EndpointOperatable, didFailFromUnavailableNetwork error: ConnectionError) { }
     public func endpoint(_ endpoint: EndpointOperatable, didFailFromDefectiveClient error: HTTPError) { }
     public func endpoint(_ endpoint: EndpointOperatable, didFailFromUnresponsiveServer error: HTTPError) { }
-    public func networkDidConnect(with connection: NetworkConnection, from oldConnection: NetworkConnection) { }
+    public func networkDidConnect(via connection: NetworkConnection, from oldConnection: NetworkConnection) { }
     public func networkDidDisconnect(from oldConnection: NetworkConnection) { }
     public func networkDidSuspendOnBackground() { }
 }

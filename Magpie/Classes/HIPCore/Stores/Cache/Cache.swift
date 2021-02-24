@@ -7,13 +7,12 @@
 
 import Foundation
 
-public protocol Cache {
+public protocol Cache: AnyObject {
     associatedtype Key: CacheKey
 
-    func getObject<T>(for key: Key) -> T?
-    func set<T>(object: T?, for key: Key)
-    func getModel<T: Model>(for key: Key) -> T?
-    func set<T: Model>(model: T?, for key: Key)
+    subscript<T>(object key: Key) -> T? { get set }
+    subscript<T: Model>(model key: Key) -> T? { get set }
+
     func remove(for key: Key)
 }
 

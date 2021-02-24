@@ -9,6 +9,7 @@ import Foundation
 
 public class Request  {
     public var base: String
+    public var port: Int?
     public var path = ""
     public var method: Method = .get
     public var query: Query?
@@ -37,7 +38,7 @@ extension Request {
         var components = URLComponents()
         components.scheme = baseUrl.scheme
         components.host = baseUrl.host
-        components.port = baseUrl.port
+        components.port = port ?? baseUrl.port
         components.path = baseUrl.path + path
         components.percentEncodedQueryItems = try query?.encoded()
 

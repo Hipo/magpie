@@ -18,39 +18,45 @@ open class HIPKeychain<Key: SecureCacheKey>: SecureCache {
         _keychain = Valet.valet(with: Identifier(nonEmpty: identifier)!, accessibility: accessibility)
     }
 
-    public func getString(for key: Key) throws -> String? {
-        return try _keychain.string(forKey: key.secureCacheEncoded())
-    }
-
-    public func set(_ string: String, for key: Key) throws {
-        try _keychain.setString(string, forKey: key.secureCacheEncoded())
-    }
-
-    public func getData(for key: Key) throws -> Data? {
-        return try _keychain.object(forKey: key.secureCacheEncoded())
-    }
-
-    public func set(_ data: Data, for key: Key) throws {
-        try _keychain.setObject(data, forKey: key.secureCacheEncoded())
-    }
-
-    public func getModel<T: Model>(for key: Key) throws -> T? {
-        if let data = try getData(for: key) {
-            return try T.decoded(data)
+    public subscript(string key: Key) -> String? {
+        get { try? _keychain.string(forKey: key.secureCacheEncoded()) }
+        set {
+            guard let string = newValue else {
+                remove(for: key)
+                return
+            }
+            try? _keychain.setString(string, forKey: key.secureCacheEncoded())
         }
-        return nil
     }
 
-    public func set<T: Model>(_ model: T, for key: Key) throws {
-        let data = try model.encoded()
-        try set(data, for: key)
+    public subscript(data key: Key) -> Data? {
+        get { try? _keychain.object(forKey: key.secureCacheEncoded()) }
+        set {
+            guard let data = newValue else {
+                remove(for: key)
+                return
+            }
+            try? _keychain.setObject(data, forKey: key.secureCacheEncoded())
+        }
     }
 
-    public func remove(for key: Key) throws {
-        try _keychain.removeObject(forKey: key.secureCacheEncoded())
+    public subscript<T: Model>(model key: Key) -> T? {
+        get {
+            guard let data = self[data: key] else {
+                return nil
+            }
+            return try? T.decoded(data)
+        }
+        set {
+            guard let data = try? newValue?.encoded() else {
+                remove(for: key)
+                return
+            }
+            self[data: key] = data
+        }
     }
 
-    public func removeAll() throws {
-        try _keychain.removeAllObjects()
+    public func remove(for key: Key) {
+        try? _keychain.removeObject(forKey: key.secureCacheEncoded())
     }
 }

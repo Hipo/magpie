@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol Session: Printable {
-    func verify(endpoint: EndpointOperatable)
+    func verify(_ endpoint: EndpointOperatable)
 }
