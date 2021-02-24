@@ -68,6 +68,7 @@ open class HIPDevice {
 
         locale = Locale.preferred
 
+        #if canImport(UIKit)
         if let systemIdentiifer = UIDevice.current.identifierForVendor?.uuidString {
             vendorIdentifier = systemIdentiifer
         } else {
@@ -94,13 +95,15 @@ open class HIPDevice {
             }
         }
 
-        #if canImport(UIKit)
         if let window = UIApplication.shared.windows.last {
             hasNotch = window.safeAreaInsets.bottom > 0
         } else {
             hasNotch = false
         }
         #else
+        /// <todo>
+        vendorIdentifier = ""
+
         hasNotch = false
         #endif
     }

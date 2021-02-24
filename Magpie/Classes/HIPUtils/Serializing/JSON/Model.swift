@@ -49,7 +49,7 @@ extension Model {
                     withExtension: ext
                 )
         else {
-            throw ResponseSerializationError(responseData: nil, reason: .corruptedData)
+            fatalError("The resource not found!")
         }
         do {
             let data = try Data(contentsOf: resourceUrl, options: Data.ReadingOptions.uncached)
