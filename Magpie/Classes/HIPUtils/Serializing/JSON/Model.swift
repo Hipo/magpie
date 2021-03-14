@@ -43,12 +43,13 @@ extension Model {
         fromResource name: String,
         withExtension ext: String = "json"
     ) throws -> Self {
-        guard let resourceUrl =
-                Bundle.main.url(
-                    forResource: name,
-                    withExtension: ext
-                )
-        else {
+        let someResourceUrl =
+            Bundle.main.url(
+                forResource: name,
+                withExtension: ext
+            )
+
+        guard let resourceUrl = someResourceUrl else {
             fatalError("The resource not found!")
         }
         do {
