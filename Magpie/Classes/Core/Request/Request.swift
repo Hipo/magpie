@@ -10,7 +10,7 @@ import Foundation
 public class Request  {
     public var base: String
     public var port: Int?
-    public var path = ""
+    public var path: Path = ""
     public var method: Method = .get
     public var query: Query?
     public var body: Body?
@@ -39,7 +39,7 @@ extension Request {
         components.scheme = baseUrl.scheme
         components.host = baseUrl.host
         components.port = port ?? baseUrl.port
-        components.path = baseUrl.path + path
+        components.path = baseUrl.path + path.encoded()
         components.percentEncodedQueryItems = try query?.encoded()
 
         guard let url = components.url else {

@@ -16,7 +16,7 @@ struct TaskStorage {
 
 extension TaskStorage {
     func add(_ task: TaskConvertible, for endpoint: Endpoint) {
-        add(task, for: endpoint.request.path)
+        add(task, for: endpoint.request.path.encoded())
     }
 
     func add(_ task: TaskConvertible, for path: String) {
@@ -36,13 +36,13 @@ extension TaskStorage {
 extension TaskStorage {
     func delete(for endpoint: Endpoint) {
         if let task = endpoint.task {
-            delete(task, with: endpoint.request.path)
+            delete(task, with: endpoint.request.path.encoded())
         }
     }
 
     func cancelAndDelete(for endpoint: Endpoint) {
         if let task = endpoint.task {
-            cancelAndDelete(task, with: endpoint.request.path)
+            cancelAndDelete(task, with: endpoint.request.path.encoded())
         }
     }
 

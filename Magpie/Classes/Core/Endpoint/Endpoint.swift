@@ -30,6 +30,13 @@ class Endpoint {
 
     weak var api: API?
 
+    var isFinished: Bool {
+        switch task {
+        case .none: return true
+        case .some(let some): return !some.inProgress
+        }
+    }
+
     let request: Request
 
     init(api: API) {
@@ -52,7 +59,7 @@ class Endpoint {
         request.port = port
     }
 
-    func set(path: String) {
+    func set(path: Path) {
         request.path = path
     }
 

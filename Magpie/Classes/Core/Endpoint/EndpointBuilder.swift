@@ -33,7 +33,7 @@ open class EndpointBuilder {
     }
 
     @discardableResult
-    public func path(_ somePath: String) -> Self {
+    public func path(_ somePath: Path) -> Self {
         endpoint.set(path: somePath)
         return self
     }
