@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name                  = 'Magpie'
-  s.version               = '4.0.3'
+  s.version               = '4.0.4'
   s.license               = { :type => 'MIT', :file => 'LICENSE' }
   s.homepage              = 'https://github.com/Hipo/magpie'
   s.summary               = 'Standardized & Simplified API layer for iOS'
