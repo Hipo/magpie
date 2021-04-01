@@ -19,7 +19,10 @@ extension Alamofire.DataRequest: TaskConvertible {
 
     /// Returns whether the active task is ongoing or not, or false.
     public var inProgress: Bool {
-        return task?.inProgress ?? false
+        return
+            isInitialized ||
+            isResumed ||
+            isSuspended
     }
 
     /// Cancels the active task immediatelty.

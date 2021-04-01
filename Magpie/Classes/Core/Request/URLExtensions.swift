@@ -42,9 +42,3 @@ extension URLRequest {
         return command.joined(separator: " \\\n\t")
     }
 }
-
-extension URLSessionTask {
-    var inProgress: Bool {
-        return state == .running || state == .suspended
-    }
-}
