@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Alamofire",
+        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
+        "state": {
+          "branch": null,
+          "revision": "f96b619bcb2383b43d898402283924b80e2c4bae",
+          "version": "5.4.3"
+        }
+      },
+      {
+        "package": "MacaroonUtils",
+        "repositoryURL": "https://github.com/Hipo/macaroon-utils.git",
+        "state": {
+          "branch": null,
+          "revision": "07ffb0c9b859d78e39831bf9a46283fa2d942449",
+          "version": "1.1.1"
+        }
+      },
+      {
+        "package": "Valet",
+        "repositoryURL": "https://github.com/Square/Valet.git",
+        "state": {
+          "branch": null,
+          "revision": "2bf3329055f5d71d42a12801dd69d1d770fafa5e",
+          "version": "4.1.2"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
