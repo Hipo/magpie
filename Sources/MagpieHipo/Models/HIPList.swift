@@ -7,48 +7,53 @@
 
 import Foundation
 import MacaroonUtils
+import MagpieCore
 
-open class HIPList<Item: JSONModel>: JSONModel {
+open class HIPList<Item: ResponseModel>: ResponseModel {
+    public var debugData: Data?
+
     public let count: Int
     public let next: URL?
     public let previous: URL?
-    public let results: [Item]
+    public let items: [Item]
 
-    open class var encodingStrategy: JSONEncodingStrategy {
-        return Item.encodingStrategy
-    }
-    open class var decodingStrategy: JSONDecodingStrategy {
-        return Item.decodingStrategy
-    }
-
-    public init(
+    public required init(
         count: Int,
         next: URL?,
         previous: URL?,
-        results: [Item]
+        items: [Item]
     ) {
         self.count = count
         self.next = next
         self.previous = previous
-        self.results = results
+        self.items = items
     }
 
-    /// <mark> Decodable
-    public required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        count = try container.decodeIfPresent(Int.self, forKey: .count) ?? 0
-        next = try container.decodeIfPresent(URL.self, forKey: .next)
-        previous = try container.decodeIfPresent(URL.self, forKey: .previous)
-        results = try container.decodeIfPresent([Item].self, forKey: .results) ?? []
-    }
+    public required init(
+        _ apiModel: APIModel
+    ) {
+        self.count = apiModel.count ?? 0
+        self.next = apiModel.next
+        self.previous = apiModel.previous
 
-    /// <mark> Encodable
-    open func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(count, forKey: .count)
-        try container.encodeIfPresent(next, forKey: .next)
-        try container.encodeIfPresent(previous, forKey: .previous)
-        try container.encode(results, forKey: .results)
+        let results = apiModel.results ?? []
+        self.items = results.map(Item.init(_:))
+    }
+}
+
+extension HIPList {
+    public struct APIModel: JSONModel {
+        public let count: Int?
+        public let next: URL?
+        public let previous: URL?
+        public let results: [Item.APIModel]?
+
+        public static var encodingStrategy: JSONEncodingStrategy {
+            return Item.APIModel.encodingStrategy
+        }
+        public static var decodingStrategy: JSONDecodingStrategy {
+            return Item.APIModel.decodingStrategy
+        }
     }
 }
 
@@ -59,20 +64,11 @@ extension HIPList {
             count: rhs.count,
             next: rhs.next,
             previous: rhs.previous,
-            results: lhs.results + rhs.results
+            items: lhs.items + rhs.items
         )
     }
 
     public static func += (lhs: inout HIPList<Item>, rhs: HIPList<Item>) {
         lhs = lhs + rhs
-    }
-}
-
-extension HIPList {
-    enum CodingKeys: String, CodingKey {
-        case count
-        case next
-        case previous
-        case results
     }
 }

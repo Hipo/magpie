@@ -41,9 +41,10 @@ extension Alamofire.DataRequest {
 }
 
 extension Alamofire.DataRequest {
-    /// <warning> The default response serializer interprets a small set of http status codes with
+    /// <warning>
+    /// The default response serializer interprets a small set of http status codes with
     /// an empty response body as successful requests.
-    func magpie_responseData(completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self {
-        return response(responseSerializer: DataResponseSerializer(emptyResponseCodes: Set(200..<300)), completionHandler: completionHandler)
+    func magpie_responseData(in queue: DispatchQueue, completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self {
+        return response(queue: queue, responseSerializer: DataResponseSerializer(emptyResponseCodes: Set(200..<300)), completionHandler: completionHandler)
     }
 }

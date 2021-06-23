@@ -120,11 +120,11 @@ extension API {
 
         switch endpoint.type {
         case .data:
-            return networking.send(endpoint.request, validateResponse: endpoint.validatesResponseBeforeCompletion, onReceived: responseHandler)
+            return networking.send(endpoint.request, validateResponse: endpoint.validatesResponseBeforeCompletion, queue: endpoint.responseDispatcher ?? .main, using: responseHandler)
         case .upload(let src):
-            return networking.upload(src, with: endpoint.request, validateResponse: endpoint.validatesResponseBeforeCompletion, onCompleted: responseHandler)
+            return networking.upload(src, with: endpoint.request, validateResponse: endpoint.validatesResponseBeforeCompletion, queue: endpoint.responseDispatcher ?? .main, using: responseHandler)
         case .multipart(let form):
-            return networking.upload(form, with: endpoint.request, validateResponse: endpoint.validatesResponseBeforeCompletion, onCompleted: responseHandler)
+            return networking.upload(form, with: endpoint.request, validateResponse: endpoint.validatesResponseBeforeCompletion, queue: endpoint.responseDispatcher ?? .main, using: responseHandler)
         }
     }
 

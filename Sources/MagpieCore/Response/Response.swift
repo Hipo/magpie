@@ -44,8 +44,8 @@ extension Response {
         return .success(rawData)
     }
 
-    public func decoded<SomeModel: JSONModel, SomeErrorModel: JSONModel>() -> Result<SomeModel, SomeErrorModel> {
-        func formResult(_ error: APIError, _ data: Data?) -> Result<SomeModel, SomeErrorModel> {
+    public func decoded<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel>() -> Result<SomeResponseModel, SomeErrorModel> {
+        func formResult(_ error: APIError, _ data: Data?) -> Result<SomeResponseModel, SomeErrorModel> {
             if let data = data {
                 return .failure(error, try? SomeErrorModel.decoded(data))
             }
@@ -56,7 +56,7 @@ extension Response {
             return formResult(error, rawData)
         }
         do {
-            return .success(try SomeModel.decoded(rawData ?? Data("{}".utf8)))
+            return .success(try SomeResponseModel.decoded(rawData ?? Data("{}".utf8)))
         } catch let err {
             error = ResponseSerializationError(responseData: rawData, reason: .jsonSerializationFailed(underlyingError: err))
             return formResult(error!, rawData)
@@ -65,16 +65,16 @@ extension Response {
 }
 
 extension Response {
-    public typealias ModelResult<SomeModel: JSONModel> = Result<SomeModel, NoJSONModel>
-    public typealias ErrorModelResult<SomeErrorModel: JSONModel> = Result<NoJSONModel, SomeErrorModel>
+    public typealias ModelResult<SomeResponseModel: ResponseModel> = Result<SomeResponseModel, NoJSONModel>
+    public typealias ErrorModelResult<SomeErrorModel: JSONModel> = Result<NoResponseModel, SomeErrorModel>
 
     public enum RawResult {
         case success(Data?)
         case failure(APIError)
     }
 
-    public enum Result<SomeModel: JSONModel, SomeErrorModel: JSONModel> {
-        case success(SomeModel)
+    public enum Result<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel> {
+        case success(SomeResponseModel)
         case failure(APIError, SomeErrorModel? = nil)
     }
 }

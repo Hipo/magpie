@@ -76,11 +76,11 @@ extension HIPSession {
     }
 }
 
-public protocol AuthCredential: JSONModel {
+public protocol AuthCredential: ResponseModel {
     var token: String { get }
 }
 
-public protocol AuthUser: JSONModel {
+public protocol AuthUser: ResponseModel {
     var isAnonymous: Bool { get }
 
     static func asAnonymous() -> Self

@@ -10,6 +10,7 @@ import Foundation
 class Endpoint {
     var task: TaskConvertible?
     var responseResolver: ResponseResolver?
+    var responseDispatcher: DispatchQueue?
 
     var type: EndpointType = .data
 

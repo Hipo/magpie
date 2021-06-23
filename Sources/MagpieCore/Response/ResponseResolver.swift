@@ -12,8 +12,8 @@ public protocol ResponseResolver {
     func resolve(_ response: Response)
 }
 
-struct ResponseResultResolver<SomeModel: JSONModel, SomeErrorModel: JSONModel>: ResponseResolver {
-    typealias CompletionHandler = (Response.Result<SomeModel, SomeErrorModel>, Headers) -> Void
+struct ResponseResultResolver<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel>: ResponseResolver {
+    typealias CompletionHandler = (Response.Result<SomeResponseModel, SomeErrorModel>, Headers) -> Void
 
     let completionHandler: CompletionHandler
 
@@ -40,8 +40,8 @@ struct ResponseRawResultResolver: ResponseResolver {
     }
 }
 
-struct ResponseModelResultResolver<SomeModel: JSONModel>: ResponseResolver {
-    typealias CompletionHandler = (Response.Result<SomeModel, NoJSONModel>, Headers) -> Void
+struct ResponseModelResultResolver<SomeResponseModel: ResponseModel>: ResponseResolver {
+    typealias CompletionHandler = (Response.Result<SomeResponseModel, NoJSONModel>, Headers) -> Void
 
     let completionHandler: CompletionHandler
 
@@ -54,8 +54,8 @@ struct ResponseModelResultResolver<SomeModel: JSONModel>: ResponseResolver {
     }
 }
 
-struct ResponseModelResolver<SomeModel: JSONModel>: ResponseResolver {
-    typealias CompletionHandler = (SomeModel?, Headers) -> Void
+struct ResponseModelResolver<SomeResponseModel: ResponseModel>: ResponseResolver {
+    typealias CompletionHandler = (SomeResponseModel?, Headers) -> Void
 
     let completionHandler: CompletionHandler
 
@@ -64,7 +64,7 @@ struct ResponseModelResolver<SomeModel: JSONModel>: ResponseResolver {
     }
 
     func resolve(_ response: Response) {
-        switch response.decoded() as Response.Result<SomeModel, NoJSONModel> {
+        switch response.decoded() as Response.Result<SomeResponseModel, NoJSONModel> {
         case .success(let model):
             completionHandler(model, response.headers)
         case .failure:
@@ -74,7 +74,7 @@ struct ResponseModelResolver<SomeModel: JSONModel>: ResponseResolver {
 }
 
 struct ResponseErrorResultResolver<SomeErrorModel: JSONModel>: ResponseResolver {
-    typealias CompletionHandler = (Response.Result<NoJSONModel, SomeErrorModel>, Headers) -> Void
+    typealias CompletionHandler = (Response.Result<NoResponseModel, SomeErrorModel>, Headers) -> Void
 
     let completionHandler: CompletionHandler
 

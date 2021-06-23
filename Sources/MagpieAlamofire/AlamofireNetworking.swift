@@ -30,7 +30,7 @@ open class AlamofireNetworking: Networking {
 
      - Returns: An instance of `TaskConvertible` to identify and manage the data request to be sent.
      */
-    open func send(_ request: MagpieCore.Request, validateResponse: Bool, onReceived handler: @escaping ResponseHandler) -> TaskConvertible? {
+    open func send(_ request: MagpieCore.Request, validateResponse: Bool, queue: DispatchQueue, using handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
             let dataRequest = afSession.request(urlRequest)
@@ -38,7 +38,7 @@ open class AlamofireNetworking: Networking {
             if validateResponse {
                 dataRequest.validate()
             }
-            return dataRequest.magpie_responseData { [weak self] dataResponse in
+            return dataRequest.magpie_responseData(in: queue) { [weak self] dataResponse in
                 if let self = self {
                     handler(self.convert(dataResponse, for: request))
                 }
@@ -62,7 +62,7 @@ open class AlamofireNetworking: Networking {
      - Returns: An instance of `TaskConvertible` to identify and manage the request to be sent with
      an uploadable source.
      */
-    open func upload(_ source: EndpointType.Source, with request: MagpieCore.Request, validateResponse: Bool, onCompleted handler: @escaping ResponseHandler) -> TaskConvertible? {
+    open func upload(_ source: EndpointType.Source, with request: MagpieCore.Request, validateResponse: Bool, queue: DispatchQueue, using handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
 
@@ -78,7 +78,7 @@ open class AlamofireNetworking: Networking {
             if validateResponse {
                 uploadRequest.validate()
             }
-            return uploadRequest.magpie_responseData { [weak self] dataResponse in
+            return uploadRequest.magpie_responseData(in: queue) { [weak self] dataResponse in
                 if let self = self {
                     handler(self.convert(dataResponse, for: request))
                 }
@@ -102,7 +102,7 @@ open class AlamofireNetworking: Networking {
      - Returns: An instance of `TaskConvertible` to identify and manage the request to be sent with
      an uploadable source.
      */
-    open func upload(_ form: MultipartForm, with request: MagpieCore.Request, validateResponse: Bool, onCompleted handler: @escaping ResponseHandler) -> TaskConvertible? {
+    open func upload(_ form: MultipartForm, with request: MagpieCore.Request, validateResponse: Bool, queue: DispatchQueue, using handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
             let uploadRequest = afSession.upload(multipartFormData: { form.append(into: $0) }, with: urlRequest)
@@ -110,7 +110,7 @@ open class AlamofireNetworking: Networking {
             if validateResponse {
                 uploadRequest.validate()
             }
-            return uploadRequest.magpie_responseData { [weak self] dataResponse in
+            return uploadRequest.magpie_responseData(in: queue) { [weak self] dataResponse in
                 if let self = self {
                     handler(self.convert(dataResponse, for: request))
                 }

@@ -124,13 +124,13 @@ open class EndpointBuilder {
     }
 
     @discardableResult
-    public func completionHandler<SomeModel: JSONModel, SomeErrorModel: JSONModel>(_ someCompletionHandler: @escaping (Response.Result<SomeModel, SomeErrorModel>, Headers) -> Void) -> Self {
+    public func completionHandler<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel>(_ someCompletionHandler: @escaping (Response.Result<SomeResponseModel, SomeErrorModel>, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseResultResolver(someCompletionHandler)
         return self
     }
 
     @discardableResult
-    public func completionHandler<SomeModel: JSONModel, SomeErrorModel: JSONModel>(_ someCompletionHandler: @escaping (Response.Result<SomeModel, SomeErrorModel>) -> Void) -> Self {
+    public func completionHandler<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel>(_ someCompletionHandler: @escaping (Response.Result<SomeResponseModel, SomeErrorModel>) -> Void) -> Self {
         return completionHandler({ result, _ in someCompletionHandler(result) })
     }
 
@@ -146,24 +146,24 @@ open class EndpointBuilder {
     }
 
     @discardableResult
-    public func completionHandler<SomeModel: JSONModel>(_ someCompletionHandler: @escaping (Response.ModelResult<SomeModel>, Headers) -> Void) -> Self {
+    public func completionHandler<SomeResponseModel: ResponseModel>(_ someCompletionHandler: @escaping (Response.ModelResult<SomeResponseModel>, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseModelResultResolver(someCompletionHandler)
         return self
     }
 
     @discardableResult
-    public func completionHandler<SomeModel: JSONModel>(_ someCompletionHandler: @escaping (Response.ModelResult<SomeModel>) -> Void) -> Self {
+    public func completionHandler<SomeResponseModel: ResponseModel>(_ someCompletionHandler: @escaping (Response.ModelResult<SomeResponseModel>) -> Void) -> Self {
         return completionHandler({ result, _ in someCompletionHandler(result) })
     }
 
     @discardableResult
-    public func completionHandler<SomeModel: JSONModel>(_ someCompletionHandler: @escaping (SomeModel?, Headers) -> Void) -> Self {
+    public func completionHandler<SomeResponseModel: ResponseModel>(_ someCompletionHandler: @escaping (SomeResponseModel?, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseModelResolver(someCompletionHandler)
         return self
     }
 
     @discardableResult
-    public func completionHandler<SomeModel: JSONModel>(_ someCompletionHandler: @escaping (SomeModel?) -> Void) -> Self {
+    public func completionHandler<SomeResponseModel: ResponseModel>(_ someCompletionHandler: @escaping (SomeResponseModel?) -> Void) -> Self {
         return completionHandler({ result, _ in someCompletionHandler(result) })
     }
 
@@ -192,6 +192,12 @@ open class EndpointBuilder {
     @discardableResult
     public func responseResolver(_ someResponseResolver: ResponseResolver) -> Self {
         endpoint.responseResolver = someResponseResolver
+        return self
+    }
+
+    @discardableResult
+    public func responseDispatcher(_ someResponseDispatcher: DispatchQueue) -> Self {
+        endpoint.responseDispatcher = someResponseDispatcher
         return self
     }
 
