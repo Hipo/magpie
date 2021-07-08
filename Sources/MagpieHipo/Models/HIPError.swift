@@ -10,15 +10,19 @@ import MacaroonUtils
 import MagpieCore
 import MagpieExceptions
 
-public enum HIPNetworkError: Error {
-    case client(HTTPError, HIPAPIError?)
-    case server(HTTPError)
+public enum HIPNetworkError<
+    APIErrorDetail: DebugPrintable
+>: Error,
+   Hashable,
+   DebugPrintable {
+    case client(HTTPError, APIErrorDetail?)
+    case server(HTTPError, APIErrorDetail?)
     case connection(ConnectionError)
     case unexpected(APIError)
 
     public init(
         apiError: APIError,
-        apiErrorDetail: HIPAPIError? = nil
+        apiErrorDetail: APIErrorDetail? = nil
     ) {
         if let httpError = apiError as? HTTPError {
             if httpError.isClient {
@@ -26,7 +30,7 @@ public enum HIPNetworkError: Error {
                 return
             }
             if httpError.isServer {
-                self = .server(httpError)
+                self = .server(httpError, apiErrorDetail)
                 return
             }
         }
@@ -38,21 +42,7 @@ public enum HIPNetworkError: Error {
     }
 }
 
-extension HIPNetworkError: Printable {
-    /// <mark> CustomStringConvertible
-    public var description: String {
-        switch self {
-        case .client(let httpError, let apiErrorDetail):
-            return apiErrorDetail?.message() ?? httpError.description
-        case .server(let httpError):
-            return httpError.description
-        case .connection(let connectionError):
-            return connectionError.description
-        case .unexpected(let apiError):
-            return apiError.description
-        }
-    }
-    /// <mark> CustomDebugStringConvertible
+extension HIPNetworkError {
     public var debugDescription: String {
         switch self {
         case .client(let httpError, let apiErrorDetail):
@@ -61,10 +51,11 @@ extension HIPNetworkError: Printable {
             \(httpError.debugDescription)
             \(apiErrorDetail.debugDescription)
             """
-        case .server(let httpError):
+        case .server(let httpError, let apiErrorDetail):
             return """
             Server
             \(httpError.debugDescription)
+            \(apiErrorDetail.debugDescription)
             """
         case .connection(let connectionError):
             return """
@@ -80,9 +71,54 @@ extension HIPNetworkError: Printable {
     }
 }
 
-public enum HIPError<InAppError: Error>: Error {
+extension HIPNetworkError {
+    public func hash(
+        into hasher: inout Hasher
+    ) {
+        switch self {
+        case .client(let httpError, _),
+             .server(let httpError, _):
+            hasher.combine(httpError.statusCode)
+        case .connection(let connectionError):
+            switch connectionError.reason {
+            case .notConnectedToInternet(let code):
+                hasher.combine(code)
+            case .cancelled:
+                hasher.combine(-1)
+            case .unexpected(let code):
+                hasher.combine(code)
+            }
+        case .unexpected(let apiError):
+            hasher.combine(apiError.debugDescription)
+        }
+    }
+
+    public static func == (
+        lhs: HIPNetworkError<APIErrorDetail>,
+        rhs: HIPNetworkError<APIErrorDetail>
+    ) -> Bool {
+        switch (lhs, rhs) {
+        case (.client(let lHttpError, _), .client(let rHttpError, _)),
+             (.server(let lHttpError, _), .server(let rHttpError, _)):
+            return lHttpError == rHttpError
+        case (connection, .connection):
+            return true
+        case (.unexpected, .unexpected):
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+public enum HIPError<
+    InAppError: Error & Hashable,
+    APIErrorDetail: DebugPrintable
+>: Error,
+   Hashable,
+   DebugPrintable {
     case inapp(InAppError)
-    case network(HIPNetworkError)
+    case network(HIPNetworkError<APIErrorDetail>)
 
     public init(inappError: InAppError) {
         self = .inapp(inappError)
@@ -90,7 +126,7 @@ public enum HIPError<InAppError: Error>: Error {
 
     public init(
         apiError: APIError,
-        apiErrorDetail: HIPAPIError? = nil
+        apiErrorDetail: APIErrorDetail? = nil
     ) {
         self = .network(
             HIPNetworkError(apiError: apiError, apiErrorDetail: apiErrorDetail)
@@ -98,8 +134,7 @@ public enum HIPError<InAppError: Error>: Error {
     }
 }
 
-extension HIPError: Printable {
-    /// <mark> CustomDebugStringConvertible
+extension HIPError {
     public var debugDescription: String {
         switch self {
         case .inapp(let inappError):
@@ -112,6 +147,19 @@ extension HIPError: Printable {
             Network
             \(networkError.debugDescription)
             """
+        }
+    }
+}
+
+extension HIPError {
+    public func hash(
+        into hasher: inout Hasher
+    ) {
+        switch self {
+        case .inapp(let inappError):
+            hasher.combine(inappError)
+        case .network(let networkError):
+            hasher.combine(networkError)
         }
     }
 }

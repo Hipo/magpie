@@ -9,7 +9,7 @@ import Foundation
 import MacaroonUtils
 import MagpieCore
 
-open class HIPList<Item: ResponseModel>: ResponseModel {
+public final class HIPList<Item: ResponseModel>: ResponseModel {
     public var debugData: Data?
 
     public let count: Int
@@ -17,7 +17,7 @@ open class HIPList<Item: ResponseModel>: ResponseModel {
     public let previous: URL?
     public let items: [Item]
 
-    public required init(
+    public init(
         count: Int,
         next: URL?,
         previous: URL?,
@@ -29,15 +29,13 @@ open class HIPList<Item: ResponseModel>: ResponseModel {
         self.items = items
     }
 
-    public required init(
+    public init(
         _ apiModel: APIModel
     ) {
         self.count = apiModel.count ?? 0
         self.next = apiModel.next
         self.previous = apiModel.previous
-
-        let results = apiModel.results ?? []
-        self.items = results.map(Item.init(_:))
+        self.items = apiModel.results.unwrapMap(Item.init)
     }
 }
 

@@ -8,6 +8,8 @@
 import Foundation
 import MacaroonUtils
 
+/// <todo>
+/// Adapt to `ResponseModel`
 public struct HIPAPIError: JSONModel {
     public static var localFallbackMessage = "Something went wrong!"
 
