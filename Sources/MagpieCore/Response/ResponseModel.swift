@@ -39,6 +39,24 @@ extension ResponseModel {
     }
 }
 
+extension Array: ResponseModel where Element: ResponseModel {
+    public typealias APIModel = [Element.APIModel]
+
+    public var debugData: Data? {
+        get {
+            return nil
+        }
+        set {
+        }
+    }
+
+    public init(
+        _ apiModel: [Element.APIModel]
+    ) {
+        self.init(apiModel.map(Element.init))
+    }
+}
+
 public struct NoResponseModel: ResponseModel {
     public var debugData: Data?
 
