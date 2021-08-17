@@ -13,6 +13,8 @@ public protocol ResponseModel: DebugPrintable {
     var isFault: Bool { get }
 
     init(_ apiModel: APIModel)
+
+    func encode() -> APIModel
 }
 
 extension ResponseModel {
@@ -26,6 +28,17 @@ extension ResponseModel {
 }
 
 extension ResponseModel {
+    public func encode() -> APIModel {
+        fatalError("You should return an `APIModel` to be encoded.")
+    }
+}
+
+extension ResponseModel {
+    public func encoded() throws -> Data {
+        let apiModel = encode()
+        return try apiModel.encoded()
+    }
+
     public static func decoded(
         _ data: Data
     ) throws -> Self {
