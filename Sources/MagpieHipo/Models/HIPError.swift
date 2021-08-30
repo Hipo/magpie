@@ -20,6 +20,13 @@ public enum HIPNetworkError<
     case connection(ConnectionError)
     case unexpected(APIError)
 
+    public var isHttpUnauthorized: Bool {
+        switch self {
+        case .client(let httpError, _): return httpError.isHttpUnauthorized
+        default: return false
+        }
+    }
+
     public init(
         apiError: APIError,
         apiErrorDetail: APIErrorDetail? = nil
@@ -117,8 +124,17 @@ public enum HIPError<
 >: Error,
    Hashable,
    DebugPrintable {
+    public typealias NetworkError = HIPNetworkError<APIErrorDetail>
+
     case inapp(InAppError)
-    case network(HIPNetworkError<APIErrorDetail>)
+    case network(NetworkError)
+
+    public var isHttpUnauthorized: Bool {
+        switch self {
+        case .network(let networkError): return networkError.isHttpUnauthorized
+        default: return false
+        }
+    }
 
     public init(inappError: InAppError) {
         self = .inapp(inappError)
@@ -129,7 +145,7 @@ public enum HIPError<
         apiErrorDetail: APIErrorDetail? = nil
     ) {
         self = .network(
-            HIPNetworkError(apiError: apiError, apiErrorDetail: apiErrorDetail)
+            NetworkError(apiError: apiError, apiErrorDetail: apiErrorDetail)
         )
     }
 }

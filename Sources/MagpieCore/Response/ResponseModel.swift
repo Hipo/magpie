@@ -74,6 +74,6 @@ public struct NoResponseModel: ResponseModel {
     public var debugData: Data?
 
     public init(
-        _ apiModel: NoJSONModel
+        _ apiModel: NoJSONModel = NoJSONModel()
     ) {}
 }

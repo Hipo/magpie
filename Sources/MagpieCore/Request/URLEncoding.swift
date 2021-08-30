@@ -113,6 +113,12 @@ extension Int: URLParamValueEncodable {
     }
 }
 
+extension Int64: URLParamValueEncodable {
+    public func urlEncoded(_ encodingStrategy: URLEncodingStrategy = URLEncodingStrategy()) throws -> String {
+        return String(self)
+    }
+}
+
 extension Float: URLParamValueEncodable {
     public func urlEncoded(_ encodingStrategy: URLEncodingStrategy = URLEncodingStrategy()) throws -> String {
         return String(self)

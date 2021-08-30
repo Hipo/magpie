@@ -201,10 +201,12 @@ open class EndpointBuilder {
         return self
     }
 
+    @discardableResult
     public func build() -> EndpointOperatable {
         return endpoint
     }
 
+    @discardableResult
     public func execute() -> EndpointOperatable {
         return build().send()
     }
