@@ -1,17 +1,10 @@
-//
-//  HIPList.swift
-//  Magpie
-//
-//  Created by Karasuluoglu on 29.07.2020.
-//
+// Copyright © 2021 hipolabs. All rights reserved.
 
 import Foundation
 import MacaroonUtils
 import MagpieCore
 
-public final class HIPList<Item: ResponseModel>: ResponseModel {
-    public var debugData: Data?
-
+public final class HIPList<Item: APIModel>: EntityModel {
     public let count: Int
     public let next: URL?
     public let previous: URL?
@@ -35,7 +28,16 @@ public final class HIPList<Item: ResponseModel>: ResponseModel {
         self.count = apiModel.count ?? 0
         self.next = apiModel.next
         self.previous = apiModel.previous
-        self.items = apiModel.results.unwrapMap(Item.init)
+        self.items = apiModel.results ?? []
+    }
+
+    public func encode() -> APIModel {
+        return APIModel(
+            count: count,
+            next: next,
+            previous: previous,
+            results: items
+        )
     }
 }
 
@@ -44,20 +46,23 @@ extension HIPList {
         public let count: Int?
         public let next: URL?
         public let previous: URL?
-        public let results: [Item.APIModel]?
+        public let results: [Item]?
 
         public static var encodingStrategy: JSONEncodingStrategy {
-            return Item.APIModel.encodingStrategy
+            return Item.encodingStrategy
         }
         public static var decodingStrategy: JSONDecodingStrategy {
-            return Item.APIModel.decodingStrategy
+            return Item.decodingStrategy
         }
     }
 }
 
 extension HIPList {
     /// <warning> The right-side list overrides the left one.
-    public static func + (lhs: HIPList<Item>, rhs: HIPList<Item>) -> HIPList<Item> {
+    public static func + (
+        lhs: HIPList<Item>,
+        rhs: HIPList<Item>
+    ) -> HIPList<Item> {
         return HIPList(
             count: rhs.count,
             next: rhs.next,
@@ -66,7 +71,10 @@ extension HIPList {
         )
     }
 
-    public static func += (lhs: inout HIPList<Item>, rhs: HIPList<Item>) {
+    public static func += (
+        lhs: inout HIPList<Item>,
+        rhs: HIPList<Item>
+    ) {
         lhs = lhs + rhs
     }
 }

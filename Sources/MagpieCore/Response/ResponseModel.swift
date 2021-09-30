@@ -1,79 +1,80 @@
 // Copyright © 2021 hipolabs. All rights reserved.
 
-/// <src>
-/// https://gist.github.com/krzysztofzablocki/c566408283d623b0092eb8b3267348db
-
 import Foundation
 import MacaroonUtils
+import SwiftUI
 
 public protocol ResponseModel: DebugPrintable {
-    associatedtype APIModel: JSONModel
-
-    var debugData: Data? { get set }
     var isFault: Bool { get }
 
-    init(_ apiModel: APIModel)
+    func encoded() throws -> Data
 
-    func encode() -> APIModel
+    static func decoded(
+        _ data: Data
+    ) throws -> Self
 }
 
-extension ResponseModel {
+public struct NoResponseModel: ResponseModel {
     public var isFault: Bool {
         return false
     }
 
     public var debugDescription: String {
-        return "[\(type(of: self))] \(debugData?.utf8Description ?? "<nil>")"
+        return "<nil>"
     }
-}
 
-extension ResponseModel {
-    public func encode() -> APIModel {
-        fatalError("You should return an `APIModel` to be encoded.")
-    }
-}
-
-extension ResponseModel {
     public func encoded() throws -> Data {
-        let apiModel = encode()
-        return try apiModel.encoded()
+        return "{}".data(using: .utf8)!
+    }
+
+    public static func decoded(
+        _ data: Data
+    ) throws -> NoResponseModel {
+        return NoResponseModel()
+    }
+}
+
+extension Array: ResponseModel where Element: ResponseModel {
+    public var isFault: Bool {
+        return false
+    }
+
+    public func encoded() throws -> Data where Element: APIModel {
+        return try encoded(Element.encodingStrategy)
+    }
+
+    public func encoded() throws -> Data where Element: EntityModel {
+        let apiModels = map { $0.encode() }
+        return try apiModels.encoded(Element.APIModel.encodingStrategy)
+    }
+
+    public func encoded() throws -> Data {
+        fatalError("Unsupported encoding for elements")
+    }
+
+    public static func decoded(
+        _ data: Data
+    ) throws -> Self where Element: APIModel {
+        return try Self.decoded(
+            data,
+            using: Element.decodingStrategy
+        )
+    }
+
+    public static func decoded(
+        _ data: Data
+    ) throws -> Self where Element: EntityModel {
+        let apiModels =
+            try [Element.APIModel].decoded(
+                data,
+                using: Element.APIModel.decodingStrategy
+            )
+        return apiModels.map(Element.init)
     }
 
     public static func decoded(
         _ data: Data
     ) throws -> Self {
-        var model = Self(try APIModel.decoded(data))
-
-        debug {
-            model.debugData = data
-        }
-
-        return model
+        fatalError("Unsupported decoding for elements")
     }
-}
-
-extension Array: ResponseModel where Element: ResponseModel {
-    public typealias APIModel = [Element.APIModel]
-
-    public var debugData: Data? {
-        get {
-            return nil
-        }
-        set {
-        }
-    }
-
-    public init(
-        _ apiModel: [Element.APIModel]
-    ) {
-        self.init(apiModel.map(Element.init))
-    }
-}
-
-public struct NoResponseModel: ResponseModel {
-    public var debugData: Data?
-
-    public init(
-        _ apiModel: NoJSONModel = NoJSONModel()
-    ) {}
 }

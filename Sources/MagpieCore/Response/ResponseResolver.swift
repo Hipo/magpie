@@ -12,7 +12,7 @@ public protocol ResponseResolver {
     func resolve(_ response: Response)
 }
 
-struct ResponseResultResolver<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel>: ResponseResolver {
+struct ResponseResultResolver<SomeResponseModel: ResponseModel, SomeErrorModel: APIModel>: ResponseResolver {
     typealias CompletionHandler = (Response.Result<SomeResponseModel, SomeErrorModel>, Headers) -> Void
 
     let completionHandler: CompletionHandler
@@ -41,7 +41,7 @@ struct ResponseRawResultResolver: ResponseResolver {
 }
 
 struct ResponseModelResultResolver<SomeResponseModel: ResponseModel>: ResponseResolver {
-    typealias CompletionHandler = (Response.Result<SomeResponseModel, NoJSONModel>, Headers) -> Void
+    typealias CompletionHandler = (Response.Result<SomeResponseModel, NoAPIModel>, Headers) -> Void
 
     let completionHandler: CompletionHandler
 
@@ -64,7 +64,7 @@ struct ResponseModelResolver<SomeResponseModel: ResponseModel>: ResponseResolver
     }
 
     func resolve(_ response: Response) {
-        switch response.decoded() as Response.Result<SomeResponseModel, NoJSONModel> {
+        switch response.decoded() as Response.Result<SomeResponseModel, NoAPIModel> {
         case .success(let model):
             completionHandler(model, response.headers)
         case .failure:
@@ -73,7 +73,7 @@ struct ResponseModelResolver<SomeResponseModel: ResponseModel>: ResponseResolver
     }
 }
 
-struct ResponseErrorResultResolver<SomeErrorModel: JSONModel>: ResponseResolver {
+struct ResponseErrorResultResolver<SomeErrorModel: APIModel>: ResponseResolver {
     typealias CompletionHandler = (Response.Result<NoResponseModel, SomeErrorModel>, Headers) -> Void
 
     let completionHandler: CompletionHandler

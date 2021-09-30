@@ -7,10 +7,11 @@
 
 import Foundation
 import MacaroonUtils
+import MagpieCore
 
 /// <todo>
 /// Adapt to `ResponseModel`
-public struct HIPAPIError: JSONModel {
+public struct HIPAPIError: APIModel {
     public static var localFallbackMessage = "Something went wrong!"
 
     public let type: String?
@@ -86,7 +87,7 @@ extension HIPAPIError {
     }
 }
 
-public struct HIPAPIErrorDetail: JSONModel {
+public struct HIPAPIErrorDetail: APIModel {
     public let nonFieldMessages: [String]?
     public let fields: [HIPAPIErrorField]?
 
@@ -140,7 +141,7 @@ extension HIPAPIErrorDetail {
     }
 }
 
-public struct HIPAPIErrorField: JSONModel {
+public struct HIPAPIErrorField: APIModel {
     public let name: String
     public let detail: Detail?
 
@@ -160,7 +161,7 @@ extension HIPAPIErrorField {
 }
 
 extension HIPAPIErrorField {
-    public enum Detail: JSONModel {
+    public enum Detail: APIModel {
         case messages([String])
         case subfields([HIPAPIErrorField])
 

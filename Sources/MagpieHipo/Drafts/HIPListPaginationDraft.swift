@@ -11,13 +11,15 @@ import MagpieCore
 public struct HIPListPaginationDraft: Query {
     public let queryParams: [URLQueryItem]
 
-    public init(url: URL?) {
-        guard let url = url else {
+    public init(
+        url: URL?
+    ) {
+        if let url = url {
+            let components =  URLComponents(url: url, resolvingAgainstBaseURL: false)
+            queryParams = components?.queryItems ?? []
+        } else {
             queryParams = []
-            return
         }
-        let components =  URLComponents(url: url, resolvingAgainstBaseURL: false)
-        queryParams = components?.queryItems ?? []
     }
 
     public func encoded() throws -> [URLQueryItem] {

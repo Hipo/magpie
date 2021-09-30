@@ -124,13 +124,13 @@ open class EndpointBuilder {
     }
 
     @discardableResult
-    public func completionHandler<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel>(_ someCompletionHandler: @escaping (Response.Result<SomeResponseModel, SomeErrorModel>, Headers) -> Void) -> Self {
+    public func completionHandler<SomeResponseModel: ResponseModel, SomeErrorModel: APIModel>(_ someCompletionHandler: @escaping (Response.Result<SomeResponseModel, SomeErrorModel>, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseResultResolver(someCompletionHandler)
         return self
     }
 
     @discardableResult
-    public func completionHandler<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel>(_ someCompletionHandler: @escaping (Response.Result<SomeResponseModel, SomeErrorModel>) -> Void) -> Self {
+    public func completionHandler<SomeResponseModel: ResponseModel, SomeErrorModel: APIModel>(_ someCompletionHandler: @escaping (Response.Result<SomeResponseModel, SomeErrorModel>) -> Void) -> Self {
         return completionHandler({ result, _ in someCompletionHandler(result) })
     }
 
@@ -168,13 +168,13 @@ open class EndpointBuilder {
     }
 
     @discardableResult
-    public func completionHandler<SomeErrorModel: JSONModel>(_ someCompletionHandler: @escaping (Response.ErrorModelResult<SomeErrorModel>, Headers) -> Void) -> Self {
+    public func completionHandler<SomeErrorModel: APIModel>(_ someCompletionHandler: @escaping (Response.ErrorModelResult<SomeErrorModel>, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseErrorResultResolver(someCompletionHandler)
         return self
     }
 
     @discardableResult
-    public func completionHandler<SomeErrorModel: JSONModel>(_ someCompletionHandler: @escaping (Response.ErrorModelResult<SomeErrorModel>) -> Void) -> Self {
+    public func completionHandler<SomeErrorModel: APIModel>(_ someCompletionHandler: @escaping (Response.ErrorModelResult<SomeErrorModel>) -> Void) -> Self {
         return completionHandler({ result, _ in someCompletionHandler(result) })
     }
 

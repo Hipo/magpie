@@ -44,7 +44,7 @@ extension Response {
         return .success(rawData)
     }
 
-    public func decoded<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel>() -> Result<SomeResponseModel, SomeErrorModel> {
+    public func decoded<SomeResponseModel: ResponseModel, SomeErrorModel: APIModel>() -> Result<SomeResponseModel, SomeErrorModel> {
         func formResult(_ error: APIError, _ data: Data?) -> Result<SomeResponseModel, SomeErrorModel> {
             if let data = data {
                 return .failure(error, try? SomeErrorModel.decoded(data))
@@ -65,15 +65,15 @@ extension Response {
 }
 
 extension Response {
-    public typealias ModelResult<SomeResponseModel: ResponseModel> = Result<SomeResponseModel, NoJSONModel>
-    public typealias ErrorModelResult<SomeErrorModel: JSONModel> = Result<NoResponseModel, SomeErrorModel>
+    public typealias ModelResult<SomeResponseModel: ResponseModel> = Result<SomeResponseModel, NoAPIModel>
+    public typealias ErrorModelResult<SomeErrorModel: APIModel> = Result<NoResponseModel, SomeErrorModel>
 
     public enum RawResult {
         case success(Data?)
         case failure(APIError)
     }
 
-    public enum Result<SomeResponseModel: ResponseModel, SomeErrorModel: JSONModel> {
+    public enum Result<SomeResponseModel: ResponseModel, SomeErrorModel: APIModel> {
         case success(SomeResponseModel)
         case failure(APIError, SomeErrorModel? = nil)
     }

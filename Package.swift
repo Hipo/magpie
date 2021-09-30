@@ -18,7 +18,7 @@ let package = Package(
     targets: [
         .target(name: "MagpieAlamofire", dependencies: ["MagpieCore", "Alamofire"], path: "Sources/MagpieAlamofire"),
         .target(name: "MagpieCore", dependencies: ["MacaroonUtils"], path: "Sources/MagpieCore"),
-        .target(name: "MagpieExceptions", dependencies: ["MacaroonUtils"], path: "Sources/MagpieExceptions"),
+        .target(name: "MagpieExceptions", dependencies: ["MagpieCore"], path: "Sources/MagpieExceptions"),
         .target(name: "MagpieHipo", dependencies: ["MagpieAlamofire", "MagpieExceptions"], path: "Sources/MagpieHipo"),
         .testTarget(name: "MagpieTests",dependencies: ["MagpieCore"])
     ],

@@ -7,20 +7,10 @@
 
 import Foundation
 import MacaroonUtils
+import MagpieCore
 
-open class HIPAuthCredential: AuthCredential {
-    public var debugData: Data?
+open class HIPAuthCredential:
+    AuthCredential,
+    APIModel {
     public let token: String
-
-    public required init(
-        _ apiModel: APIModel
-    ) {
-        self.token = apiModel.token
-    }
-}
-
-extension HIPAuthCredential {
-    public struct APIModel: JSONModel {
-        let token: String
-    }
 }
