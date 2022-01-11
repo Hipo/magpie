@@ -34,47 +34,21 @@ public struct NoResponseModel: ResponseModel {
     }
 }
 
-extension Array: ResponseModel where Element: ResponseModel {
+extension Array: ResponseModel where Element: APIModel {
     public var isFault: Bool {
         return false
     }
 
-    public func encoded() throws -> Data where Element: APIModel {
-        return try encoded(Element.encodingStrategy)
-    }
-
-    public func encoded() throws -> Data where Element: EntityModel {
-        let apiModels = map { $0.encode() }
-        return try apiModels.encoded(Element.APIModel.encodingStrategy)
-    }
-
     public func encoded() throws -> Data {
-        fatalError("Unsupported encoding for elements")
-    }
-
-    public static func decoded(
-        _ data: Data
-    ) throws -> Self where Element: APIModel {
-        return try Self.decoded(
-            data,
-            using: Element.decodingStrategy
-        )
-    }
-
-    public static func decoded(
-        _ data: Data
-    ) throws -> Self where Element: EntityModel {
-        let apiModels =
-            try [Element.APIModel].decoded(
-                data,
-                using: Element.APIModel.decodingStrategy
-            )
-        return apiModels.map(Element.init)
+        return try encoded(Element.encodingStrategy)
     }
 
     public static func decoded(
         _ data: Data
     ) throws -> Self {
-        fatalError("Unsupported decoding for elements")
+        return try Self.decoded(
+            data,
+            using: Element.decodingStrategy
+        )
     }
 }
