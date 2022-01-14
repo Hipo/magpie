@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
         "state": {
           "branch": null,
-          "revision": "d120af1e8638c7da36c8481fd61a66c0c08dc4fc",
-          "version": "5.4.4"
+          "revision": "f82c23a8a7ef8dc1a49a8bfc6a96883e79121864",
+          "version": "5.5.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/Hipo/macaroon-utils.git",
         "state": {
           "branch": null,
-          "revision": "63052dedd3e762633c6f035d6e079f18cc6cb999",
-          "version": "2.0.5"
+          "revision": "a650e95dd944818cdfa97c46c707d2f45bd5e472",
+          "version": "3.0.0"
         }
       },
       {

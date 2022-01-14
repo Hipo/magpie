@@ -13,7 +13,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.4.0")),
-        .package(name: "MacaroonUtils", url: "https://github.com/Hipo/macaroon-utils.git", .upToNextMajor(from: "2.0.0")),
+        .package(name: "MacaroonUtils", url: "https://github.com/Hipo/macaroon-utils.git", .upToNextMajor(from: "3.0.0")),
     ],
     targets: [
         .target(name: "MagpieAlamofire", dependencies: ["MagpieCore", "Alamofire"], path: "Sources/MagpieAlamofire"),
