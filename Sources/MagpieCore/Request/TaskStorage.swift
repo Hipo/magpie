@@ -19,7 +19,7 @@ extension TaskStorage {
     }
 
     func add(_ task: TaskConvertible, for path: String) {
-        $table.modify { mTable in
+        $table.mutate { mTable in
             if !task.inProgress { return }
 
             if var currentTasks = mTable[path] {
@@ -83,7 +83,7 @@ extension TaskStorage {
         if afterCancellation {
             task.cancelNow()
         }
-        $table.modify { mTable in
+        $table.mutate { mTable in
             guard var currentTasks = mTable[path] else { return }
 
             let _ = currentTasks.removeAll { $0.taskIdentifier == task.taskIdentifier }
@@ -97,7 +97,7 @@ extension TaskStorage {
     }
 
     private func deleteAll(with path: String, afterCancellation: Bool) {
-        $table.modify { mTable in
+        $table.mutate { mTable in
             if afterCancellation {
                 mTable[path]?.forEach { $0.cancelNow() }
             }
@@ -106,7 +106,7 @@ extension TaskStorage {
     }
 
     private func deleteAll(relativeTo path: String, afterCancellation: Bool) {
-        $table.modify { mTable in
+        $table.mutate { mTable in
             for item in mTable where item.key.contains(path) {
                 if afterCancellation {
                     item.value.forEach { $0.cancelNow() }
@@ -117,7 +117,7 @@ extension TaskStorage {
     }
 
     private func deleteAll(afterCancellation: Bool) {
-        $table.modify { mTable in
+        $table.mutate { mTable in
             if afterCancellation {
                 mTable.forEach { $1.forEach { $0.cancelNow() } }
             }

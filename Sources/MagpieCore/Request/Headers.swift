@@ -141,95 +141,165 @@ extension Header {
 }
 
 public struct AcceptHeader: Header {
-    public let key = HTTPHeader.accept
+    public let key: String
     public let value: String?
 
     public init(_ value: String) {
+        self.key = HTTPHeader.accept
         self.value = value
     }
+}
 
-    public static func json() -> Self {
-        return Self("application/json")
+public struct AcceptJSONHeader: Header {
+    public let key: String
+    public let value: String?
+    
+    public init() {
+        let base = AcceptHeader("application/json")
+        
+        self.key = base.key
+        self.value = base.value
     }
+}
 
-    public static func formUrlEncoded() -> Self {
-        return Self("application/x-www-form-urlencoded")
+public struct AcceptFormURLEncodedHeader: Header {
+    public let key: String
+    public var value: String?
+    
+    public init() {
+        let base = AcceptHeader("application/x-www-form-urlencoded")
+        
+        self.key = base.key
+        self.value = base.value
     }
 }
 
 public struct AcceptEncodingHeader: Header {
-    public let key = HTTPHeader.acceptEncoding
+    public let key: String
     public let value: String?
 
     public init(_ value: String) {
+        self.key = HTTPHeader.acceptEncoding
         self.value = value
     }
+}
 
-    public static func gzip() -> Self {
-        return Self("gzip;q=1.0, *;q=0.5")
+public struct AcceptGZIPEncodingHeader: Header {
+    public let key: String
+    public var value: String?
+    
+    public init() {
+        let base = AcceptEncodingHeader("gzip;q=1.0, *;q=0.5")
+
+        self.key = base.key
+        self.value = base.value
     }
 }
 
 public struct AcceptLanguageHeader: Header {
-    public let key = HTTPHeader.acceptLanguage
+    public let key: String
     public let value: String?
 
     init(_ value: String) {
+        self.key = HTTPHeader.acceptLanguage
         self.value = value
     }
 }
 
 public struct AuthorizationHeader: Header {
-    public let key = HTTPHeader.authorization
+    public let key: String
     public let value: String?
 
     public init(_ value: String? = nil) {
+        self.key = HTTPHeader.authorization
         self.value = value
     }
+}
 
-    public static func token(_ value: String?) -> Self {
-        let tokenValue = value.map { "Token \($0)" }
-        return Self(tokenValue)
-    }
-
-    public static func bearer(_ value: String?) -> Self {
-        let bearerValue = value.map { "Bearer \($0)" }
-        return Self(bearerValue)
-    }
-
-    public static func basic(_ value: String?) -> Self {
+public struct AuthorizationBasicHeader: Header {
+    public let key: String
+    public let value: String?
+    
+    public init(_ value: String?) {
         let basicValue = value.map { "Basic \($0)" }
-        return Self(basicValue)
+        let base = AuthorizationHeader(basicValue)
+        
+        self.key = base.key
+        self.value = base.value
+    }
+}
+
+public struct AuthorizationBearerHeader: Header {
+    public let key: String
+    public let value: String?
+    
+    public init(_ value: String?) {
+        let bearerValue = value.map { "Bearer \($0)" }
+        let base = AuthorizationHeader(bearerValue)
+        
+        self.key = base.key
+        self.value = base.value
+    }
+}
+
+public struct AuthorizationTokenHeader: Header {
+    public let key: String
+    public let value: String?
+    
+    public init(_ value: String?) {
+        let tokenValue = value.map { "Token \($0)" }
+        let base = AuthorizationHeader(tokenValue)
+        
+        self.key = base.key
+        self.value = base.value
     }
 }
 
 public struct ContentLengthHeader: Header {
-    public let key = HTTPHeader.contentLength
+    public let key: String
     public let value: String?
-
-    public init(_ count: Int) {
-        self.value = "\(count)"
-    }
-
+    
     public init(_ value: String) {
+        self.key = HTTPHeader.contentLength
         self.value = value
+    }
+    
+    public init(_ count: Int) {
+        self.init(String(count))
     }
 }
 
 public struct ContentTypeHeader: Header {
-    public let key = HTTPHeader.contentType
+    public let key: String
     public let value: String?
 
     public init(_ value: String) {
+        self.key = HTTPHeader.contentType
         self.value = value
     }
+}
 
-    public static func json() -> Self {
-        return Self("application/json")
+public struct ContentTypeJSONHeader: Header {
+    public let key: String
+    public var value: String?
+    
+    public init() {
+        let base = ContentTypeHeader("application/json")
+        
+        self.key = base.key
+        self.value = base.value
     }
+}
 
-    public static func formUrlEncoded() -> Self {
-        return Self("application/x-www-form-urlencoded")
+public struct ContentTypeFormURLEncodedHeader: Header {
+    public let key: String
+    public var value: String?
+    
+    public init() {
+        let base = ContentTypeHeader("application/x-www-form-urlencoded")
+        
+        self.key = base.key
+        self.value = base.value
     }
 }
 

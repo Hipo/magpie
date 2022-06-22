@@ -21,21 +21,21 @@ open class HIPAPIInterceptor<SomeSession: Session>: APIInterceptor {
 
     open func intercept(_ endpoint: EndpointOperatable) {
         /// <note> HTTP
-        endpoint.setAdditionalHeader(AcceptEncodingHeader.gzip(), .setIfNotExists)
-        endpoint.setAdditionalHeader(AcceptHeader.json(), .setIfNotExists)
+        endpoint.setAdditionalHeader(AcceptGZIPEncodingHeader(), policy: .setIfNotExists)
+        endpoint.setAdditionalHeader(AcceptJSONHeader(), policy: .setIfNotExists)
 
         if !endpoint.type.isMultipart {
-            endpoint.setAdditionalHeader(ContentTypeHeader.json(), .setIfNotExists)
+            endpoint.setAdditionalHeader(ContentTypeJSONHeader(), policy: .setIfNotExists)
         }
 
         /// <note> Hipo
-        endpoint.setAdditionalHeader(AppNameHeader(application), .alwaysOverride)
-        endpoint.setAdditionalHeader(AppPackageNameHeader(application), .alwaysOverride)
-        endpoint.setAdditionalHeader(AppVersionHeader(application), .alwaysOverride)
-        endpoint.setAdditionalHeader(ClientTypeHeader(device), .alwaysOverride)
-        endpoint.setAdditionalHeader(DeviceLocaleHeader(device), .alwaysOverride)
-        endpoint.setAdditionalHeader(DeviceOSVersionHeader(device), .alwaysOverride)
-        endpoint.setAdditionalHeader(DeviceModelHeader(device), .alwaysOverride)
+        endpoint.setAdditionalHeader(AppNameHeader(application))
+        endpoint.setAdditionalHeader(AppPackageNameHeader(application))
+        endpoint.setAdditionalHeader(AppVersionHeader(application))
+        endpoint.setAdditionalHeader(ClientTypeHeader(device))
+        endpoint.setAdditionalHeader(DeviceLocaleHeader(device))
+        endpoint.setAdditionalHeader(DeviceOSVersionHeader(device))
+        endpoint.setAdditionalHeader(DeviceModelHeader(device))
 
         /// <note> Client
         session.verify(endpoint)

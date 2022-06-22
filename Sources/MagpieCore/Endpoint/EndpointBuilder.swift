@@ -32,7 +32,12 @@ open class EndpointBuilder {
         endpoint.set(port: somePort)
         return self
     }
-
+    
+    @discardableResult
+    public func path(_ format: String, _ arguments: CVarArg...) -> Self {
+        return path(Path(format: format, arguments: arguments))
+    }
+    
     @discardableResult
     public func path(_ somePath: Path) -> Self {
         endpoint.set(path: somePath)

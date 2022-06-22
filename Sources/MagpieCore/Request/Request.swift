@@ -11,7 +11,7 @@ import MacaroonUtils
 public class Request  {
     public var base: String
     public var port: Int?
-    public var path: Path = ""
+    public var path = Path(format: "")
     public var method: Method = .get
     public var query: Query?
     public var body: Body?

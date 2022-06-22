@@ -13,12 +13,21 @@ public protocol EndpointOperatable: Printable {
     var request: Request { get }
     var isFinished: Bool { get }
 
-    func setAdditionalHeader(_ header: Header, _ policy: AdditionalHeaderPolicy)
+    func setAdditionalHeader(_ header: Header, policy: AdditionalHeaderPolicy)
 
     @discardableResult
     func send() -> EndpointOperatable
     func retry()
     func cancel()
+}
+
+extension EndpointOperatable {
+    public func setAdditionalHeader(_ header: Header) {
+        setAdditionalHeader(
+            header,
+            policy: .alwaysOverride
+        )
+    }
 }
 
 public enum AdditionalHeaderPolicy {

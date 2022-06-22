@@ -58,10 +58,7 @@ where
 
     open func verify(_ endpoint: EndpointOperatable) {
         if let authCredential = authCredential {
-            endpoint.setAdditionalHeader(
-                AuthorizationHeader.token(authCredential.token),
-                .alwaysOverride
-            )
+            endpoint.setAdditionalHeader(AuthorizationTokenHeader(authCredential.token))
         }
     }
 }

@@ -96,7 +96,7 @@ extension Endpoint {
 }
 
 extension Endpoint: EndpointOperatable {
-    func setAdditionalHeader(_ header: Header, _ policy: AdditionalHeaderPolicy) {
+    func setAdditionalHeader(_ header: Header, policy: AdditionalHeaderPolicy) {
         switch policy {
             case .alwaysOverride:
                 request.headers = request.headers << [header]

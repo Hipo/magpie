@@ -8,43 +8,39 @@
 import Foundation
 import MacaroonUtils
 
-public struct Path:
-    ExpressibleByStringLiteral,
-    DebugPrintable {
-    public let expr: String
-    public let args: [CVarArg]
-
-    private let path: String
-
+public struct Path: DebugPrintable {
+    private let encodedString: String
+    
     public init(
-        _ expr: String,
-        args: CVarArg...
+        _ string: String
     ) {
         self.init(
-            expr,
-            args: args
+            format: string,
+            arguments: []
         )
     }
 
     public init(
-        _ expr: String,
-        args: [CVarArg]
-    ) {
-        self.expr = expr
-        self.args = args
-        self.path = args.isEmpty ? expr : String(format: expr, arguments: args)
-    }
-
-    public init(
-        stringLiteral value: String
+        format: String,
+        arguments: CVarArg...
     ) {
         self.init(
-            value
+            format: format,
+            arguments: arguments
         )
     }
 
+    init(
+        format: String,
+        arguments: [CVarArg]
+    ) {
+        self.encodedString = String(format: format, arguments: arguments)
+    }
+}
+
+extension Path {
     public func encoded() -> String {
-        return path
+        return encodedString
     }
 }
 
