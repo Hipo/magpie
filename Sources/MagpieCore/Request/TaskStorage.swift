@@ -86,7 +86,9 @@ extension TaskStorage {
         $table.mutate { mTable in
             guard var currentTasks = mTable[path] else { return }
 
-            let _ = currentTasks.removeAll { $0.taskIdentifier == task.taskIdentifier }
+            currentTasks.removeAll {
+                $0.taskIdentifier == task.taskIdentifier
+            }
 
             if currentTasks.isEmpty {
                 mTable[path] = nil
