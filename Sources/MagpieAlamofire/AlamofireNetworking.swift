@@ -17,6 +17,8 @@ import MagpieCore
 open class AlamofireNetworking: Networking {
     private(set) lazy var afSession = Alamofire.Session.default
 
+    private let acceptableStatusCodes = 200..<300
+
     /// Initializes a new object.
     public init() { }
 
@@ -49,6 +51,26 @@ open class AlamofireNetworking: Networking {
         }
     }
 
+    open func download(_ request: MagpieCore.Request, to destination: EndpointType.DownloadDestination, validateResponse: Bool, queue: DispatchQueue, using handler: @escaping ResponseHandler) -> TaskConvertible? {
+        do {
+            let urlRequest = try request.asUrlRequest()
+            let downloadRequest = createDownloadRequest(urlRequest: urlRequest, to: destination)
+
+            if validateResponse {
+                downloadRequest.validate(statusCode: acceptableStatusCodes)
+            }
+
+            return downloadRequest.magpie_responseURL(in: queue) { [weak self] downloadResponse in
+                if let self = self {
+                    handler(self.convert(downloadResponse, for: request))
+                }
+            }
+        } catch {
+            handler(convert(error, for: request))
+            return nil
+        }
+    }
+
     /**
      Uploads a data source with a request and calls the handler when the server returns a success
      or a failure response.
@@ -62,18 +84,10 @@ open class AlamofireNetworking: Networking {
      - Returns: An instance of `TaskConvertible` to identify and manage the request to be sent with
      an uploadable source.
      */
-    open func upload(_ source: EndpointType.Source, with request: MagpieCore.Request, validateResponse: Bool, queue: DispatchQueue, using handler: @escaping ResponseHandler) -> TaskConvertible? {
+    open func upload(_ request: MagpieCore.Request, from source: EndpointType.UploadSource, validateResponse: Bool, queue: DispatchQueue, using handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
-
-            let uploadRequest: UploadRequest
-
-            switch source {
-            case .data(let data):
-                uploadRequest = afSession.upload(data, with: urlRequest)
-            case .file(let url):
-                uploadRequest = afSession.upload(url, with: urlRequest)
-            }
+            let uploadRequest = createUploadRequest(urlRequest: urlRequest, from: source)
 
             if validateResponse {
                 uploadRequest.validate()
@@ -102,7 +116,7 @@ open class AlamofireNetworking: Networking {
      - Returns: An instance of `TaskConvertible` to identify and manage the request to be sent with
      an uploadable source.
      */
-    open func upload(_ form: MultipartForm, with request: MagpieCore.Request, validateResponse: Bool, queue: DispatchQueue, using handler: @escaping ResponseHandler) -> TaskConvertible? {
+    open func upload(_ request: MagpieCore.Request, from form: MultipartForm, validateResponse: Bool, queue: DispatchQueue, using handler: @escaping ResponseHandler) -> TaskConvertible? {
         do {
             let urlRequest = try request.asUrlRequest()
             let uploadRequest = afSession.upload(multipartFormData: { form.append(into: $0) }, with: urlRequest)
@@ -133,6 +147,21 @@ extension AlamofireNetworking {
         }
     }
 
+    private func convert(_ dataResponse: AFDownloadResponse<URL>, for request: MagpieCore.Request) -> Response {
+        switch dataResponse.result {
+        case .success(let fileURL):
+            let download = [
+                "url": fileURL
+            ]
+            let downloadData = try? download.encoded()
+            return Response(request: request, rawHeaders: dataResponse.response?.allHeaderFields, rawData: downloadData)
+        case .failure(let afError):
+            let errorData = dataResponse.fileURL.unwrap { try? Data(contentsOf: $0) }
+            let error = convert(afError, with: errorData)
+            return Response(request: request, rawHeaders: dataResponse.response?.allHeaderFields, rawData: errorData, error: error)
+        }
+    }
+
     private func convert(_ error: Error, for request: MagpieCore.Request) -> Response {
         if let apiError = error as? APIError {
             return Response(request: request, error: apiError)
@@ -160,5 +189,54 @@ extension AlamofireNetworking {
         default:
             return UnexpectedError(responseData: data, underlyingError: afError)
         }
+    }
+}
+
+extension AlamofireNetworking {
+    private func createDownloadRequest(urlRequest: URLRequest, to destination: EndpointType.DownloadDestination) -> DownloadRequest {
+        switch destination {
+        case .file(let url):
+            return createDownloadRequest(urlRequest: urlRequest, to: url)
+        }
+    }
+
+    private func createDownloadRequest(urlRequest: URLRequest, to fileURL: URL) -> DownloadRequest {
+        return afSession.download(urlRequest) {
+            [weak self] temporaryURL, response in
+            guard let self = self else {
+                return (temporaryURL, [])
+            }
+
+            if self.acceptableStatusCodes.contains(response.statusCode) {
+                return (fileURL, [.removePreviousFile])
+            } else {
+                let failedFileURL = self.createFileURLForFailedDownload(temporary: temporaryURL)
+                return (failedFileURL, [])
+            }
+        }
+    }
+
+    private func createFileURLForFailedDownload(temporary temporaryURL: URL) -> URL {
+        let filename = "Alamofire_\(temporaryURL.lastPathComponent)"
+        return temporaryURL.deletingLastPathComponent().appendingPathComponent(filename)
+    }
+}
+
+extension AlamofireNetworking {
+    private func createUploadRequest(urlRequest: URLRequest, from source: EndpointType.UploadSource) -> UploadRequest {
+        switch source {
+        case .data(let data):
+            return createUploadRequest(urlRequest: urlRequest, from: data)
+        case .file(let url):
+            return createUploadRequest(urlRequest: urlRequest, from: url)
+        }
+    }
+
+    private func createUploadRequest(urlRequest: URLRequest, from data: Data) -> UploadRequest {
+        return afSession.upload(data, with: urlRequest)
+    }
+
+    private func createUploadRequest(urlRequest: URLRequest, from fileURL: URL) -> UploadRequest {
+        return afSession.upload(fileURL, with: urlRequest)
     }
 }

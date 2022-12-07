@@ -10,7 +10,8 @@ import MacaroonUtils
 
 public enum EndpointType {
     case data
-    case upload(Source)
+    case download(DownloadDestination)
+    case upload(UploadSource)
     case multipart(MultipartForm)
 }
 
@@ -18,6 +19,14 @@ extension EndpointType {
     public var isData: Bool {
         switch self {
         case .data:
+            return true
+        default:
+            return false
+        }
+    }
+    public var isDownload: Bool {
+        switch self {
+        case .download:
             return true
         default:
             return false
@@ -41,19 +50,14 @@ extension EndpointType {
     }
 }
 
-extension EndpointType {
-    public enum Source {
-        case data(Data)
-        case file(URL)
-    }
-}
-
 extension EndpointType: Printable {
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         switch self {
         case .data:
             return "data"
+        case .download(let dest):
+            return "download \(dest.debugDescription)"
         case .upload(let src):
             return "upload \(src.debugDescription)"
         case .multipart(let form):
@@ -62,14 +66,34 @@ extension EndpointType: Printable {
     }
 }
 
-extension EndpointType.Source: Printable {
+extension EndpointType {
+    public enum DownloadDestination {
+        case file(URL)
+    }
+
+    public enum UploadSource {
+        case data(Data)
+        case file(URL)
+    }
+}
+
+extension EndpointType.DownloadDestination: Printable {
+    public var debugDescription: String {
+        switch self {
+        case .file(let url):
+            return "destination: \(url.absoluteString)"
+        }
+    }
+}
+
+extension EndpointType.UploadSource: Printable {
     /// <mark> CustomDebugStringConvertible
     public var debugDescription: String {
         switch self {
         case .data:
             return "data"
         case .file(let url):
-            return "file at \(url.absoluteString)"
+            return "source: \(url.absoluteString)"
         }
     }
 }

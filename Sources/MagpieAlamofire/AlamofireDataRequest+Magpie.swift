@@ -11,6 +11,9 @@ import MagpieCore
  */
 
 /// <mark>
+/// **DataRequest**
+
+/// <mark>
 /// **TaskConvertible**
 extension Alamofire.DataRequest: TaskConvertible {
     /// Returns the identifier of the active task, or -1.
@@ -46,5 +49,41 @@ extension Alamofire.DataRequest {
     /// an empty response body as successful requests.
     func magpie_responseData(in queue: DispatchQueue, completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self {
         return response(queue: queue, responseSerializer: DataResponseSerializer(emptyResponseCodes: Set(200..<300)), completionHandler: completionHandler)
+    }
+}
+
+/// <mark>
+/// **DownloadRequest**
+
+/// <mark>
+/// **TaskConvertible**
+extension Alamofire.DownloadRequest: TaskConvertible {
+    public var taskIdentifier: Int {
+        return task?.taskIdentifier ?? -1
+    }
+
+    public var inProgress: Bool {
+        return
+            isInitialized ||
+            isResumed ||
+            isSuspended
+    }
+
+    public func cancelNow() {
+        cancel()
+    }
+}
+
+/// <mark>
+/// **CustomDebugStringConvertible**
+extension Alamofire.DownloadRequest {
+    public var debugDescription: String {
+        return description
+    }
+}
+
+extension Alamofire.DownloadRequest {
+    func magpie_responseURL(in queue: DispatchQueue, completionHandler: @escaping (AFDownloadResponse<URL>) -> Void) -> Self {
+        return responseURL(queue: queue, completionHandler: completionHandler)
     }
 }

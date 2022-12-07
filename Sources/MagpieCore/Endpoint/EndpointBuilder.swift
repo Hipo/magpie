@@ -184,6 +184,28 @@ open class EndpointBuilder {
     }
 
     @discardableResult
+    public func completionHandler<SomeDownloadModel: DownloadModel, SomeErrorModel: APIModel>(_ someCompletionHandler: @escaping (Response.DownloadResult<SomeDownloadModel, SomeErrorModel>, Headers) -> Void) -> Self {
+        endpoint.responseResolver = ResponseResultResolver(someCompletionHandler)
+        return self
+    }
+
+    @discardableResult
+    public func completionHandler<SomeDownloadModel: DownloadModel, SomeErrorModel: APIModel>(_ someCompletionHandler: @escaping (Response.DownloadResult<SomeDownloadModel, SomeErrorModel>) -> Void) -> Self {
+        return completionHandler({ result, _ in someCompletionHandler(result) })
+    }
+
+    @discardableResult
+    public func completionHandler<SomeDownloadModel: DownloadModel>(_ someCompletionHandler: @escaping (Response.DownloadModelResult<SomeDownloadModel>, Headers) -> Void) -> Self {
+        endpoint.responseResolver = ResponseModelResultResolver(someCompletionHandler)
+        return self
+    }
+
+    @discardableResult
+    public func completionHandler<SomeDownloadModel: DownloadModel>(_ someCompletionHandler: @escaping (Response.DownloadModelResult<SomeDownloadModel>) -> Void) -> Self {
+        return completionHandler({ result, _ in someCompletionHandler(result) })
+    }
+
+    @discardableResult
     public func completionHandler(_ someCompletionHandler: @escaping (APIError?, Headers) -> Void) -> Self {
         endpoint.responseResolver = ResponseErrorResolver(someCompletionHandler)
         return self

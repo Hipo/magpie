@@ -1,9 +1,4 @@
-//
-//  Response.swift
-//  Pods
-//
-//  Created by Eray on 19.09.2018.
-//
+// Copyright © 2018 hipolabs. All rights reserved.
 
 import Foundation
 import MacaroonUtils
@@ -67,6 +62,9 @@ extension Response {
 extension Response {
     public typealias ModelResult<SomeResponseModel: ResponseModel> = Result<SomeResponseModel, NoAPIModel>
     public typealias ErrorModelResult<SomeErrorModel: APIModel> = Result<NoResponseModel, SomeErrorModel>
+
+    public typealias DownloadResult<SomeDownloadModel: DownloadModel, SomeErrorModel: APIModel> = Result<SomeDownloadModel, SomeErrorModel>
+    public typealias DownloadModelResult<SomeDownloadModel: DownloadModel> = DownloadResult<SomeDownloadModel, NoAPIModel>
 
     public enum RawResult {
         case success(Data?)

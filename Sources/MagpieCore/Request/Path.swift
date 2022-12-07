@@ -9,6 +9,7 @@ import Foundation
 import MacaroonUtils
 
 public struct Path: DebugPrintable {
+    private let formatString: String
     private let encodedString: String
     
     public init(
@@ -34,11 +35,16 @@ public struct Path: DebugPrintable {
         format: String,
         arguments: [CVarArg]
     ) {
+        self.formatString = format
         self.encodedString = String(format: format, arguments: arguments)
     }
 }
 
 extension Path {
+    public func decoded() -> String {
+        return formatString
+    }
+
     public func encoded() -> String {
         return encodedString
     }
